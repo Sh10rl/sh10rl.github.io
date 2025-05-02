@@ -2,7 +2,10 @@
 
 source "https://rubygems.org"
 
-gem "jekyll-theme-chirpy", "~> 7.2", ">= 7.2.4"
+# --- 必须包含的行 (根据之前的解决方案) ---
+gem "jekyll", "~> 4.3.3"  # 添加这一行来指定 Jekyll 版本
+gem "jekyll-theme-chirpy", "~> 7.2.4", github: "cotes2020/jekyll-theme-chirpy" # 修正这一行，指定版本和 GitHub 来源
+# --- 结束必须包含的行 ---
 
 gem "html-proofer", "~> 5.0", group: :test
 
