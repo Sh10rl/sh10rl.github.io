@@ -1,9 +1,14 @@
 ---
-layout: post,
 title: This is a new article
-date: YYYY-MM-DD HH:MM
-category: Category
-author: User
+description: This is a description
+author: Shiori
+date: ${timestamp}
+categories: []
 tags: [tag1, tag2]
-summary: Summary of the article
+image:
+  path: /commons/devices-mockup.png
+  alt: Responsive rendering of Chirpy theme on multiple devices.
+pin: false
+math: true
+mermaid: true
 ---

@@ -16,7 +16,7 @@ timezone: Asia/Shanghai
 
 title: "Shiori's Coffee Brewing Nook" # the main title
 
-tagline: Brewing ideas, one cup at a time # it will display as the subtitle
+tagline: Brewing ideas, one cup at a time ~ # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
