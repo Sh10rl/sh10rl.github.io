@@ -8,7 +8,7 @@ You can call me '**小李**' for brevity or '**Shiori**' directly (A bit of hard
 
 Also, Browse my [categories]({% link _tabs/categories.md %}) or see some of my [friends]({% link _tabs/categories.md %}) if you like.
 
-Usuaully feuled by either coffe or tea.
+Usuaully feuled by either coffee or tea.
 
 # Overview
 - 📖 Constant learning

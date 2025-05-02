@@ -14,7 +14,7 @@ timezone: Asia/Shanghai
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: "Shiori" # the main title
+title: "Shiori's Brew Corner" # the main title
 
 tagline: CTFer, Reverse engineering # it will display as the subtitle
 
