@@ -4,7 +4,9 @@ icon: fas fa-info-circle
 order: 5
 ---
 
-You can call me '**小李**' for brevity or '**Shiori**' directly (A bit of hard to pronounce), inspired from: ***Asaka Kaori*** & ***Miyagi Shiori***
+You can call me '**小李**' for brevity or '**Shiori**' directly (A bit of hard to pronounce), inspired from: 
+
+***Asaka Kaori*** & ***Miyagi Shiori***
 
 Also, Browse my [categories]({% link _tabs/categories.md %}) or see some of my [friends]({% link _tabs/categories.md %}) if you like.
 
