@@ -1,8 +1,6 @@
 {
   "name": "Jekyll",
   "image": "mcr.microsoft.com/devcontainers/jekyll:2-bullseye",
-  "onCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
-  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
       "settings": {
@@ -22,8 +20,15 @@
         "stylelint.vscode-stylelint",
         "yzhang.markdown-all-in-one",
         // Git
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        // Necessary extensions
+        "oderwat.indent-rainbow",
+				"vscode-icons-team.vscode-icons",
+				"bierner.markdown-mermaid",
+				"GitHub.vscode-github-actions",
+				"davidanson.vscode-markdownlin"
       ]
     }
-  }
+  },
+  "postStartCommand": "bundle exec jekyll server --livereload --draft --incremental --force-polling"
 }
