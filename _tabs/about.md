@@ -1,7 +1,7 @@
 ---
 # the default layout is 'page'
 icon: fas fa-info-circle
-order: 4
+order: 5
 ---
 
 You can call me '**小李**' for brevity or '**Shiori**' directly (A bit of hard to pronounce), inspired from: ***Asaka Kaori*** & ***Miyagi Shiori***
