@@ -30,5 +30,5 @@
       ]
     }
   },
-  "postStartCommand": "bundle exec jekyll server --livereload --draft --incremental --force-polling"
+  "postStartCommand": "bundle exec jekyll server --livereload"
 }
