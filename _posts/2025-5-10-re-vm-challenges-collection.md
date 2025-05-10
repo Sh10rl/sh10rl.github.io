@@ -376,7 +376,7 @@ if __name__ == "__main__":
 
 Set a breakpoint using the script above:
 
-![](https://pcnc027ut287.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGE5YTYzNGEyZmIyMDBmOTA1OTY4NzU2OWJiMzNiNThfZkNVWXlSY05GcnQ5QXBUeHVVamR3aldBTUF3NXFXMVpfVG9rZW46RHBoMmJwME5Rb2JFeTJ4MnZwc2NISHhzbnljXzE3NDY4OTAxNTE6MTc0Njg5Mzc1MV9WNA)
+![](/assets/img/2025-5-10-re-vm-challenges-collection/breakpoint.png)
 
 ```
 Sample inputs:
@@ -639,7 +639,7 @@ setImmediate(main);
 
 ```
 
-![](https://pcnc027ut287.feishu.cn/space/api/box/stream/download/asynccode/?code=MmIyYTFiM2UxMzE3ZWYwMjI1OWYxZWI3N2Y3ZmM1OTJfVGRaWTdkR2ZXY3VWR1lPREx4cEQ1WTVON2ZjU0JPdGJfVG9rZW46VXc4RWJtaVBIb2xqdmV4QzlWdGNDa3dJbkVkXzE3NDY4OTAxNTE6MTc0Njg5Mzc1MV9WNA){: width="972" height="589" }
+![](/assets/img/2025-5~1/output.png){: width="972" height="589" }
 
 The last verification does not leak side-channel info, so brute-force the last character to retrieve the flag.
 
@@ -673,7 +673,7 @@ for i in range(32, 128):
 
 ```
 
-![](https://pcnc027ut287.feishu.cn/space/api/box/stream/download/asynccode/?code=NGFjMmUxNmRiNzVhZjJkNzQ2MzBjODFjMWJiNDI0ZDdfUW1odjFFbmdEbHA1YnJpV0lQbmJnYmpldjdEVmlnRk1fVG9rZW46SzN5NGI4OE9Bb1JwNnR4dlN1N2NOb3BvblliXzE3NDY4OTAxNTE6MTc0Njg5Mzc1MV9WNA){: width="972" height="589" }
+![](/assets/img/2025-5~1/output_2.png){: width="972" height="589" }
 
 `flag{O1SC_VM_1s_h4rd_to_r3v3rs3_#a78abffaa#}`
 
@@ -771,7 +771,7 @@ uint64_t __fastcall VM_exec_loop(VMContext *VM_1)
 
 Brief analysis of the logic:
 
-![](https://pcnc027ut287.feishu.cn/space/api/box/stream/download/asynccode/?code=MDlkNWRiOThkY2M4OTAyN2VjOTFjODNhZjgzODQ3ZmNfM29JaDlJSW1HMzlnRDhoN0VUMFZ1QzlLampVSzFWZFZfVG9rZW46SEhGd2J1SVlob0FOQ0R4OUtWd2NXU2RkblRSXzE3NDY4OTAxNTE6MTc0Njg5Mzc1MV9WNA)
+![](/assets/img/2025-5~1/vm_logic.png)
 
 After reversing the `VM_exec_loop()`, we can dump the bytecode (`bunch_of_bytes`) and write a script to brute-force all 5005 numbers of Turing machines, identifying stoppable machines (where `execution_count <= 47176870`)
 
