@@ -639,7 +639,7 @@ setImmediate(main);
 
 ```
 
-![](/assets/img/2025-5~1/output.png){: width="972" height="589" }
+![](/assets/img/2025-5-10-re-vm-challenges-collection/output.png){: width="972" height="589" }
 
 The last verification does not leak side-channel info, so brute-force the last character to retrieve the flag.
 
@@ -673,7 +673,7 @@ for i in range(32, 128):
 
 ```
 
-![](/assets/img/2025-5~1/output_2.png){: width="972" height="589" }
+![](/assets/img/2025-5-10-re-vm-challenges-collection/output_2.png){: width="972" height="589" }
 
 `flag{O1SC_VM_1s_h4rd_to_r3v3rs3_#a78abffaa#}`
 
@@ -771,7 +771,7 @@ uint64_t __fastcall VM_exec_loop(VMContext *VM_1)
 
 Brief analysis of the logic:
 
-![](/assets/img/2025-5~1/vm_logic.png)
+![](/assets/img/2025-5-10-re-vm-challenges-collection/vm_logic.png)
 
 After reversing the `VM_exec_loop()`, we can dump the bytecode (`bunch_of_bytes`) and write a script to brute-force all 5005 numbers of Turing machines, identifying stoppable machines (where `execution_count <= 47176870`)
 
