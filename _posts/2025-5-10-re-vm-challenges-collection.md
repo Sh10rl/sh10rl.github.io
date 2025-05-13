@@ -687,7 +687,7 @@ Reversing [Brainfuck](https://en.wikipedia.org/wiki/Brainfuck), two method:
 1. Symbolic execution
 2. Dump runtime memory and analyze
 
-## [ACTF 2025] [Unstoppable](https://github.com/team-s2/ACTF-2025/blob/main/reverse/unstoppable/solution.md)
+## [ACTF 2025] [unstoppable](https://github.com/team-s2/ACTF-2025/blob/main/reverse/unstoppable/solution.md)
 
 This challenge implements a [busy beaver problem](https://en.wikipedia.org/wiki/Busy_beaver), aiming to find all stoppable Turing machines.
 
