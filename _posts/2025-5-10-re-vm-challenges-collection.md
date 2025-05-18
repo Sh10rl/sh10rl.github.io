@@ -776,12 +776,19 @@ Brief analysis of the logic:
 After reversing the `VM_exec_loop()`, we can dump the bytecode (`bunch_of_bytes`) and write a script to brute-force all 5005 numbers of Turing machines, identifying stoppable machines (where `execution_count <= 47176870`)
 
 ```c
-// brute-force_stoppable_VMs.cpp
+// brute-force.cpp
 #include <cstdio>
 #include <vector>
 #include <cstdint>
 #include <omp.h>
 #include "op.hpp" // VMs dumped -> uint8_t program[5005][30]
+
+#define DEBUG
+#undef DEBUG
+
+#ifdef DEBUG
+#include <cassert>
+#endif
 
 using namespace std;
 
@@ -789,7 +796,7 @@ int main()
 {
     int ALLN = 5005;
     setvbuf(stdout, nullptr, _IONBF, 0);
-    #pragma omp parallel for
+#pragma omp parallel for schedule(static)
     for (int i = 0; i < ALLN; i++)
     {
         vector<uint8_t> tape(1024, 0);
@@ -800,7 +807,23 @@ int main()
         while (now_count < 47176870)
         {
             now_count++;
-            uint8_t* operation = program[i] + 3 * ((IP << 1) | (tape[read_write_header] != 0)); // states: IP
+            /*
+
+            Different from the official writeup, but baed on my analysis, only this method can output exact 2703 stoppable VMs
+
+            $ wc -w stoppable_VMs_official.txt
+            3140 stoppable_VMs.txt
+
+            $ wc -w stoppable_VMs_new.txt
+            2703 stoppable_VMs_new.txt
+
+            */
+            uint8_t *operation = program[i] + 6 * IP  + 3 * (tape[read_write_header] != 0 ? 1 : 0);
+
+            #ifdef DEBUG
+            assert(6 * IP  + 3 * (tape[read_write_header] != 0 ? 1 : 0) < 30);
+            #endif
+
             tape[read_write_header] = operation[0];
             if (operation[1])
             {
@@ -820,6 +843,10 @@ int main()
                 read_write_header--;
             }
             IP = operation[2];
+            #ifdef DEBUG
+            assert(IP < 5);
+            #endif
+
             if (IP == 0x19)
             {
                 printf("%d ", i);
@@ -830,4 +857,29 @@ int main()
     return 0;
 }
 
+// Usage: g++ brute-force.cpp -o brute-force.exe -fopenmp
+```
+
+Finally, sort all VM numbers in ascending order to make sure the correct output:
+
+```python
+with open('stoppable_VMs_new.txt', 'r') as file:
+    numbers = []
+    for line in file:
+        # Split each line into individual numbers and convert to integers
+        numbers.extend(int(num) for num in line.strip().split())
+    # print(len(numbers))
+
+numbers.sort() # ascending order
+
+# Write the sorted numbers back to the file (one per line)
+with open('stoppable_VMs_new.txt', 'w') as file:
+    for number in numbers:
+        file.write(f"{number} ")
+
+```
+
+```bash
+$ cat stoppable_VMs_new.txt | ./unstoppable
+ACTF{21568fc0e443ad5e5f80c51f83323250}
 ```
