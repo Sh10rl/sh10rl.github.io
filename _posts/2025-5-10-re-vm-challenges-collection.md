@@ -775,7 +775,7 @@ Brief analysis of the logic:
 
 After reversing the `VM_exec_loop()`, we can dump the bytecode (`bunch_of_bytes`) and write a script to brute-force all 5005 numbers of Turing machines, identifying stoppable machines (where `execution_count <= 47176870`)
 
-```c
+```c++
 // brute-force.cpp
 #include <cstdio>
 #include <vector>
@@ -860,7 +860,7 @@ int main()
 // Usage: g++ brute-force.cpp -o brute-force.exe -fopenmp
 ```
 
-Finally, sort all VM numbers in ascending order to make sure the correct output:
+Finally, sort all VM numbers in ascending order to ensure the correct output:
 
 ```python
 with open('stoppable_VMs_new.txt', 'r') as file:
