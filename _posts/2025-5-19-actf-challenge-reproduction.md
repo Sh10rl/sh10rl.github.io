@@ -1,7 +1,6 @@
 ---
 title: "ACTF 2025 Challenge Reproduction"
 date: 2025-5-20
-description: 我菜😭！
 categories: [ctf]
 tags: [verilog, cuda, jottings]
 pin: false
@@ -139,7 +138,7 @@ else:
 
 Simply reversing [PTX](https://developer.nvidia.com/blog/understanding-ptx-the-assembly-language-of-cuda-gpu-computing/) assembly - basic, but annoying. Solving these large loops requires either [OpenMP](https://curc.readthedocs.io/en/latest/programming/OpenMP-C.html) or CUDA.
 
-Also, some [little](https://askubuntu.com/questions/1516582/how-to-install-sagemath-in-ubuntu-in-24-04) [problems](https://stackoverflow.com/questions/72028410/openmp-has-low-cpu-usage) encountered.
+Also, some [little](https://askubuntu.com/questions/1516582/how-to-install-sagemath-in-ubuntu-in-24-04) [problems](https://stackoverflow.com/questions/72028410/openmp-has-low-cpu-usage) were encountered.
 
 ### Analysis of Layer1
 
