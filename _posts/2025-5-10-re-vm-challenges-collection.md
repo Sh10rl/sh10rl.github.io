@@ -2,7 +2,7 @@
 title: "Re VM Challenges Collection"
 date: 2025-5-10
 categories: [ctf]
-tags: [vm, go, jottings]
+tags: [vm, go]
 pin: false
 math: true
 mermaid: true

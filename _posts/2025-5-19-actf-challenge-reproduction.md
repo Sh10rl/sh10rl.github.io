@@ -2,7 +2,7 @@
 title: "ACTF 2025 Challenge Reproduction"
 date: 2025-5-20
 categories: [ctf]
-tags: [verilog, cuda, jottings]
+tags: [verilog, cuda]
 pin: false
 math: true
 mermaid: true
