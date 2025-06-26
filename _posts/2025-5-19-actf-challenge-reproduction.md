@@ -1,6 +1,7 @@
 ---
 title: "ACTF 2025 Challenge Reproduction"
 date: 2025-5-20
+description: ACTF 2025 reverse engineering challenges
 categories: [ctf]
 tags: [verilog, cuda]
 pin: false
@@ -243,7 +244,7 @@ output[i] = result_3;
 
 ### Decrypt Script
 
-#### Part 3: `ROL` + `LCG` + `XOR` + `SBOX`
+#### L3 - Part 3: `ROL` + `LCG` + `XOR` + `SBOX`
 
 ```c++
 // part_3.cpp
@@ -323,12 +324,8 @@ int main()
 // Usage: g++ .\part_3.cpp -o part_3.exe -fopenmp -std=c++17 -O2 -Wall
 ```
 
-> `g++ .\part_3.cpp -o part_3.exe -fopenmp`. The executable compiled with this command do not reach full CPU utilization of each logical processors
->
-> However, `g++ .\part_3.cpp -o part_3.exe -fopenmp -std=c++17 -O2 -Wall` utilize CPU to 100%.
->
-> Why?
->
+> A little problem: `g++ .\part_3.cpp -o part_3.exe -fopenmp`. The executable compiled with this command do not reach full CPU utilization of each logical processors. However, `g++ .\part_3.cpp -o part_3.exe -fopenmp -std=c++17 -O2 -Wall` utilize CPU to 100%. Why?
+> 
 > Switching on `–O2 –std=c++17 –Wall` (or any –O2/–O3), the compiler:
 >
 > • inlines `kernel(…)` into the hot OpenMP loop
@@ -340,9 +337,11 @@ int main()
 > • hoists loads of the constant `SBOX/TBOX/INVSBOX` into contiguous register lookups
 > 
 > • [unrolls/strength-reduces](https://www.geeksforgeeks.org/loop-optimization-in-compiler-design/) the loop and generally cleans out all of the stack traffic
+>
+> So, be aware of using compiler optimizations for better CPU utilization.
 {: .prompt-info}
 
-#### Part 2: Matrix Multiplication
+#### L3 - Part 2: Matrix Multiplication
 
 ```python
 # part_2.sage
@@ -408,7 +407,7 @@ for i in tqdm.tqdm(range(len(in_buf) // THREADS_PER_BLOCK)):
 
 ![](assets/img/2025-5-19-actf-challenge-reproduction/intuitive.png)
 
-#### Part 1: `XOR` + `TEA` + `XOR`
+#### L3 - Part 1: `XOR` + `TEA` + `XOR`
 
 ```c++
 // part_1.cpp
@@ -490,7 +489,7 @@ int main(){
 }
 ```
 
-#### Layer2
+#### L2 - Mapping
 
 ```python
 # layer_2.py

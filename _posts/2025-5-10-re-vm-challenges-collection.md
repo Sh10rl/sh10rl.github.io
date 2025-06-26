@@ -1,6 +1,7 @@
 ---
 title: "Re VM Challenges Collection"
 date: 2025-5-10
+description: A record for some approaches tackling VM challenges
 categories: [ctf]
 tags: [vm, go]
 pin: false
@@ -10,7 +11,7 @@ mermaid: true
 
 ## Foreword
 
-After tackling ~~some~~ virtual machine reverse engineering challenges ([ACTF](https://github.com/team-s2/ACTF-2025/tree/main) - [miniLCTF](https://github.com/XDSEC/miniLCTF_2025/)), it's time to write a rundown of my approaches, so here's this post.
+After tackling ~~some~~ virtual machine reverse engineering challenges ([ACTF](https://github.com/team-s2/ACTF-2025/tree/main) - [miniLCTF](https://github.com/XDSEC/miniLCTF_2025/)), it's time to write a rundown of my approaches in this post.
 
 ## [[NCTF 2024](https://github.com/X1cT34m/NCTF2024/tree/main)] [gogo](https://pcnc027ut287.feishu.cn/wiki/Sslpw98OziXPWmk5CfXcgUGVnhh#share-ObLUdKTLxoId8TxoNQScZyYhn6f)
 
