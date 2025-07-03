@@ -23,12 +23,12 @@
         "mhutchie.git-graph",
         // Necessary extensions
         "oderwat.indent-rainbow",
-				"vscode-icons-team.vscode-icons",
-				"bierner.markdown-mermaid",
-				"GitHub.vscode-github-actions",
-				"davidanson.vscode-markdownlin"
+        "vscode-icons-team.vscode-icons",
+        "bierner.markdown-mermaid",
+        "GitHub.vscode-github-actions",
+        "davidanson.vscode-markdownlin"
       ]
     }
   },
-  "postAttachCommand": "bundle exec jekyll server --livereload"
+  "postAttachCommand": "bundle exec jekyll server --livereload --draft --incremental --force-polling"
 }

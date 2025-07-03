@@ -8,7 +8,7 @@ order: 5
 
 CyberSecurity undergraduate @ Hangzhou Dianzi University \| Reverse Engineering CTFer from [Vidar-Team](https://vidar.club/).
 
-You can call me **小李** for brevity or **Shiori** *[shee-oh-lee\]* directly, inspired by: 
+You can call me **小李** for brevity or **Shiori** *[shee-oh-lee\]* directly, inspired from: 
 
 *Asaka Kaori* *&* *Miyagi Shiori*.
 
@@ -24,5 +24,3 @@ You can call me **小李** for brevity or **Shiori** *[shee-oh-lee\]* directly, 
 - Musics: 花谱、V.W.P、Evan Call、25時、22/7、尾浦由纪、milet、泽野弘之、Islet、未知瑠...
 
 Check out my old blog [here](https://shiori-one.vercel.app/).
-
-Also, browse my [categories]({% link _tabs/categories.md %}) or see [some of my friends]({% link _tabs/friends.md %}) if you like.
