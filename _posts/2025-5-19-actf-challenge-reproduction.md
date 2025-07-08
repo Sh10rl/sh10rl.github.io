@@ -1,5 +1,5 @@
 ---
-title: "ACTF 2025 Challenge Reproduction"
+title: "ACTF 2025"
 date: 2025-5-20
 description: ACTF 2025 reverse engineering challenges
 categories: [ctf]

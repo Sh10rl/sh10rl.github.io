@@ -2,6 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Run",
+      "type": "shell",
+      "command": "bundle exec jekyll server --livereload --draft --incremental --force-polling",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Runs the Jekyll server with live reload, draft, incermental, force polling"
+    },
+    {
       "label": "Run Jekyll Server",
       "type": "shell",
       "command": "./tools/run.sh",
@@ -13,7 +24,7 @@
       "detail": "Runs the Jekyll server with live reload."
     },
     {
-      "label": "Build Jekyll Site",
+      "label": "Test Jekyll Site",
       "type": "shell",
       "command": "./tools/test.sh",
       "group": {
