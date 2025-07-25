@@ -10,7 +10,7 @@ Hello!, I'm Shiori. Thanks for stopping by my modest corner of the web!
 
 I'm a CyberSecurity undergraduate @ Hangzhou Dianzi University \| Reverse Engineering CTFer from [Vidar-Team](https://vidar.club/).
 
-You can call me **小李** or **Shiori** *[shee-oh-lee\]*:
+You can call me **小李** or **Shiori** *[shee-oh-lee\]*.
 
 ## Overview
 - 📖 Continuous learning

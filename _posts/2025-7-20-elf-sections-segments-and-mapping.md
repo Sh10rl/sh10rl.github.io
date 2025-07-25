@@ -8,7 +8,7 @@ math: true
 mermaid: true
 ---
 
-This article's aim is to generally explain what sections and segments are in an ELF file under x86-64 architecture on GNU/Linux and how they map into memory. It's a good practice to understanding ELF file structure and virtual memory mapping, and is also my personal note.
+This article's aim is to generally explain what sections and segments are in an ELF file on x86-64 GNU/Linux and how they are mapped to memory. It's a good practice to understand ELF file structure and virtual memory mapping; This article also serves as my personal note.
 
 ## Program headers and PT_LOAD segments
 
@@ -16,7 +16,7 @@ This article's aim is to generally explain what sections and segments are in an 
 
 ![ELF file structure diagram.](./../assets/img/2025-7-20-elf-sections-segments-and-mapping/image-20250721133514543.png)
 
-The diagram above shows a panoramic view of an ELF file structure. Now, I want to know exactly where program headers reside and what each header contains[^1]. It's always a good way to start by compiling a simple program to understand the file structure using tools like `readelf`, `gdb`, `IDA`, etc.
+The diagram above shows a panoramic view of an ELF file structure. Now, I want to know exactly where program headers reside and what each header contains[^1]. It's always a good way to start by compiling a simple program and examining it with tools like `readelf`, `gdb`, `IDA`, etc., to understand the file structure.
 
 ```c
 // test.c
@@ -164,7 +164,7 @@ Scrolling back to the diagram of ELF file memory layout on disk, `seg05` mainly 
 1. Offset: `0x2db8` - `0x3000`: `.init_array` `.fini_array` `.dynamic` `.got` with permission `R`.
 2. Offset: `0x3000` - `0x3010`: `.data`, `.bss` with permission `RW`
 
-Obviously, these two parts require different permissions (`R` vs `RW`). Since "one permission setting to one page", a page can't have more than one permission settings. Therefore `seg05` spans across two pages with two permission settings.
+Obviously, these two parts require different permissions (`R` vs `RW`). Since each page can have only one permission setting, `seg05` spans across two pages with different permission settings.
 
 ## Side note #2: Why do `FileSiz` and `MemSiz` of seg05 differ?
 
@@ -255,11 +255,11 @@ Dynamic section at offset 0x2dc8 contains 27 entries:
 .got:0000000000003FF8 dq offset __imp___cxa_finalize
 ```
 
-These sections are all needed to be patched during load-time. 
+All these sections need to be patched at load time. 
 
-- `.init_array` and `.fini_array` are an array of function pointers, which are initially set to **relative virtual addresses**; These functions will run before and after `main()`. The **absolute virtual addresses** will be resolved and replace the original addresses when loaded.
+- `.init_array` and `.fini_array` are arrays of function pointers, which are initially set to **relative virtual addresses**; These functions will run before and after `main()`. The **absolute virtual addresses** will be resolved and replace the original addresses when loaded.
 - `.dynamic` section is the same as the two above. The relative address will be resolved and patched into absolute address.
-- The program uses [eager binding](https://stackoverflow.com/questions/31366236/lazy-loading-vs-eager-loading) instead of lazy binding, so the `.got` section needs to be patched at first then be restricted to `R` permission by **dynamic linker** (`ld.so`)[^4], same as the other segments.
+- The program uses [eager binding](https://stackoverflow.com/questions/31366236/lazy-loading-vs-eager-loading) instead of lazy binding, so the `.got` section needs to be patched first and then restricted to `R` permission by the **dynamic linker** (`ld.so`)[^4], same as the other segments.
 
 Let's do some examinations to verify:
 
@@ -301,6 +301,6 @@ These addresses actually get patched at load-time!
 
 [^1]: Just copying and pasting the high-level C structure of program header (`Phdr`) to explain how it's embedded and hard-coded in the program—and what it contains—is not enough. Instead, compare the C structure (from `man elf`), IDA view, and `readelf` output provided in the article for clearer understanding.
 [^2]: The segments other than `PT_LOAD` have an obvious overlap in sections (e.g., sections from `seg12` (**R**) are a subset of sections from `seg05` (**RW**)). These segments (or more accurately, the overlapped sections) will also get loaded. **Additional note**: Overlapping types like PT_GNU_RELRO are *hints* for the dynamic linker to post-process, so the loading sequence is that ELF loader of the kernel maps PT_LOAD, then user-space linker handles the rest.
-[^3]: ELF loader uses `mmap()` to load pages; it requires the base address of the file page it maps to be the multiple of page-size.
+[^3]: ELF loader uses `mmap()` to load pages; it requires the base address of the file page it maps to be a multiple of the page size.
 [^4]: There are some differences between [ELF loader](https://lwn.net/Articles/631631/) and  [dynamic linker](https://lwn.net/Articles/961117/).
 [^5]: Why is there a dedicated program header for `.dynamic` ? From `readelf -d` output,  the relative virtual addresses of `.init_array`, `.fini_array` and `.got` are included; It acts as the "headquarters" or "container" for load-time writable sections' address, so a dedicated header lets the linker efficiently locate `.dynamic`'s virtual address via the program headers.
