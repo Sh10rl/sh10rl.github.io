@@ -1,7 +1,7 @@
 ---
 title: "ELF sections, segments, and their mapping in memory"
 date: 2025-7-20
-categories: [learning]
+categories: [learn]
 tags: [exploring, elf]
 pin: false
 math: true
