@@ -8,7 +8,7 @@ math: true
 mermaid: true
 ---
 
-This article's aim is to generally explain what sections and segments are in an ELF file on x86-64 GNU/Linux and how they are mapped to memory. It's a good practice to understand ELF file structure and virtual memory mapping; This article also serves as my personal note.
+This article's aim is to generally explain what sections and segments are in an ELF file on x86-64 GNU/Linux and how they are mapped to memory. It's a good practice to understand ELF file structure and virtual memory mapping; this article also serves as my personal note.
 
 ## Program headers and PT_LOAD segments
 
@@ -97,7 +97,7 @@ The basic mapping unit is **a page**, with a size of `0x1000` on x86-64 GNU/Linu
 
 ![Memory layout diagram of ELF file based on readelf output.](./../assets/img/2025-7-20-elf-sections-segments-and-mapping/image-20250723141051847.png)
 
-The loader will map each **file page** (a page-sized data block from the ELF file) into virtual memory by means of [`mmap()`](https://man7.org/linux/man-pages/man2/mmap.2.html) [^3] which requires the file offset to equal a multiple of page size; The loader *sequentially* looks through the program headers and maps the corresponding segments into memory. Here's the tricky part: as you see, `seg05` is not page aligned. How will the loader deal with it?
+The loader will map each **file page** (a page-sized data block from the ELF file) into virtual memory by means of [`mmap()`](https://man7.org/linux/man-pages/man2/mmap.2.html) [^3] which requires the file offset to be a multiple of page size; The loader *sequentially* looks through the program headers and maps the corresponding segments into memory. Here's the tricky part: as you see, `seg05` is not page aligned. How will the loader deal with it?
 
 First see the result:
 
@@ -149,11 +149,11 @@ Addressing the first question. ELF loader *sequentially* scans through program h
 
 **The tricky part is `seg05`**:
 
-- It's memory range in the file  (`0x2db8` - `0x3010`) is not page-aligned. 
-- Again, `mmap()` can only map the file page with file offset equals the multiple of the page-size.
+- Its memory range in the file  (`0x2db8` - `0x3010`) is not page-aligned. 
+- Again, `mmap()` can only map a file page whose offset equals a multiple of the page-size.
 - So I decided first to map one file page the ranging `0x2000` - `0x3000` then the following file page ranging `0x3000` - `0x4000`, **2 file pages** in total.
 
-Thus, here we are! The file page at offset `0x2000` gets mapped twice, resulting in the virtual memory from `0x2114` to `0x3db8` unused.
+Thus, here we are! The file page at offset `0x2000` gets mapped twice, leaving the virtual memory from `0x2114` to `0x3db8` unused.
 
 Will it cause memory waste? No, these 2 pages (`0x2000` - `0x4000` in virtual memory) share the same physical memory by virtue of [demand paging](https://en.wikipedia.org/wiki/Mmap#:~:text=In%20computing%2C%20mmap(2),no%20physical%20RAM%20at%20all.) implemented by `mmap()`.
 
@@ -191,7 +191,7 @@ pwndbg> x/24xb 0x555555558000
 0x555555558010: 0x00    0x00    0x00    0x00    0x00    0x00    0x00    0x00 # initialized to zero
 ```
 
-## Side note #3 WTF is the output of `readelf`?
+## Side note #3: WTF is the output of `readelf`?
 
 ```
  Section to Segment mapping:
@@ -303,4 +303,4 @@ These addresses actually get patched at load-time!
 [^2]: The segments other than `PT_LOAD` have an obvious overlap in sections (e.g., sections from `seg12` (**R**) are a subset of sections from `seg05` (**RW**)). These segments (or more accurately, the overlapped sections) will also get loaded. **Additional note**: Overlapping types like PT_GNU_RELRO are *hints* for the dynamic linker to post-process, so the loading sequence is that ELF loader of the kernel maps PT_LOAD, then user-space linker handles the rest.
 [^3]: ELF loader uses `mmap()` to load pages; it requires the base address of the file page it maps to be a multiple of the page size.
 [^4]: There are some differences between [ELF loader](https://lwn.net/Articles/631631/) and  [dynamic linker](https://lwn.net/Articles/961117/).
-[^5]: Why is there a dedicated program header for `.dynamic` ? From `readelf -d` output,  the relative virtual addresses of `.init_array`, `.fini_array` and `.got` are included; It acts as the "headquarters" or "container" for load-time writable sections' address, so a dedicated header lets the linker efficiently locate `.dynamic`'s virtual address via the program headers.
+[^5]: Why is there a dedicated program header for `.dynamic` ? From `readelf -d` output,  the relative virtual addresses of `.init_array`, `.fini_array` and `.got` are included; It acts as the "headquarters" or "container" for load-time writable sections' addresses, so a dedicated header lets the linker efficiently locate `.dynamic`'s virtual address via the program headers.

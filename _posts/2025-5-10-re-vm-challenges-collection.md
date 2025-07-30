@@ -1,5 +1,5 @@
 ---
-title: "Re VM Challenges Collection"
+title: "Re VM challenges collection"
 date: 2025-5-10
 description: A record for some approaches tackling VM challenges
 categories: [ctf]

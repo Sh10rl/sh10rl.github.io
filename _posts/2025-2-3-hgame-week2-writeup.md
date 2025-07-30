@@ -10,7 +10,7 @@ mermaid: true
 ---
 
 ---
-- Alias: Sh10l
+- Alias: Sh10l (个人赛事)
 - Status: re -1; crypto 1; misc 2; 
 - Rank: 2
 
@@ -457,8 +457,8 @@ hgame{re-The_Moon&re-The_Sun&Judgement&re-Temperance&Six_of_Cups}
 >    6. 例如：`49 0F 1F 44 01 02 nop qword ptr [r9+rax+2]` 其中变址寄存器`rax`没乘，即没有`rax`缩放，`lacuncher`读取`game`的`r9`数据作为参数，参数编号为2
 >     ![img](./../assets/img/2025-2-3-hgame-week2-writeup/1753535091921-110.png)![img](./../assets/img/2025-2-3-hgame-week2-writeup/1753535091921-111.png)
 >
->
 > 
+>
 >
 > -  **`launcher`****中的检验逻辑：**
 >     ```c
@@ -473,18 +473,18 @@ hgame{re-The_Moon&re-The_Sun&Judgement&re-Temperance&Six_of_Cups}
 >     ```
 >
 > -  **`launcher`****提供的服务（接口函数）：**
-     ```
-       0. Sub_0_return_0
-       1. UsrInput_fgets_1
-       2. What_s_your_name_?_puts_2
-       3. Sub_ChaChaQR_20_return_0_3
-       4. Shuffle_4
-       5. state_init_5
-       6. Addstate_6
-       7. Check_7
-       8. return_A_number_8
-       9. reutrn_0_set_rcx_9
-     ```
+>    ```
+>      0. Sub_0_return_0
+>      1. UsrInput_fgets_1
+>      2. What_s_your_name_?_puts_2
+>      3. Sub_ChaChaQR_20_return_0_3
+>      4. Shuffle_4
+>      5. state_init_5
+>      6. Addstate_6
+>      7. Check_7
+>      8. return_A_number_8
+>      9. reutrn_0_set_rcx_9
+>    ```
 >
 > -  **`Chacha20`****需要：**
 >
@@ -506,6 +506,7 @@ hgame{re-The_Moon&re-The_Sun&Judgement&re-Temperance&Six_of_Cups}
 >
 >    -  1. **列轮（Column Round）**：对矩阵的 **4 列** 应用 QR。
 >       2. **行轮（Diagonal Round）**：对矩阵的 **4 条对角线** 应用 QR。
+>
 >     ![img](./../assets/img/2025-2-3-hgame-week2-writeup/1753535091921-115.png)
 >     ![img](./../assets/img/2025-2-3-hgame-week2-writeup/1753535091921-116.png)
 >
@@ -515,6 +516,7 @@ hgame{re-The_Moon&re-The_Sun&Judgement&re-Temperance&Six_of_Cups}
 >       ![img](./../assets/img/2025-2-3-hgame-week2-writeup/1753535091921-117.png)
 >
 >    -  在"trust NOTHING but your OWN EYES."之后便是是校验逻辑：
+>
 >     ![img](./../assets/img/2025-2-3-hgame-week2-writeup/1753535091921-118.png)
 
 > Note: Launcher的`main`函数没有什么问题，通过动调发现进入了一个满是`ptrace`的函数，就是`Host System`

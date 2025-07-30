@@ -9,7 +9,7 @@ mermaid: true
 
 
 ---
-- Alias: Sh10l
+- Alias: Sh10l (个人赛事)
 - Status: re ak; crypto 2; misc 4
 
 ---
