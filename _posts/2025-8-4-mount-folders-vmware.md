@@ -29,7 +29,7 @@ My newly installed Ubuntu-22.04 on VMware does not show shared folders in `/mnt/
 
 ## Resolution
 
-### Try to uninstall the existing mounts and remount all shared folders:
+Try to uninstall the existing mounts and remount all shared folders:
 
 ```bash
 $ sudo fusermount -u /mnt/hgfs
@@ -47,7 +47,7 @@ Desktop
 
 Refresh the shared folder setting on the host side if it still doesn't work.
 
-### Setting up auto-mount if needed
+Setting up auto-mount if needed:
 
 ```bash
 $ echo ".host:/ /mnt/hgfs fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000 0 0" | sudo tee -a /etc/fstab # -a to append a new line, same as `echo ' ... ' >> /etc/fstab`
