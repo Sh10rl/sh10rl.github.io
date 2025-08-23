@@ -1,8 +1,8 @@
 ---
-title: "Mounting shared folders on a virtual machine"
+title: "Mount shared folders on a virtual machine"
 date: 2025-8-4
 categories: [sundries]
-tags: [something]
+tags: [problem-solving]
 pin: false
 math: true
 mermaid: true
@@ -12,9 +12,11 @@ mermaid: true
 
 My newly installed Ubuntu-22.04 on VMware does not show shared folders in `/mnt/hgfs` directory, though the target folder `Desktop` has been set, so the current situation is:
 
-- Host: Windows 11
+- Host OS: Windows 11
 
-- The `open-vm-tools` and `open-vm-tools-desktop` (latest) have been installed
+= Guest OS: Ubuntu 22.04
+
+- The `open-vm-tools` and `open-vm-tools-desktop` (latest) are installed
 
 - Neither file nor directory exists (only `.` and `..`) inside `/mnt/hgfs` (the mount point)
 
@@ -27,7 +29,7 @@ My newly installed Ubuntu-22.04 on VMware does not show shared folders in `/mnt/
   ```
 
 
-## Resolution
+## Solution
 
 Try to uninstall the existing mounts and remount all shared folders:
 
@@ -53,7 +55,6 @@ Setting up auto-mount if needed:
 $ echo ".host:/ /mnt/hgfs fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000 0 0" | sudo tee -a /etc/fstab # -a to append a new line, same as `echo ' ... ' >> /etc/fstab`
 $ sudo reboot
 ```
-
 
 ## References
 

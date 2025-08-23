@@ -8,7 +8,7 @@ Hello! I'm Shiori. Thanks for stopping by my modest corner of the web!
 
 ## Identity
 
-I'm a CyberSecurity undergraduate @ Hangzhou Dianzi University \| Reverse Engineering CTFer @ [Vidar-Team](https://vidar.club/).
+I'm a Cybersecurity undergraduate @ Hangzhou Dianzi University \| Reverse Engineering CTFer @ [Vidar-Team](https://vidar.club/).
 
 You can call me **小李** or **Shiori** *[shee-oh-lee\]*, which means "Bookmark".
 
@@ -17,15 +17,15 @@ You can call me **小李** or **Shiori** *[shee-oh-lee\]*, which means "Bookmark
 - 🚩 CTF player
 - ☕ Fueled by either coffee or tea
 
+## Skills
+
+- Programming: C / Python / Assembly / Java
+- Security & Basics: Static & Dynamic program analysis (IDA / Binja / GDB) / Latex / Basic knowledge of Deep learning, LLMs
+
 ## Sundries
 
 - Languages: English - enthusiast / Chinese - native / Japanese - elementary
 - Sports & Reading: Daily runner / Casual swimmer / Alfred Adler's psychology / Behavioral science / Novels
-
-## Skills
-
-- Programming: C / Python / Assembly / Java
-- Security: Static & Dynamic program analysis (IDA / Binja / GDB) / Latex / Basic knowledge of LLM
+- Habits: Coffee / Memorizing / Thinking
 
 Check out my old blog [here](https://shiori-one.vercel.app/).
-

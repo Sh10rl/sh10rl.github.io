@@ -1,6 +1,7 @@
 ---
-title: "Hgame 2025 week 1 writeup"
+title: "Hgame 2025 week 1"
 date: 2025-3-4
+description: Hgame 2025 week 1 writeup
 categories: [ctf]
 pin: false
 math: true

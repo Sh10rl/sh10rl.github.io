@@ -18,3 +18,4 @@ order: 4
 - [M1aoo0bin](https://zenaxu.cn/)
 - [Kiracoon](https://blog.kiracoon.top/)
 - [柏喵Sakura](https://baimeow.cn/)
+- [summ2](https://summ2.link/)
