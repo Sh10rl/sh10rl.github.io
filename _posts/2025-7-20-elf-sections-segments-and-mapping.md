@@ -255,7 +255,7 @@ Dynamic section at offset 0x2dc8 contains 27 entries:
 .got:0000000000003FF8 dq offset __imp___cxa_finalize
 ```
 
-All these sections need to be patched at load time. 
+All these sections have to be patched at load time. 
 
 - `.init_array` and `.fini_array` are arrays of function pointers, which are initially set to **relative virtual addresses**; These functions will run before and after `main()`. The **absolute virtual addresses** will be resolved and replace the original addresses when loaded.
 - `.dynamic` section is the same as the two above. The relative address will be resolved and patched into absolute address.

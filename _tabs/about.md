@@ -27,5 +27,3 @@ You can call me **小李** or **Shiori** *[shee-oh-lee\]*, which means "Bookmark
 - Languages: English - enthusiast / Chinese - native / Japanese - elementary
 - Sports & Reading: Daily runner / Casual swimmer / Alfred Adler's psychology / Behavioral science / Novels
 - Habits: Coffee / Memorizing / Thinking
-
-Check out my old blog [here](https://shiori-one.vercel.app/).
