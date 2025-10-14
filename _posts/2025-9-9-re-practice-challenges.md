@@ -1,16 +1,13 @@
 ---
 title: "陇剑杯"
 date: 2025-9-9
-description: 
+description: 练手
 categories: [ctf]
 tags: [re]
 pin: false
 math: true
 mermaid: true
 ---
-
-
-手生，练手
 
 ## Lesscommon
 

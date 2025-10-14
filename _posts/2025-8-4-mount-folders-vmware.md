@@ -14,7 +14,7 @@ My newly installed Ubuntu-22.04 on VMware does not show shared folders in `/mnt/
 
 - Host OS: Windows 11
 
-= Guest OS: Ubuntu 22.04
+- Guest OS: Ubuntu 22.04
 
 - The `open-vm-tools` and `open-vm-tools-desktop` (latest) are installed
 

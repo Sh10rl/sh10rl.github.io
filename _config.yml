@@ -38,7 +38,7 @@ social:
   email: mojin5347@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://x.com/tu5347 # change to your Twitter homepage
+    # - https://x.com/tu5347 # change to your Twitter homepage
     - https://github.com/sh10rl # change to your GitHub homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
