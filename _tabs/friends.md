@@ -19,3 +19,4 @@ order: 4
 - [Kiracoon](https://blog.kiracoon.top/)
 - [柏喵Sakura](https://baimeow.cn/)
 - [summ2](https://summ2.link/)
+- [M1sak1](https://blog.yodelist.icu)
