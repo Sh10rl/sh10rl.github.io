@@ -3,7 +3,7 @@ title: "Mathematical modeling collection"
 date: 2024-9-1
 description: Legacies
 categories: [learn]
-tags: [legacies]
+tags: [数学建模]
 pin: false
 math: true
 mermaid: true

@@ -3,7 +3,7 @@ title: "陇剑杯"
 date: 2025-9-9
 description: 练手
 categories: [ctf]
-tags: [re]
+tags: [writeup]
 pin: false
 math: true
 mermaid: true

@@ -3,7 +3,7 @@ title: "Re VM challenges collection"
 date: 2025-5-10
 description: A record for some approaches tackling VM challenges
 categories: [ctf]
-tags: [vm, go]
+tags: [vm, go, writeup]
 pin: false
 math: true
 mermaid: true

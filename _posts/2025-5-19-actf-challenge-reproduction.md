@@ -3,7 +3,7 @@ title: "ACTF 2025"
 date: 2025-5-20
 description: ACTF 2025 reverse engineering challenges
 categories: [ctf]
-tags: [verilog, cuda]
+tags: [verilog, cuda, writeup]
 pin: false
 math: true
 mermaid: true

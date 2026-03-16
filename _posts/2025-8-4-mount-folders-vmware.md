@@ -2,7 +2,7 @@
 title: "Mount shared folders on a virtual machine"
 date: 2025-8-4
 categories: [sundries]
-tags: [problem-solving]
+tags: []
 pin: false
 math: true
 mermaid: true

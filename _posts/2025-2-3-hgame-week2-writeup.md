@@ -4,6 +4,7 @@ title: "Hgame 2025 week 2"
 date: 2025-3-5
 description: Hgame 2025 week 2 writeup
 categories: [ctf]
+tags: [writeup]
 pin: false
 math: true
 mermaid: true
