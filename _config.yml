@@ -26,10 +26,10 @@ description: >- # used by seo meta and the atom feed
 url: "https://sh10rl.top"
 
 github:
-  username: Sh10rl # change to your GitHub username
+  username: username # change to your GitHub username
 
-twitter:
-  username: tu5347 # change to your Twitter username
+# twitter:
+  # username: your_username # change to your Twitter username
 
 social:
   # Change to your full name.
@@ -38,11 +38,11 @@ social:
   email: 24080516@hdu.edu.cn # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://x.com/tu5347 # change to your Twitter homepage
     - https://github.com/sh10rl # change to your GitHub homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
+    # - https://www.x.com/username
 
 # Site Verification Settings
 webmaster_verifications:

@@ -29,6 +29,29 @@ latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so tha
 
 Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
 
+## Local Development
+
+Default dev server (livereload + incremental, polling required on WSL `/mnt/c` mounts):
+
+```bash
+bundle exec jekyll serve --livereload --force-polling --incremental
+```
+
+Site at <http://127.0.0.1:4000/>.
+
+Variants:
+
+```bash
+# View drafts (_drafts/)
+bundle exec jekyll serve --livereload --force-polling --incremental --drafts
+
+# Use a different port (when 4000 is occupied)
+bundle exec jekyll serve --port 4001 --livereload --force-polling --incremental
+
+# Full rebuild (when incremental cache gets stale)
+rm -rf .jekyll-cache _site && bundle exec jekyll serve --livereload --force-polling
+```
+
 ## Contributing
 
 This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
