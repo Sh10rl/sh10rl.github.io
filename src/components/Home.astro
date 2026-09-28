@@ -22,7 +22,7 @@ const tabs = [
   <section class="column index" aria-labelledby="IndexHeading">
     <header class="index-head">
       <h1 class="sr-only" id="IndexHeading">Writing</h1>
-      <nav class="tabs" aria-label="Categories" data-tabs data-reveal style="--i: 2">
+      <nav class="tabs" aria-label="Categories" data-tabs data-reveal style="--i: 0">
         {
           tabs.map((tab) => {
             const current = tab.key === category;
@@ -36,7 +36,8 @@ const tabs = [
           })
         }
       </nav>
+      {import.meta.env.DEV && <a class="write-link" href="/write/">New article</a>}
     </header>
-    <PostList posts={posts} filter={category} revealFrom={3} />
+    <PostList posts={posts} filter={category} revealFrom={1} />
   </section>
 </div>

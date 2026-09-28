@@ -2,10 +2,14 @@ import { setTheme, themePreference, type ThemePreference } from './theme';
 
 const root = document.documentElement;
 type Size = 's' | 'm' | 'l' | 'xl';
+type Font = 'source' | 'serif' | 'sans';
 const currentSize = () => (root.dataset.size as Size | undefined) ?? 'm';
+const currentFont = () => (root.dataset.font as Font | undefined) ?? 'source';
+let cancelPendingRestore: (() => void) | undefined;
 
-/** Changes the size without losing your place: the paragraph at the reading line stays put. */
-function setSize(size: Size) {
+/** Keep the paragraph under the reading line in place as typography changes. */
+function preservePlace(change: () => void) {
+  cancelPendingRestore?.();
   const line = innerHeight * 0.3;
   const blocks = [...document.querySelectorAll<HTMLElement>('[data-article] > *')];
   const anchor = blocks.find((el) => el.getBoundingClientRect().bottom > line);
@@ -13,31 +17,72 @@ function setSize(size: Size) {
   // The point of the anchor under the reading line (or its top, if it starts below the line).
   const ratio = before && before.top < line ? (line - before.top) / Math.max(1, before.height) : 0;
   const at = before && before.top < line ? line : (before?.top ?? 0);
-  if (size === 'm') delete root.dataset.size;
-  else root.dataset.size = size;
-  try {
-    if (size === 'm') localStorage.removeItem('text-size');
-    else localStorage.setItem('text-size', size);
-  } catch {}
-  if (anchor) {
-    const r = anchor.getBoundingClientRect();
-    scrollTo({ top: scrollY + r.top + ratio * r.height - at, behavior: 'instant' });
+  change();
+  const restore = () => {
+    if (anchor?.isConnected) {
+      const r = anchor.getBoundingClientRect();
+      scrollTo({ top: scrollY + r.top + ratio * r.height - at, behavior: 'instant' });
+    }
+    dispatchEvent(new Event('textsizechange'));
+  };
+  restore();
+  // A newly selected web font can change the layout again after its first paint.
+  if (anchor && document.fonts.status === 'loading') {
+    const events = ['wheel', 'touchstart', 'pointerdown', 'keydown', 'resize'] as const;
+    const cancel = () => {
+      events.forEach(event => removeEventListener(event, cancel));
+      if (cancelPendingRestore === cancel) cancelPendingRestore = undefined;
+    };
+    cancelPendingRestore = cancel;
+    events.forEach(event => addEventListener(event, cancel, { passive: true }));
+    void document.fonts.ready.then(() => {
+      if (cancelPendingRestore !== cancel) return;
+      cancel();
+      restore();
+    });
   }
-  dispatchEvent(new Event('textsizechange'));
+}
+
+function setSize(size: Size) {
+  preservePlace(() => {
+    if (size === 'm') delete root.dataset.size;
+    else root.dataset.size = size;
+    try {
+      if (size === 'm') localStorage.removeItem('text-size');
+      else localStorage.setItem('text-size', size);
+    } catch {}
+  });
+}
+
+function setFont(font: Font) {
+  preservePlace(() => {
+    if (font === 'source') delete root.dataset.font;
+    else root.dataset.font = font;
+    try {
+      if (font === 'source') localStorage.removeItem('text-font');
+      else localStorage.setItem('text-font', font);
+    } catch {}
+  });
+  dispatchEvent(new Event('fontchange'));
 }
 
 /** A paper thumb slides beneath the chosen segment. */
 function segmented(group: HTMLElement, value: () => string, choose: (v: string, button: HTMLElement) => void) {
   const thumb = group.querySelector<HTMLElement>('.seg-thumb')!;
   const buttons = [...group.querySelectorAll<HTMLElement>('button[data-value]')];
-  thumb.style.width = `calc((100% - 0.375rem) / ${buttons.length})`;
+  const vertical = group.getAttribute('aria-orientation') === 'vertical';
+  thumb.style[vertical ? 'height' : 'width'] = `calc((100% - 0.375rem) / ${buttons.length})`;
   let selected = value();
   const sync = (instant: boolean, next = value()) => {
     selected = next;
     const on = buttons.find((b) => b.dataset.value === selected) ?? buttons[0];
-    buttons.forEach((b) => b.setAttribute('aria-checked', String(b === on)));
+    buttons.forEach((b) => {
+      b.setAttribute('aria-checked', String(b === on));
+      b.tabIndex = b === on ? 0 : -1;
+    });
     thumb.style.transition = instant ? 'none' : '';
-    thumb.style.translate = `${buttons.indexOf(on) * 100}% 0`;
+    const offset = `${buttons.indexOf(on) * 100}%`;
+    thumb.style.translate = vertical ? `0 ${offset}` : `${offset} 0`;
   };
   group.addEventListener('click', (e) => {
     const b = (e.target as Element).closest<HTMLElement>('button[data-value]');
@@ -62,15 +107,37 @@ function segmented(group: HTMLElement, value: () => string, choose: (v: string, 
 export function initPrefs() {
   const panel = document.getElementById('ReadingPrefs');
   if (!panel) return;
+  document.fonts.addEventListener('loadingdone', () => {
+    dispatchEvent(new Event('fontchange'));
+    dispatchEvent(new Event('textsizechange'));
+  });
+  const restoreFont = () => {
+    try {
+      const stored = localStorage.getItem('text-font');
+      const font = stored === 'serif' || stored === 'sans' ? stored : 'source';
+      if (font !== currentFont()) setFont(font);
+    } catch {}
+  };
+  addEventListener('pageshow', restoreFont);
+  addEventListener('storage', (event) => {
+    if (event.key === 'text-font' || event.key === null) restoreFont();
+  });
   let lastY = scrollY;
-  const sizeGroup = panel.querySelector<HTMLElement>('[data-group="size"]')!;
+  addEventListener('textsizechange', () => { lastY = scrollY; });
+  const sizeGroup = panel.querySelector<HTMLElement>('[data-group="size"]');
   const themeGroup = panel.querySelector<HTMLElement>('[data-group="theme"]')!;
-  const syncSize = segmented(sizeGroup, currentSize, (v) => {
+  const fontGroup = panel.querySelector<HTMLElement>('[data-group="font"]')!;
+  const syncSize = sizeGroup && segmented(sizeGroup, currentSize, (v) => {
     setSize(v as Size);
     lastY = scrollY;
   });
   const syncTheme = segmented(themeGroup, themePreference, (v) => setTheme(v as ThemePreference));
+  const syncFont = segmented(fontGroup, currentFont, (v) => {
+    setFont(v as Font);
+    lastY = scrollY;
+  });
   addEventListener('themechange', () => syncTheme(false));
+  addEventListener('fontchange', () => syncFont(false));
 
   let opener: HTMLElement | null = null;
   document.addEventListener('click', (e) => {
@@ -86,8 +153,9 @@ export function initPrefs() {
     panel.style.left = `${left}px`;
     panel.style.top = `${top}px`;
     panel.style.setProperty('--origin', `${r.left + r.width / 2 - left}px -10px`);
-    syncSize(true);
+    syncSize?.(true);
     syncTheme(true);
+    syncFont(true);
   });
   panel.addEventListener('toggle', (e) => {
     const open = (e as ToggleEvent).newState === 'open';

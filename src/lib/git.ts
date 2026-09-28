@@ -59,7 +59,8 @@ export function fileDates(file: string): FileDates {
   }
   if (!dates.created) {
     try {
-      dates.created = statSync(file).mtime;
+      const stat = statSync(file);
+      dates.created = stat.birthtimeMs > 0 ? stat.birthtime : stat.mtime;
     } catch {
       dates.created = new Date();
     }

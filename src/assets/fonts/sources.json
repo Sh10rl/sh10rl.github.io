@@ -1,0 +1,86 @@
+[
+  {
+    "style": "italic",
+    "subset": "cyrillic-ext",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFK2_tTDB4M7-auWDN0ahZJW1gewti_Wo7H.woff2",
+    "file": "source-serif-4-italic-cyrillic-ext.woff2",
+    "bytes": 46648
+  },
+  {
+    "style": "italic",
+    "subset": "cyrillic",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFK2_tTDB4M7-auWDN0ahZJW1gewtG_Wo7H.woff2",
+    "file": "source-serif-4-italic-cyrillic.woff2",
+    "bytes": 90356
+  },
+  {
+    "style": "italic",
+    "subset": "greek",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFK2_tTDB4M7-auWDN0ahZJW1gewta_Wo7H.woff2",
+    "file": "source-serif-4-italic-greek.woff2",
+    "bytes": 51644
+  },
+  {
+    "style": "italic",
+    "subset": "vietnamese",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFK2_tTDB4M7-auWDN0ahZJW1gewtq_Wo7H.woff2",
+    "file": "source-serif-4-italic-vietnamese.woff2",
+    "bytes": 32184
+  },
+  {
+    "style": "italic",
+    "subset": "latin-ext",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFK2_tTDB4M7-auWDN0ahZJW1gewtu_Wo7H.woff2",
+    "file": "source-serif-4-italic-latin-ext.woff2",
+    "bytes": 110324
+  },
+  {
+    "style": "italic",
+    "subset": "latin",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFK2_tTDB4M7-auWDN0ahZJW1gewtW_Wg.woff2",
+    "file": "source-serif-4-italic-latin.woff2",
+    "bytes": 130188
+  },
+  {
+    "style": "normal",
+    "subset": "cyrillic-ext",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFI2_tTDB4M7-auWDN0ahZJW1gW8tenXg.woff2",
+    "file": "source-serif-4-normal-cyrillic-ext.woff2",
+    "bytes": 45220
+  },
+  {
+    "style": "normal",
+    "subset": "cyrillic",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFI2_tTDB4M7-auWDN0ahZJW1gf8tenXg.woff2",
+    "file": "source-serif-4-normal-cyrillic.woff2",
+    "bytes": 93440
+  },
+  {
+    "style": "normal",
+    "subset": "greek",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFI2_tTDB4M7-auWDN0ahZJW1gY8tenXg.woff2",
+    "file": "source-serif-4-normal-greek.woff2",
+    "bytes": 49336
+  },
+  {
+    "style": "normal",
+    "subset": "vietnamese",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFI2_tTDB4M7-auWDN0ahZJW1gU8tenXg.woff2",
+    "file": "source-serif-4-normal-vietnamese.woff2",
+    "bytes": 29652
+  },
+  {
+    "style": "normal",
+    "subset": "latin-ext",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFI2_tTDB4M7-auWDN0ahZJW1gV8tenXg.woff2",
+    "file": "source-serif-4-normal-latin-ext.woff2",
+    "bytes": 100872
+  },
+  {
+    "style": "normal",
+    "subset": "latin",
+    "url": "https://fonts.gstatic.com/s/sourceserif4/v14/vEFI2_tTDB4M7-auWDN0ahZJW1gb8tc.woff2",
+    "file": "source-serif-4-normal-latin.woff2",
+    "bytes": 122360
+  }
+]

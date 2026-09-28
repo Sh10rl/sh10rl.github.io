@@ -52,7 +52,6 @@ let order = revealFrom;
               <p class="entry-meta">
                 {post.category && <span class="entry-cat">{categoryLabel(post.category)}</span>}
                 <span class="entry-time">{post.minutes} min</span>
-                <button class="entry-state" type="button" data-state data-mark-unread={post.url} aria-label={`Mark “${post.title}” as unread`} hidden />
               </p>
               <Icon name="arrow-right" size={16} class="entry-arrow" />
             </li>

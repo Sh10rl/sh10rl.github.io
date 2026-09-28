@@ -1,4 +1,5 @@
 ---
+import '../../styles/prose.css';
 import { render } from 'astro:content';
 import Icon from '../../components/Icon.astro';
 import Toc from '../../components/Toc.astro';
@@ -48,7 +49,6 @@ const jsonLd = {
             <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
             <span>{post.minutes} min read</span>
           </p>
-          <button class="chip prefs-chip" type="button" data-prefs-open popovertarget="ReadingPrefs" aria-haspopup="dialog" aria-label="Reading settings" title="Reading settings">Aa</button>
         </div>
         <h1 class="post-title" id="PostTitle" lang={post.lang} style="--i: 1" data-reveal="title">
           {post.title}
@@ -87,7 +87,6 @@ const jsonLd = {
             )
           }
           <div class="share">
-            <button class="chip" type="button" data-mark-unread={post.url} hidden>Mark as unread</button>
             <button class="chip" type="button" data-share hidden>
               <Icon name="share" size={14} />
               Share

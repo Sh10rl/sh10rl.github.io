@@ -1,5 +1,7 @@
 ---
-// Reading settings: text size and theme, remembered across visits.
+// Reading settings are remembered across visits.
+interface Props { article?: boolean }
+const { article = false } = Astro.props;
 const sizes = [
   { key: 's', label: 'Small', px: 12 },
   { key: 'm', label: 'Default', px: 14 },
@@ -13,7 +15,8 @@ const themes = [
 ];
 ---
 
-<div class="prefs" id="ReadingPrefs" popover role="dialog" aria-label="Reading settings" data-prefs>
+<div class="prefs" id="ReadingPrefs" popover role="dialog" aria-label="Display settings" data-prefs>
+  {article && <>
   <p class="prefs-label" id="PrefsSize">Text size</p>
   <div class="segmented" role="radiogroup" aria-labelledby="PrefsSize" data-group="size">
     <span class="seg-thumb" aria-hidden="true"></span>
@@ -24,6 +27,20 @@ const themes = [
         </button>
       ))
     }
+  </div>
+  </>}
+  <p class="prefs-label" id="PrefsFont">Font</p>
+  <div class="segmented font-options" role="radiogroup" aria-labelledby="PrefsFont" aria-orientation="vertical" data-group="font">
+    <span class="seg-thumb" aria-hidden="true"></span>
+    <button type="button" role="radio" aria-checked="false" data-value="source">
+      <span>Source Serif 4</span>
+    </button>
+    <button type="button" role="radio" aria-checked="false" data-value="serif">
+      <span>Times New Roman</span>
+    </button>
+    <button type="button" role="radio" aria-checked="false" data-value="sans">
+      <span>Sans</span>
+    </button>
   </div>
   <p class="prefs-label" id="PrefsTheme">Theme</p>
   <div class="segmented" role="radiogroup" aria-labelledby="PrefsTheme" data-group="theme">

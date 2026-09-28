@@ -1,31 +1,45 @@
-import { finePointer, reducedMotion, SMOOTH, SNAPPY, Spring, springAnimate } from './motion';
+import { finePointer, reducedMotion, SMOOTH, springAnimate } from './motion';
+import { zoom } from './gallery';
 import { flash, goToHeading } from './reading';
 import { currentTheme } from './theme';
 import { copy } from './toast';
 
-const FOLD_AFTER = 36;
 const CHEVRON =
   '<svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 
 /* Code: copy, and fold very long listings ---------------------------------- */
 
 function codeBlocks(prose: HTMLElement) {
-  for (const block of prose.querySelectorAll<HTMLElement>('.code')) {
+  let index = 0;
+  for (const block of prose.querySelectorAll<HTMLElement>('.code[data-lines]')) {
     const pre = block.querySelector('pre');
     if (!pre) continue;
-    const lines = pre.querySelectorAll('.line').length || (pre.textContent ?? '').split('\n').length;
-    if (lines <= FOLD_AFTER) continue;
-    block.classList.add('folded');
+    const lines = Number(block.dataset.lines);
     const bar = document.createElement('div');
     bar.className = 'code-fold';
-    bar.innerHTML = `<button type="button">${CHEVRON}Show all ${lines} lines</button>`;
+    pre.id ||= `CodeLines-${++index}`;
+    bar.innerHTML = `<button type="button" aria-expanded="false" aria-controls="${pre.id}">${CHEVRON}<span>Show all ${lines} lines</span></button>`;
     block.append(bar);
-    bar.querySelector('button')!.addEventListener('click', () => {
+    const button = bar.querySelector('button')!;
+    let animation: Animation | undefined;
+    button.addEventListener('click', () => {
       const from = pre.getBoundingClientRect().height;
-      block.classList.remove('folded');
-      const to = pre.scrollHeight;
-      bar.remove();
-      springAnimate(pre, [{ height: `${from}px`, overflow: 'hidden' }, { height: `${to}px`, overflow: 'hidden' }], SMOOTH);
+      const before = button.getBoundingClientRect();
+      const expanding = block.classList.contains('folded');
+      animation?.cancel();
+      block.classList.toggle('folded', !expanding);
+      button.setAttribute('aria-expanded', String(expanding));
+      button.querySelector('span')!.textContent = expanding ? 'Show less' : `Show all ${lines} lines`;
+      if (expanding) {
+        const to = pre.scrollHeight;
+        animation = springAnimate(pre, [{ height: `${from}px`, overflow: 'hidden' }, { height: `${to}px`, overflow: 'hidden' }], SMOOTH);
+      } else {
+        if (before.top >= 0 && before.top < innerHeight) {
+          scrollBy({ top: button.getBoundingClientRect().top - before.top, behavior: 'instant' });
+        }
+        if (!reducedMotion.matches) bar.animate([{ opacity: 0.5 }, { opacity: 1 }], { duration: 160, easing: 'ease-out' });
+      }
+      dispatchEvent(new Event('textsizechange'));
     });
   }
 }
@@ -107,166 +121,6 @@ function footnotes() {
     else hide();
   });
   addEventListener('scroll', hide, { passive: true });
-}
-
-/* Images: zoom on a spring; drag to throw them back --------------------------- */
-
-function largestSource(img: HTMLImageElement): string {
-  let best = img.currentSrc || img.src;
-  let bestWidth = 0;
-  for (const candidate of img.srcset.split(',')) {
-    const [url, descriptor] = candidate.trim().split(/\s+/);
-    const width = parseInt(descriptor, 10);
-    if (url && width > bestWidth) {
-      best = new URL(url, location.href).href;
-      bestWidth = width;
-    }
-  }
-  return best;
-}
-
-function zoom(img: HTMLImageElement) {
-  const rect = img.getBoundingClientRect();
-  const naturalWidth = Number(img.getAttribute('width')) || img.naturalWidth;
-  const margin = innerWidth < 640 ? 12 : 40;
-  const scale = Math.min((innerWidth - margin * 2) / rect.width, (innerHeight - margin * 2) / rect.height, Math.max(1, (naturalWidth / rect.width) * 1.5));
-  if (scale < 1.08) return;
-
-  const overlay = document.createElement('div');
-  overlay.className = 'zoom-overlay';
-  const clone = document.createElement('img');
-  clone.className = 'zoom-image';
-  clone.alt = img.alt;
-  clone.src = img.currentSrc || img.src;
-  clone.draggable = false;
-  Object.assign(clone.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
-  document.body.append(overlay, clone);
-  img.style.visibility = 'hidden';
-
-  const hiRes = largestSource(img);
-  if (hiRes !== clone.src) {
-    const loader = new Image();
-    loader.src = hiRes;
-    loader.decode().then(() => (clone.src = hiRes), () => {});
-  }
-
-  const tx = (innerWidth - rect.width * scale) / 2 - rect.left;
-  const ty = (innerHeight - rect.height * scale) / 2 - rect.top;
-  let p = 0;
-  let dx = 0;
-  let dy = 0;
-  let closing = false;
-  let closeFrom = rect;
-  let closeOpacity = 1;
-  const render = () => {
-    if (closing) {
-      // The page keeps scrolling during dismissal, so follow the source's live position.
-      const target = img.getBoundingClientRect();
-      const x = target.left + (closeFrom.left - target.left) * p;
-      const y = target.top + (closeFrom.top - target.top) * p;
-      const w = target.width + (closeFrom.width - target.width) * p;
-      const h = target.height + (closeFrom.height - target.height) * p;
-      clone.style.transform = `translate(${x - rect.left}px, ${y - rect.top}px) scale(${w / rect.width}, ${h / rect.height})`;
-      overlay.style.opacity = String(closeOpacity * Math.max(0, Math.min(1, p)));
-      return;
-    }
-    const s = 1 + (scale - 1) * p;
-    clone.style.transform = `translate(${tx * p + dx}px, ${ty * p + dy}px) scale(${s})`;
-    overlay.style.opacity = String(Math.max(0, Math.min(1, p) * (1 - Math.min(1, Math.hypot(dx, dy) / 420))));
-  };
-  const open = new Spring(0, (v) => ((p = v), render()), { stiffness: 320, damping: 32, precision: 0.001 });
-  const sx = new Spring(0, (v) => ((dx = v), render()), SNAPPY);
-  const sy = new Spring(0, (v) => ((dy = v), render()), SNAPPY);
-  open.to(1);
-
-  const close = () => {
-    if (closing) return;
-    closeFrom = clone.getBoundingClientRect();
-    closeOpacity = Number(overlay.style.opacity);
-    closing = true;
-    overlay.style.pointerEvents = 'none';
-    clone.style.pointerEvents = 'none';
-    removeEventListener('keydown', onKey);
-    removeEventListener('wheel', close);
-    removeEventListener('scroll', close);
-    removeEventListener('resize', close);
-    sx.stop();
-    sy.stop();
-    open.config = { stiffness: 380, damping: 36, precision: 0.002 };
-    open.set(1);
-    open.to(0);
-    const done = () => {
-      if (open.moving) return requestAnimationFrame(done);
-      sx.stop();
-      sy.stop();
-      overlay.remove();
-      clone.remove();
-      img.style.visibility = '';
-    };
-    requestAnimationFrame(done);
-  };
-  const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
-
-  // Drag: follows the finger 1:1; let go fast or far and it flies home, otherwise it settles back.
-  let start: { x: number; y: number; t: number } | null = null;
-  let moved = false;
-  let vx = 0;
-  let vy = 0;
-  let lx = 0;
-  let ly = 0;
-  let lt = 0;
-  const down = (e: PointerEvent) => {
-    if (closing) return;
-    start = { x: e.clientX - dx, y: e.clientY - dy, t: e.timeStamp };
-    lx = e.clientX;
-    ly = e.clientY;
-    lt = e.timeStamp;
-    moved = false;
-    (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
-  };
-  const move = (e: PointerEvent) => {
-    if (!start || closing) return;
-    const nx = e.clientX - start.x;
-    const ny = e.clientY - start.y;
-    if (!moved && Math.hypot(nx, ny) < 6) return;
-    moved = true;
-    clone.classList.add('dragging');
-    const dt = Math.max(1, e.timeStamp - lt);
-    vx = ((e.clientX - lx) / dt) * 1000;
-    vy = ((e.clientY - ly) / dt) * 1000;
-    lx = e.clientX;
-    ly = e.clientY;
-    lt = e.timeStamp;
-    sx.set(nx);
-    sy.set(ny);
-  };
-  const up = (e: PointerEvent) => {
-    if (!start) return;
-    start = null;
-    clone.classList.remove('dragging');
-    if (!moved) return close();
-    if (e.timeStamp - lt >= 100) vx = vy = 0;
-    if (Math.hypot(dx, dy) > 110 || Math.hypot(vx, vy) > 900) {
-      sx.velocity = vx;
-      sy.velocity = vy;
-      close();
-    } else {
-      sx.velocity = vx;
-      sy.velocity = vy;
-      sx.to(0);
-      sy.to(0);
-    }
-  };
-  for (const el of [overlay, clone]) {
-    el.addEventListener('pointerdown', down);
-    el.addEventListener('pointermove', move);
-    el.addEventListener('pointerup', up);
-    el.addEventListener('pointercancel', up);
-  }
-  addEventListener('keydown', onKey);
-  addEventListener('wheel', close, { passive: true });
-  addEventListener('scroll', close, { passive: true });
-  addEventListener('resize', close);
 }
 
 /* Diagrams ------------------------------------------------------------------ */
@@ -362,7 +216,7 @@ export function initProse() {
     }
 
     const img = target.closest<HTMLImageElement>('figure img');
-    if (img && !img.closest('a')) zoom(img);
+    if (img && !img.closest('a')) zoom(img, [...prose.querySelectorAll<HTMLImageElement>('figure img')].filter(image => !image.closest('a')));
   });
 
   // A footnote reference on a fine pointer: glide to the note too.

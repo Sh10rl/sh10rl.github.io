@@ -1,34 +1,4 @@
-import { finePointer, reducedMotion, SMOOTH, SNAPPY, Spring, springAnimate } from './motion';
-import { markUnread, readMarks } from './reading';
-
-const ICON_BOOKMARK =
-  '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 3a2 2 0 0 1 2 2v16l-7-4-7 4V5a2 2 0 0 1 2-2Z"/></svg>';
-const ICON_CHECK =
-  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
-
-/* Where you left off, on each entry --------------------------------------- */
-
-function markProgress(list: HTMLElement) {
-  const marks = readMarks();
-  for (const entry of list.querySelectorAll<HTMLElement>('.entry')) {
-    const mark = marks[entry.dataset.path ?? ''];
-    const state = entry.querySelector<HTMLElement>('[data-state]');
-    if (!state) continue;
-    state.hidden = true;
-    delete state.dataset.done;
-    state.replaceChildren();
-    if (!mark || mark.u || (!mark.d && mark.p < 0.06)) continue;
-    if (mark.d) {
-      state.dataset.done = '';
-      state.innerHTML = `${ICON_CHECK}Read`;
-      state.title = 'Read · Mark as unread';
-    } else {
-      state.innerHTML = `${ICON_BOOKMARK}${Math.round(mark.p * 100)}%`;
-      state.title = `${Math.round(mark.p * 100)}% read · Mark as unread`;
-    }
-    state.hidden = false;
-  }
-}
+import { finePointer, reducedMotion, SNAPPY, Spring } from './motion';
 
 /* One hover sheet for the whole list -------------------------------------- */
 
@@ -43,6 +13,7 @@ function hoverSheet(list: HTMLElement) {
   const y = new Spring(0, (v) => (sheet.style.translate = `0 ${v.toFixed(2)}px`), SNAPPY);
   const h = new Spring(0, (v) => (sheet.style.height = `${v.toFixed(2)}px`), SNAPPY);
   let current: HTMLElement | null = null;
+  let hovered: HTMLElement | null = null;
   let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
   const show = (entry: HTMLElement) => {
@@ -58,27 +29,51 @@ function hoverSheet(list: HTMLElement) {
       y.to(top);
       h.to(height);
     }
+    current?.removeAttribute('data-active');
     current = entry;
+    entry.setAttribute('data-active', '');
     sheet.classList.add('on');
   };
   const hide = () => {
+    clearTimeout(hideTimer);
+    current?.removeAttribute('data-active');
     current = null;
+    hovered = null;
     sheet.classList.remove('on');
+  };
+  const restore = () => {
+    const focused = document.activeElement?.matches(':focus-visible')
+      ? document.activeElement.closest<HTMLElement>('.entry')
+      : null;
+    const entry = hovered ?? (focused && list.contains(focused) ? focused : null);
+    if (entry && !entry.hidden) show(entry);
+    else hide();
   };
 
   list.addEventListener('pointerover', (e) => {
     const entry = (e.target as Element).closest<HTMLElement>('.entry');
-    if (entry) show(entry);
+    if (entry) {
+      hovered = entry;
+      show(entry);
+    }
   });
   list.addEventListener('pointerleave', () => {
-    hideTimer = setTimeout(hide, 60);
+    hovered = null;
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(restore, 60);
   });
   list.addEventListener('focusin', (e) => {
     const entry = (e.target as Element).closest<HTMLElement>('.entry');
     if (entry) show(entry);
   });
   list.addEventListener('focusout', () => {
-    hideTimer = setTimeout(hide, 60);
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(restore, 0);
+  });
+  addEventListener('fontchange', () => {
+    if (!current) return;
+    y.set(current.getBoundingClientRect().top - list.getBoundingClientRect().top);
+    h.set(current.offsetHeight);
   });
   return hide;
 }
@@ -89,33 +84,18 @@ function tabs(bar: HTMLElement, list: HTMLElement, hideHover?: () => void) {
   const links = [...bar.querySelectorAll<HTMLAnchorElement>('a[data-filter]')];
   if (!links.length) return;
 
-  // A second copy of the labels, light on dark and clipped to the chip. As the chip slides,
-  // each label turns light only where the chip covers it.
-  const ink = document.createElement('div');
-  ink.className = 'tabs-ink';
-  ink.setAttribute('aria-hidden', 'true');
-  for (const a of links) {
-    const span = document.createElement('span');
-    span.innerHTML = a.querySelector('.tab-label')!.outerHTML + a.querySelector('.tab-count')!.outerHTML;
-    ink.append(span);
-  }
-  bar.append(ink);
+  const indicator = document.createElement('span');
+  indicator.className = 'tab-indicator';
+  indicator.setAttribute('aria-hidden', 'true');
+  bar.prepend(indicator);
   bar.classList.add('live');
 
-  let x0 = 0;
-  let w0 = 0;
-  let total = 0;
   const geometry = new Map<HTMLAnchorElement, { left: number; width: number }>();
-  const paint = () => {
-    ink.style.clipPath = `inset(0 ${(total - x0 - w0).toFixed(2)}px 0 ${x0.toFixed(2)}px round var(--r-pill))`;
-  };
   const x = new Spring(0, (v) => {
-    x0 = v;
-    paint();
+    indicator.style.translate = `${v.toFixed(2)}px 0`;
   }, SNAPPY);
   const w = new Spring(0, (v) => {
-    w0 = v;
-    paint();
+    indicator.style.width = `${Math.max(0, v).toFixed(2)}px`;
   }, SNAPPY);
 
   const place = (a: HTMLAnchorElement, instant: boolean) => {
@@ -131,7 +111,6 @@ function tabs(bar: HTMLElement, list: HTMLElement, hideHover?: () => void) {
 
   const current = () => links.find((a) => a.hasAttribute('aria-current')) ?? links[0];
   const measure = () => {
-    total = ink.scrollWidth;
     const origin = links[0].offsetLeft;
     for (const a of links) geometry.set(a, { left: a.offsetLeft - origin, width: a.offsetWidth });
     place(current(), true);
@@ -139,6 +118,7 @@ function tabs(bar: HTMLElement, list: HTMLElement, hideHover?: () => void) {
   measure();
   new ResizeObserver(measure).observe(bar);
   document.fonts?.ready.then(measure);
+  addEventListener('fontchange', measure);
 
   const entries = [...list.querySelectorAll<HTMLElement>('.entry')];
   const years = [...list.querySelectorAll<HTMLElement>('.year')];
@@ -180,18 +160,20 @@ function tabs(bar: HTMLElement, list: HTMLElement, hideHover?: () => void) {
     const moves = [...before].filter(([e]) => visible(e)).map(([e, from]) => [e, from.top - e.getBoundingClientRect().top - scrollY, from.opacity] as const);
     for (const [e, dy, opacity] of moves) {
       if (Math.abs(dy) > 0.5 || opacity < 1) {
-        track(springAnimate(e, [{ opacity, transform: `translateY(${dy}px)` }, { opacity: 1, transform: 'none' }], SMOOTH));
+        track(e.animate([{ opacity, transform: `translateY(${dy}px)` }, { opacity: 1, transform: 'none' }], { duration: 180, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }));
       }
     }
     // Rows and year labels animate separately to avoid translating rows twice.
     entering.forEach((e, i) => {
-      track(springAnimate(e, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], SMOOTH, {
-        delay: Math.min(i, 8) * 28,
+      track(e.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], {
+        duration: 150,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        delay: Math.min(i, 5) * 8,
         fill: 'backwards',
       }));
     });
     for (const label of labels) {
-      if (visible(label) && !before.has(label)) track(springAnimate(label, [{ opacity: 0 }, { opacity: 1 }], SMOOTH));
+      if (visible(label) && !before.has(label)) track(label.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 140, easing: 'ease-out' }));
     }
   };
 
@@ -212,17 +194,6 @@ function tabs(bar: HTMLElement, list: HTMLElement, hideHover?: () => void) {
 export function initIndex() {
   const list = document.querySelector<HTMLElement>('[data-entries]');
   if (!list) return;
-  markProgress(list);
-  list.addEventListener('click', (event) => {
-    const button = (event.target as Element).closest<HTMLElement>('[data-mark-unread]');
-    if (!button?.dataset.markUnread) return;
-    if (markUnread(button.dataset.markUnread)) button.closest('.entry')?.querySelector<HTMLAnchorElement>('.entry-link')?.focus({ preventScroll: true });
-  });
-  addEventListener('readingreset', () => markProgress(list));
-  addEventListener('pageshow', () => markProgress(list));
-  addEventListener('storage', (event) => {
-    if (event.key === 'reading' || event.key === null) markProgress(list);
-  });
   const hideHover = hoverSheet(list);
   const bar = document.querySelector<HTMLElement>('[data-tabs]');
   if (bar) tabs(bar, list, hideHover);

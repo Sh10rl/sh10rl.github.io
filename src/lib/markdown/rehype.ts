@@ -108,6 +108,10 @@ export function rehypeArticle() {
 
       if (tag === 'pre' && !classes(node).includes('mermaid')) {
         const lang = String(node.properties.dataLanguage ?? '');
+        const code = node.children.find((child): child is Element => child.type === 'element' && child.tagName === 'code');
+        // Shiki keeps the final empty line, so count it here too.
+        const lines = code ? hastText(code).split('\n').length : 0;
+        const folded = lines > 36;
         const children: ElementContent[] = [
           node,
           el('button', { type: 'button', className: ['code-copy'], ariaLabel: 'Copy code', title: 'Copy' }),
@@ -115,7 +119,8 @@ export function rehypeArticle() {
         parent.children[index] = el(
           'div',
           {
-            className: ['code'],
+            className: folded ? ['code', 'folded'] : ['code'],
+            dataLines: folded ? lines : undefined,
             dataLang: lang && lang !== 'plaintext' ? lang : undefined,
           },
           children,

@@ -1,0 +1,51 @@
+---
+import '../styles/prose.css';
+import Base from '../layouts/Base.astro';
+import { getCategories } from '../lib/posts';
+const categories = await getCategories();
+---
+
+<Base title="Write">
+  <div class="editor">
+    <header class="editor-head">
+      <div><h1>Write</h1><p id="EditorPath">New article</p></div>
+      <div class="editor-actions">
+        <button type="button" class="button secondary" id="NewArticle">New</button>
+        <a class="button secondary" id="OpenArticle" hidden target="_blank" rel="noopener">Open article</a>
+        <button type="button" class="button" id="SaveArticle">Save</button>
+      </div>
+    </header>
+    <div class="editor-controls">
+      <label>Article<select id="ArticlePicker"><option value="">New article</option></select></label>
+      <label id="CategoryField">Category<select id="ArticleCategory"><option value="">None</option>{categories.map(category => <option value={category.key}>{category.label}</option>)}</select></label>
+      <p id="EditorStatus" role="status" aria-live="polite">Start with a # title. The date and file name are automatic.</p>
+    </div>
+    <div class="editor-panes">
+      <div class="editor-pane"><label for="MarkdownEditor">Markdown</label><textarea id="MarkdownEditor" spellcheck="false" placeholder="# Article title&#10;&#10;Start writing…"></textarea></div>
+      <section class="editor-pane" aria-label="Preview"><p>Preview</p><iframe id="MarkdownPreview" title="Article preview" sandbox="allow-same-origin"></iframe></section>
+    </div>
+  </div>
+</Base>
+
+<script src="./editor.ts"></script>
+
+<style>
+  .editor { width: min(90rem,100%); margin: auto; padding: calc(var(--head-room) + 1.75rem) clamp(1rem,4vw,3rem) 0; }
+  .editor-head { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+  h1 { font:var(--type-title); color:var(--ink); margin:0; }
+  .editor-head p { margin:.3rem 0 0; color:var(--ink-3); font-size:.8125rem; overflow-wrap:anywhere; }
+  .editor-actions { display:flex; gap:.5rem; flex:none; }
+  .editor-actions :is(button,a) { font-size:.8125rem; padding:.5rem .875rem; min-height:2.5rem; }
+  .editor-controls { display:flex; align-items:end; flex-wrap:wrap; gap:1rem; margin:1.5rem 0 1rem; }
+  .editor-controls label { display:grid; gap:.375rem; font:var(--type-meta); }
+  select { font:var(--type-ui); color:var(--ink); background:var(--raised); border:1px solid var(--line-2); border-radius:var(--r-xs); min-height:2.5rem; padding:.5rem; max-width:24rem; }
+  #EditorStatus { margin:0 0 .55rem auto; font:var(--type-meta); color:var(--ink-3); }
+  #EditorStatus[data-error] { color:var(--danger); }
+  .editor-panes { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+  .editor-pane { min-width:0; }
+  .editor-pane > :is(label,p) { display:block; margin:0 0 .625rem; font:var(--type-label); color:var(--ink-3); }
+  textarea,iframe { width:100%; height:max(32rem,65vh); border:1px solid var(--line); border-radius:var(--r-sm); background:var(--raised); color:var(--ink-2); }
+  textarea { resize:vertical; padding:1.25rem; font:400 .9375rem/1.75 var(--font-mono); tab-size:2; }
+  iframe { display:block; }
+  @media(max-width:52rem) { .editor-panes { grid-template-columns:1fr; } .editor-head { align-items:start; flex-direction:column; } #EditorStatus { flex-basis:100%; margin:0; } select { max-width:min(24rem,calc(100vw - 2rem)); } }
+</style>

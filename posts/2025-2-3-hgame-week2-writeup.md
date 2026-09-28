@@ -445,7 +445,7 @@ print(flag)
 hgame{re-The_Moon&re-The_Sun&Judgement&re-Temperance&Six_of_Cups}
 ```
 
-## **Nop****'d**
+## **Nop'd**
 
 > -  **模拟了一个半主机(SemiHosting)系统：**
 >    1. Host System：`launcher`

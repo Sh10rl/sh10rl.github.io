@@ -24,6 +24,7 @@ interface Hit {
 
 const dialog = document.querySelector<HTMLDialogElement>('[data-search]')!;
 const input = dialog.querySelector('input')!;
+const form = dialog.querySelector('form')!;
 const list = dialog.querySelector<HTMLElement>('.search-results')!;
 const count = dialog.querySelector<HTMLElement>('[data-search-count]')!;
 
@@ -33,6 +34,7 @@ let failed = false;
 let items: HTMLAnchorElement[] = [];
 let cursor: HTMLElement | null = null;
 let selected = 0;
+let composing = false;
 
 const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
@@ -85,6 +87,7 @@ export function toggle(from?: Element | null) {
 /** Release modal focus immediately; CSS handles the visual exit. */
 function close(immediate = false) {
   if (!dialog.open) return;
+  composing = false;
   dialog.classList.toggle('instant', immediate);
   dialog.close();
 }
@@ -93,6 +96,7 @@ dialog.addEventListener('cancel', (e) => {
   e.preventDefault();
   close();
 });
+dialog.querySelector('[data-search-close]')?.addEventListener('click', () => close());
 
 function terms(query: string): string[] {
   return [...new Set(query.toLowerCase().split(/\s+/).filter(Boolean))];
@@ -166,7 +170,7 @@ const ICON = {
 };
 
 function item(href: string, icon: string, title: string, sub: string, body: string, query: string[]) {
-  return `<a class="search-item" role="option" href="${escape(href)}" data-terms="${escape(JSON.stringify(query))}">${icon}<span class="search-title">${title}${sub ? `<small>${sub}</small>` : ''}</span>${body ? `<span class="search-snippet">${body}</span>` : ''}</a>`;
+  return `<a class="search-item" role="option" href="${escape(href)}" data-terms="${escape(JSON.stringify(query))}">${icon}<span class="search-title"><span class="search-name">${title}</span>${sub ? `<small>${sub}</small>` : ''}</span>${body ? `<span class="search-snippet">${body}</span>` : ''}</a>`;
 }
 
 function render() {
@@ -255,9 +259,17 @@ input.addEventListener('input', () => {
   if (!docs && !loading) load();
   render();
 });
+input.addEventListener('compositionstart', () => { composing = true; });
+input.addEventListener('compositionend', () => { composing = false; });
+
+// A mobile keyboard can submit the form without a preceding Enter key event.
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  if (!composing && items[selected]) go(items[selected]);
+});
 
 input.addEventListener('keydown', (e) => {
-  if (e.isComposing || e.keyCode === 229) return;
+  if (composing || e.isComposing || e.keyCode === 229) return;
   if (e.key === 'Escape') {
     // A search input would spend the first Esc clearing its text; close in one press, as the hint says.
     e.preventDefault();
@@ -268,9 +280,9 @@ input.addEventListener('keydown', (e) => {
   } else if (e.key === 'ArrowUp' || (e.key === 'p' && e.ctrlKey)) {
     e.preventDefault();
     select(selected - 1);
-  } else if (e.key === 'Enter' && items[selected]) {
+  } else if (e.key === 'Enter') {
     e.preventDefault();
-    go(items[selected], e.metaKey || e.ctrlKey);
+    if (items[selected]) go(items[selected], e.metaKey || e.ctrlKey);
   }
 });
 

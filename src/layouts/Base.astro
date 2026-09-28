@@ -1,13 +1,14 @@
 ---
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import Icon from '../components/Icon.astro';
 import Prefs from '../components/Prefs.astro';
 import SearchDialog from '../components/SearchDialog.astro';
+import favicon from '../assets/favicon.ico?url';
+import sourceSerif from '../assets/fonts/source-serif-4-normal-latin.woff2?url';
 import { site } from '../site.config';
+import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
-import '../styles/prose.css';
 
 interface Props {
   title?: string;
@@ -15,7 +16,7 @@ interface Props {
   type?: 'website' | 'article';
   published?: Date;
   updated?: Date;
-  /** Article pages get reading tools: progress, current section, text size, footnote previews, resume. */
+  /** Article pages get reading tools: progress, current section, text size, footnote previews. */
   article?: boolean;
   jsonLd?: Record<string, unknown>;
 }
@@ -37,7 +38,7 @@ const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#f3f0e8" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#161311" media="(prefers-color-scheme: dark)" />
-    <script is:inline>
+    <script is:inline define:vars={{ sourceSerif }}>
       (() => {
         const root = document.documentElement;
         root.classList.add('js');
@@ -46,7 +47,18 @@ const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
           if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
           const size = localStorage.getItem('text-size');
           if (size === 's' || size === 'l' || size === 'xl') root.dataset.size = size;
+          const font = localStorage.getItem('text-font');
+          if (font === 'serif' || font === 'sans') root.dataset.font = font;
         } catch {}
+        if (!root.dataset.font) {
+          const preload = document.createElement('link');
+          preload.rel = 'preload';
+          preload.as = 'font';
+          preload.type = 'font/woff2';
+          preload.crossOrigin = 'anonymous';
+          preload.href = sourceSerif;
+          document.head.append(preload);
+        }
         // The nav link a path belongs to, by the same rule Header.astro uses to mark the current one.
         const owns = (a, p) => {
           const h = new URL(a.href).pathname;
@@ -92,8 +104,7 @@ const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
     </script>
     <!-- Hold the first frame until the header is parsed, so pagereveal always finds the nav. -->
     <link rel="expect" href="#Main" blocking="render" />
-    <link rel="icon" href="/favicon.ico" sizes="48x48" />
-    <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+    <link rel="icon" href={favicon} type="image/x-icon" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="alternate" type="application/rss+xml" title={site.title} href="/feed.xml" />
@@ -118,6 +129,7 @@ const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
     </main>
     <Footer />
     <SearchDialog />
+    <Prefs article={article} />
     <div class="toast" role="status" aria-live="polite">
       <span class="toast-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -126,24 +138,7 @@ const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
       </span>
       <span class="toast-text"></span>
     </div>
-    {
-      article && (
-        <>
-          <Prefs />
-          <div class="resume" data-resume hidden>
-            <Icon name="bookmark" size={15} />
-            <button class="resume-go" type="button" data-resume-go>
-              <span class="resume-text">Continue where you left off</span>
-              <span class="resume-where" data-resume-where />
-            </button>
-            <button class="resume-close" type="button" data-resume-close aria-label="Dismiss">
-              <Icon name="x" size={14} />
-            </button>
-          </div>
-          <div class="note-pop" popover="manual" role="tooltip" id="FootnotePreview" />
-        </>
-      )
-    }
+    {article && <div class="note-pop" popover="manual" role="tooltip" id="FootnotePreview" />}
     <script>
       import '../scripts/main';
     </script>

@@ -1,49 +1,4 @@
 import { finePointer, headingTarget, pageTop, reducedMotion, scrollToY, SMOOTH, SNAPPY, Spring, springAnimate } from './motion';
-import { toast } from './toast';
-
-/* Reading position, remembered per post ------------------------------------ */
-
-const STORE = 'reading';
-export interface Mark {
-  /** How far through the article body, from 0 to 1. */
-  p: number;
-  /** When it was last read (ms). */
-  t: number;
-  /** Finished. */
-  d?: 1;
-  /** An explicit reset, preserved across reloads until reading starts again. */
-  u?: 1;
-}
-
-export function readMarks(): Record<string, Mark> {
-  try {
-    return JSON.parse(localStorage.getItem(STORE) || '{}') ?? {};
-  } catch {
-    return {};
-  }
-}
-
-function writeMark(path: string, mark: Mark) {
-  try {
-    const all = readMarks();
-    all[path] = mark;
-    // Keep the fifty most recent.
-    const keep = Object.entries(all)
-      .sort((a, b) => b[1].t - a[1].t)
-      .slice(0, 50);
-    localStorage.setItem(STORE, JSON.stringify(Object.fromEntries(keep)));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export function markUnread(path: string) {
-  const saved = writeMark(path, { p: 0, t: Date.now(), u: 1 });
-  if (saved) dispatchEvent(new CustomEvent('readingreset', { detail: path }));
-  toast(saved ? 'Marked as unread' : 'Couldn’t save reading status', !saved);
-  return saved;
-}
 
 /* Flash: a highlighter stroke where the eye should land ------------------- */
 
@@ -77,13 +32,15 @@ export function initReading() {
   const nowButton = capsule.querySelector<HTMLElement>('[data-toc-open]');
   const progressRing = capsule.querySelector<SVGCircleElement>('.ring-fill');
   const toc = document.querySelector<HTMLElement>('[data-toc]');
+  const edgeLink = toc?.querySelector<HTMLAnchorElement>('.toc-bottom');
+  const edgeLabel = edgeLink?.querySelector<HTMLElement>('[data-scroll-label]');
+  const postEnd = document.getElementById('PostEnd');
   const tocInner = toc?.querySelector<HTMLElement>('.toc-inner');
   const rail = toc?.querySelector<HTMLElement>('.toc-rail');
   const fill = toc?.querySelector<HTMLElement>('.toc-fill');
   const dot = toc?.querySelector<HTMLElement>('.toc-dot');
   const sheet = document.getElementById('TocSheet');
   const headings = [...prose.querySelectorAll<HTMLElement>(':scope > h2[id], :scope > h3[id]')];
-  const path = post.dataset.post || location.pathname;
   const title = post.dataset.title || document.title;
   const linkSets = [toc, sheet].map((box) => [...(box?.querySelectorAll<HTMLAnchorElement>('ol a') ?? [])]);
 
@@ -94,6 +51,7 @@ export function initReading() {
   let tops: number[] = [];
   let railAnchors: [number, number][] = [];
   let railHeight = 1;
+  let bottomTarget = 0;
 
   const tocEdges = () => {
     if (!tocInner) return;
@@ -111,6 +69,7 @@ export function initReading() {
   const measure = () => {
     bodyTop = pageTop(prose);
     bodyHeight = Math.max(1, prose.offsetHeight);
+    bottomTarget = postEnd ? pageTop(postEnd) - 24 : bodyTop + bodyHeight;
     tops = headings.map(pageTop);
     if (rail && linkSets[0].length) {
       const railBox = rail.getBoundingClientRect();
@@ -134,6 +93,7 @@ export function initReading() {
   let travel = 0;
   let lastY = scrollY;
   let headerHidden = false;
+  const desktopPointer = () => finePointer.matches && innerWidth > 640;
   const hideHeader = (hidden: boolean) => {
     if (headerHidden === hidden) return;
     headerHidden = hidden;
@@ -144,7 +104,14 @@ export function initReading() {
     travel = 0;
   };
   addEventListener('pointermove', (event) => {
-    if (headerHidden && finePointer.matches && event.clientY <= 24) revealHeader();
+    if (!headerHidden || !finePointer.matches) return;
+    if (!desktopPointer()) {
+      if (event.clientY <= 24) revealHeader();
+      return;
+    }
+    const box = capsule.getBoundingClientRect();
+    const header = capsule.parentElement!;
+    if (event.clientY <= header.offsetHeight + 16 && event.clientX >= box.left - 32 && event.clientX <= box.right + 32) revealHeader();
   }, { passive: true });
   addEventListener('keydown', (event) => {
     if (event.key === 'Tab') revealHeader();
@@ -235,13 +202,24 @@ export function initReading() {
 
   /* Scroll ------------------------------------------------------------------ */
 
-  let progress = 0;
+  let jumpToTop = false;
+  let pendingEdge: boolean | null = null;
+  const setEdge = (atBottom: boolean) => {
+    if (!edgeLink || !edgeLabel || atBottom === jumpToTop) return;
+    jumpToTop = atBottom;
+    edgeLink.toggleAttribute('data-scroll-top', atBottom);
+    edgeLink.toggleAttribute('data-scroll-bottom', !atBottom);
+    edgeLink.href = atBottom ? '#Main' : '#PostEnd';
+    edgeLabel.textContent = atBottom ? 'Go to top' : 'Go to bottom';
+  };
   const update = () => {
     // Reads first, then writes, so a scroll frame never forces a synchronous layout.
     const y = scrollY;
     const atEnd = y + innerHeight >= root.scrollHeight - 4;
+    const atBottom = y > 4 && (atEnd || y >= bottomTarget - 4);
+    setEdge(pendingEdge ?? atBottom);
     const line = y + innerHeight * 0.35;
-    progress = Math.min(1, Math.max(0, (line - bodyTop) / bodyHeight));
+    const progress = Math.min(1, Math.max(0, (line - bodyTop) / bodyHeight));
     if (progressRing) progressRing.style.strokeDashoffset = (1 - progress).toFixed(4);
 
     let index = -1;
@@ -251,7 +229,7 @@ export function initReading() {
 
     if (fill && railAnchors.length) railSpring.to(Math.max(0, Math.min(railHeight, railAt(line))));
 
-    // Reading face while inside the article; a determined scroll up brings the navigation back.
+    // Scrolling down clears the reading area; scrolling up restores the controls.
     const dy = y - lastY;
     lastY = y;
     const inBody = line > bodyTop + 24 && y + innerHeight * 0.5 < bodyTop + bodyHeight;
@@ -276,6 +254,37 @@ export function initReading() {
     }
   };
 
+  edgeLink?.addEventListener('click', (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const toTop = jumpToTop;
+    pendingEdge = !toTop;
+    setEdge(pendingEdge);
+    history.replaceState(history.state, '', toTop ? location.pathname + location.search : '#PostEnd');
+    scrollToY(toTop ? 0 : bottomTarget, () => {
+      pendingEdge = null;
+      update();
+      if (!toTop) postEnd?.focus({ preventScroll: true });
+    });
+  });
+  const cancelEdge = () => {
+    if (pendingEdge === null) return;
+    pendingEdge = null;
+    update();
+  };
+  const onEdge = (target: EventTarget | null) => target instanceof Node && edgeLink?.contains(target);
+  addEventListener('wheel', cancelEdge, { passive: true });
+  addEventListener('touchstart', (event) => {
+    if (!onEdge(event.target)) cancelEdge();
+  }, { passive: true });
+  addEventListener('touchmove', cancelEdge, { passive: true });
+  addEventListener('touchcancel', cancelEdge, { passive: true });
+  addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' || !onEdge(event.target)) cancelEdge();
+  });
+  document.addEventListener('click', cancelEdge);
+
   let queued = false;
   const onScroll = () => {
     if (queued) return;
@@ -283,13 +292,18 @@ export function initReading() {
     requestAnimationFrame(() => {
       queued = false;
       update();
-      saveSoon();
     });
   };
 
   const relayout = () => {
     measure();
-    if (state === 'read') width.set(readWidth());
+    if (state === 'read') {
+      const target = readWidth();
+      // Content and font loading can resize the article during a header transition.
+      // Preserve its velocity unless the viewport has become too narrow.
+      if (width.value > innerWidth - 16) width.set(target);
+      else width.to(target);
+    }
     update();
   };
 
@@ -393,95 +407,5 @@ export function initReading() {
     };
     sheet.addEventListener('pointerup', release);
     sheet.addEventListener('pointercancel', resetDrag);
-  }
-
-  /* Remember the place, and offer it back next time ------------------------- */
-
-  const unreadButton = post.querySelector<HTMLButtonElement>('[data-mark-unread]');
-  const resume = document.querySelector<HTMLElement>('[data-resume]');
-  const mark = readMarks()[path];
-  let allowSave = !mark?.u;
-  let resetThisVisit = false;
-  let dismissResume = () => { if (resume) resume.hidden = true; };
-  const syncUnreadButton = () => {
-    const stored = readMarks()[path];
-    if (unreadButton) unreadButton.hidden = !stored || !!stored.u || (!stored.d && stored.p < 0.02);
-  };
-  let saveTimer: ReturnType<typeof setTimeout> | undefined;
-  const save = () => {
-    if (!allowSave) return;
-    if (progress < 0.02 && !readMarks()[path]) return;
-    const done = progress > 0.96;
-    const previous = readMarks()[path];
-    if (writeMark(path, { p: +progress.toFixed(3), t: Date.now(), ...(done || previous?.d ? { d: 1 as const } : {}) })) syncUnreadButton();
-  };
-  const saveSoon = () => {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(save, 400);
-  };
-  addEventListener('pagehide', save);
-
-  const reset = () => {
-    allowSave = false;
-    resetThisVisit = true;
-    clearTimeout(saveTimer);
-    dismissResume();
-    syncUnreadButton();
-  };
-  unreadButton?.addEventListener('click', () => markUnread(path));
-  addEventListener('readingreset', (event) => {
-    if ((event as CustomEvent<string>).detail === path) reset();
-  });
-  const syncStored = () => {
-    if (readMarks()[path]?.u) reset();
-    else syncUnreadButton();
-  };
-  addEventListener('storage', (event) => {
-    if (event.key === STORE || event.key === null) syncStored();
-  });
-  addEventListener('pageshow', (event) => { if (event.persisted) syncStored(); });
-  // A restored scroll position must not undo a reset. A new visit can start recording
-  // again when the reader scrolls or chooses a section; resetting this visit stays put.
-  const startReading = () => { if (!resetThisVisit) allowSave = true; };
-  addEventListener('wheel', startReading, { passive: true });
-  addEventListener('touchmove', startReading, { passive: true });
-  addEventListener('keydown', (event) => {
-    if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)
-      && !(event.target instanceof HTMLElement && (event.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName)))) startReading();
-  });
-  document.addEventListener('click', (event) => {
-    if ((event.target as Element).closest('.toc ol a, .toc-sheet ol a, .toc-inline ol a, [data-scroll-top], [data-scroll-bottom]')) startReading();
-  });
-  syncUnreadButton();
-
-  if (resume && mark && !mark.d && mark.p > 0.06 && mark.p < 0.94 && !location.hash && scrollY < innerHeight * 0.5) {
-    const target = () => bodyTop + mark.p * bodyHeight - innerHeight * 0.35;
-    const at = bodyTop + mark.p * bodyHeight;
-    let section = title;
-    tops.forEach((top, i) => {
-      if (top <= at) section = (headings[i].textContent ?? '').trim();
-    });
-    const where = resume.querySelector<HTMLElement>('[data-resume-where]');
-    if (where) where.textContent = `${section} · ${Math.round(mark.p * 100)}%`;
-    const hide = () => {
-      resume.hidden = true;
-      removeEventListener('scroll', watch);
-    };
-    dismissResume = hide;
-    const startY = scrollY;
-    const watch = () => {
-      if (scrollY - startY > innerHeight * 0.6) hide();
-    };
-    setTimeout(() => {
-      if (!allowSave || readMarks()[path]?.u) return;
-      resume.hidden = false;
-      addEventListener('scroll', watch, { passive: true });
-      setTimeout(hide, 14000);
-    }, 650);
-    resume.querySelector('[data-resume-go]')?.addEventListener('click', () => {
-      hide();
-      scrollToY(target());
-    });
-    resume.querySelector('[data-resume-close]')?.addEventListener('click', hide);
   }
 }

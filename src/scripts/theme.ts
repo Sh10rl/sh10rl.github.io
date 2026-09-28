@@ -26,7 +26,7 @@ function store(pref: ThemePreference) {
   dispatchEvent(new Event('themechange'));
 }
 
-/** Apply the choice immediately; the theme icon animates independently in CSS. */
+/** Apply immediately; CSS transitions keep the live page interactive. */
 export function setTheme(pref: ThemePreference) {
   store(pref);
 }

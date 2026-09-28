@@ -1,32 +1,16 @@
 ---
-import { Image } from 'astro:assets';
-import avatar from '../assets/avatar.png';
 import { site } from '../site.config';
 import Icon from './Icon.astro';
 
-const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="footer-author">
-      <Image class="footer-avatar" src={avatar} alt="" width={80} height={80} loading="lazy" />
-      <div>
-        <p class="footer-name">{site.author.name}</p>
-        <p class="footer-bio">{site.description}</p>
-      </div>
-    </div>
+    <a class="footer-mark" href="/">{site.title}</a>
     <nav class="footer-links" aria-label="Elsewhere">
       <a class="glass-btn" href={site.author.github} aria-label="GitHub" title="GitHub" rel="me noopener" target="_blank"><Icon name="github" /></a>
       <a class="glass-btn" href={`mailto:${site.author.email}`} aria-label="Email" title="Email"><Icon name="mail" /></a>
       <a class="glass-btn" href="/feed.xml" aria-label="RSS feed" title="RSS"><Icon name="rss" /></a>
     </nav>
-    <p class="footer-mark">
-      <span>{site.title}</span>
-      <span class="dot" aria-hidden="true"></span>
-      <span>{site.tagline}</span>
-      <span class="dot" aria-hidden="true"></span>
-      <span>© {year}</span>
-    </p>
   </div>
 </footer>
