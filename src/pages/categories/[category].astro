@@ -1,0 +1,18 @@
+---
+import Home from '../../components/Home.astro';
+import Base from '../../layouts/Base.astro';
+import { getCategories } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  return categories.map((c) => ({ params: { category: c.key }, props: { label: c.label } }));
+}
+
+const { category } = Astro.params;
+const { label } = Astro.props;
+---
+
+<Base title={label}>
+  <link slot="head" rel="expect" href="#Entries" blocking="render" />
+  <Home category={category} />
+</Base>

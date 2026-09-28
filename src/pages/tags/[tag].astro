@@ -1,0 +1,26 @@
+---
+import PostList from '../../components/PostList.astro';
+import Base from '../../layouts/Base.astro';
+import { getTags } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  return (await getTags()).map((tag) => ({ params: { tag: tag.slug }, props: { tag } }));
+}
+
+const { tag } = Astro.props;
+const count = tag.posts.length;
+---
+
+<Base title={`#${tag.label}`} description={`Posts tagged ${tag.label}`}>
+  <link slot="head" rel="expect" href="#Entries" blocking="render" />
+  <div class="page">
+    <section class="column index">
+      <header class="page-head">
+        <p class="kicker" data-reveal style="--i: 0"><a class="kicker-cat" href="/tags/">Tags</a></p>
+        <h1 class="page-title" data-reveal="title" style="--i: 1"><span class="hash" aria-hidden="true">#</span>{tag.label}</h1>
+        <p class="page-lede" data-reveal style="--i: 2">{count} {count === 1 ? 'post' : 'posts'}</p>
+      </header>
+      <PostList posts={tag.posts} revealFrom={3} />
+    </section>
+  </div>
+</Base>

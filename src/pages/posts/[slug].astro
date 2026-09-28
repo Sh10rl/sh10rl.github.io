@@ -1,0 +1,150 @@
+---
+import { render } from 'astro:content';
+import Icon from '../../components/Icon.astro';
+import Toc from '../../components/Toc.astro';
+import Base from '../../layouts/Base.astro';
+import { categoryLabel, formatDate, getPosts, relatedTo, tagsOf } from '../../lib/posts';
+import { site } from '../../site.config';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1], related: relatedTo(post, posts, [posts[i - 1], posts[i + 1]].filter(Boolean)) },
+  }));
+}
+
+const { post, newer, older, related } = Astro.props;
+const { Content } = await render(post.entry);
+const toc = post.meta.toc ?? [];
+const dek = post.entry.data.description?.trim();
+const tags = tagsOf(post);
+const url = new URL(post.url, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description: post.description || site.description,
+  datePublished: post.date.toISOString(),
+  dateModified: (post.updated ?? post.date).toISOString(),
+  inLanguage: post.lang,
+  mainEntityOfPage: url,
+  url,
+  image: new URL('/web-app-manifest-512x512.png', Astro.site).href,
+  author: { '@type': 'Person', name: site.author.name, url: site.url },
+  keywords: tags.map((t) => t.label).join(', ') || undefined,
+};
+---
+
+<Base title={post.title} description={post.description || undefined} type="article" published={post.date} updated={post.updated} article jsonLd={jsonLd}>
+  <link slot="head" rel="expect" href="#PostTitle" blocking="render" />
+  <div class="page page-article">
+    <article class="column post" data-post={post.url} data-title={post.title}>
+      <header class="post-head">
+        <div class="post-meta" data-reveal style="--i: 0">
+          <p class="kicker">
+            {post.category && <a class="kicker-cat" href={`/categories/${post.category}/`}>{categoryLabel(post.category)}</a>}
+            <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+            <span>{post.minutes} min read</span>
+          </p>
+          <button class="chip prefs-chip" type="button" data-prefs-open popovertarget="ReadingPrefs" aria-haspopup="dialog" aria-label="Reading settings" title="Reading settings">Aa</button>
+        </div>
+        <h1 class="post-title" id="PostTitle" lang={post.lang} style="--i: 1" data-reveal="title">
+          {post.title}
+          {post.draft && <span class="draft-badge">Draft</span>}
+        </h1>
+        {
+          dek && (
+            <p class:list={['post-dek', { long: [...dek].length > 60 }]} lang={post.lang} data-reveal style="--i: 2">
+              {dek}
+            </p>
+          )
+        }
+        {post.updated && <p class="post-updated" data-reveal style="--i: 2">Updated <time datetime={post.updated.toISOString()}>{formatDate(post.updated)}</time></p>}
+      </header>
+
+      <div class="post-body" data-reveal style="--i: 3">
+        {toc.length > 1 && <Toc headings={toc} lang={post.lang} variant="inline" />}
+        <div class="prose" lang={post.lang} data-article>
+          <Content />
+        </div>
+      </div>
+
+      <footer class="post-foot" id="PostEnd" tabindex="-1">
+        <div class="foot-row">
+          {
+            tags.length > 0 && (
+              <ul class="tag-list" aria-label="Tags">
+                {tags.map((tag) => (
+                  <li>
+                    <a class="tag" href={`/tags/${tag.slug}/`}>
+                      {tag.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+          <div class="share">
+            <button class="chip" type="button" data-mark-unread={post.url} hidden>Mark as unread</button>
+            <button class="chip" type="button" data-share hidden>
+              <Icon name="share" size={14} />
+              Share
+            </button>
+            <button class="chip" type="button" data-copy-link={url}>
+              <Icon name="link" size={14} />
+              Copy link
+            </button>
+          </div>
+        </div>
+
+        {
+          related.length > 0 && (
+            <section class="related" aria-labelledby="RelatedHeading">
+              <h2 class="foot-label" id="RelatedHeading">
+                Keep reading
+              </h2>
+              <ol>
+                {related.map((item) => (
+                  <li>
+                    <a href={item.url}>
+                      <span lang={item.lang}>{item.title}</span>
+                      <time datetime={item.date.toISOString()}>{formatDate(item.date)}</time>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )
+        }
+
+        {
+          (older || newer) && (
+            <nav class="pager" aria-label="More posts">
+              {older && (
+                <a class="prev" href={older.url} rel="prev">
+                  <small>
+                    <Icon name="arrow-left" size={13} />
+                    Older
+                  </small>
+                  <span lang={older.lang}>{older.title}</span>
+                </a>
+              )}
+              {newer && (
+                <a class="next" href={newer.url} rel="next">
+                  <small>
+                    Newer
+                    <Icon name="arrow-right" size={13} />
+                  </small>
+                  <span lang={newer.lang}>{newer.title}</span>
+                </a>
+              )}
+            </nav>
+          )
+        }
+      </footer>
+    </article>
+    {toc.length > 1 && <Toc headings={toc} lang={post.lang} variant="aside" />}
+  </div>
+</Base>

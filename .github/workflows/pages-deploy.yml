@@ -1,15 +1,12 @@
-name: "Build and Deploy"
+name: Build and Deploy
+
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [main]
     paths-ignore:
       - .gitignore
       - README.md
       - LICENSE
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 permissions:
@@ -17,57 +14,49 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
+          # Post dates come from git history, so the build needs all of it.
           fetch-depth: 0
-          # submodules: true
-          # If using the 'assets' git submodule from Chirpy Starter, uncomment above
-          # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v4
+      - uses: pnpm/action-setup@v6
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/setup-node@v7
         with:
-          ruby-version: 3.3
-          bundler-cache: true
+          node-version: 24
+          cache: pnpm
 
-      - name: Build site
-        run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
-        env:
-          JEKYLL_ENV: "production"
+      - run: pnpm install --frozen-lockfile
 
-      - name: Test site
-        run: |
-          bundle exec htmlproofer _site \
-            \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/,/^http:\/\/www\.woore\.website\/wordpress\//"
-
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
+      # Optimized images are cached between runs; only new or changed ones get re-encoded.
+      # Just the images: the content store beside them keeps Markdown as rendered by the
+      # previous build, so changes to the Markdown pipeline would not show up.
+      - uses: actions/cache@v6
         with:
-          path: "_site${{ steps.pages.outputs.base_path }}"
+          path: node_modules/.astro/assets
+          key: astro-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: astro-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      - run: pnpm build
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
 
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - id: deployment
+        uses: actions/deploy-pages@v5

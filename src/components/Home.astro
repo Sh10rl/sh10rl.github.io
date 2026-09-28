@@ -1,0 +1,42 @@
+---
+import { getCategories, getPosts } from '../lib/posts';
+import { site } from '../site.config';
+import PostList from './PostList.astro';
+
+interface Props {
+  category?: string;
+}
+
+const { category = '' } = Astro.props;
+// Every post is rendered on every index page; the ones outside the category are hidden.
+// That lets the tabs filter in place (with the rows gliding) instead of loading a new page.
+const posts = await getPosts();
+const categories = await getCategories();
+const tabs = [
+  { key: '', label: 'All', count: posts.length, url: '/', title: `${site.title} — ${site.tagline}` },
+  ...categories.map((c) => ({ key: c.key, label: c.label, count: c.count, url: `/categories/${c.key}/`, title: `${c.label} · ${site.title}` })),
+];
+---
+
+<div class="page page-index">
+  <section class="column index" aria-labelledby="IndexHeading">
+    <header class="index-head">
+      <h1 class="sr-only" id="IndexHeading">Writing</h1>
+      <nav class="tabs" aria-label="Categories" data-tabs data-reveal style="--i: 2">
+        {
+          tabs.map((tab) => {
+            const current = tab.key === category;
+            return (
+              <a href={tab.url} data-astro-prefetch="false" data-filter={tab.key} data-title={tab.title} aria-current={current ? 'page' : undefined}>
+                {current && <span class="tab-chip" aria-hidden="true" />}
+                <span class="tab-label">{tab.label}</span>
+                <span class="tab-count">{tab.count}</span>
+              </a>
+            );
+          })
+        }
+      </nav>
+    </header>
+    <PostList posts={posts} filter={category} revealFrom={3} />
+  </section>
+</div>

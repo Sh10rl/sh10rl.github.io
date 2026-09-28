@@ -1,0 +1,9 @@
+---
+import Home from '../components/Home.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base>
+  <link slot="head" rel="expect" href="#Entries" blocking="render" />
+  <Home />
+</Base>

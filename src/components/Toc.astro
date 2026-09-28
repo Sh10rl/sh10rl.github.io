@@ -1,0 +1,71 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+  lang?: string;
+  /**
+   * `inline`: a folded list at the top of the article, for screens without a margin.
+   * `aside`: the list in the left margin (wide screens), plus the sheet the header's
+   * Contents button opens.
+   */
+  variant: 'inline' | 'aside';
+}
+
+const { headings, lang, variant } = Astro.props;
+---
+
+{
+  variant === 'inline' ? (
+    <details class="toc-inline">
+      <summary>
+        <Icon name="list" size={15} />
+        <span>On this page</span>
+        <span class="toc-count">{headings.length}</span>
+      </summary>
+      <ol lang={lang}>
+        {headings.map((h) => (
+          <li class={`depth-${h.depth}`}>
+            <a href={`#${h.slug}`}>{h.text}</a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  ) : (
+    <>
+      <aside class="toc" aria-label="On this page" data-toc>
+        <div class="toc-inner">
+          <p class="toc-label">On this page</p>
+          <div class="toc-list">
+            <span class="toc-rail" aria-hidden="true">
+              <span class="toc-fill" />
+              <span class="toc-dot" />
+            </span>
+            <ol lang={lang}>
+              {headings.map((h) => (
+                <li class={`depth-${h.depth}`}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <a class="toc-bottom" href="#PostEnd" data-scroll-bottom>
+            <Icon name="arrow-down" size={13} />
+            Go to bottom
+          </a>
+        </div>
+      </aside>
+      <div class="toc-sheet" id="TocSheet" popover role="dialog" aria-label="Contents" data-toc-sheet>
+        <div class="sheet-grip" aria-hidden="true" />
+        <p class="toc-label">Contents</p>
+        <ol lang={lang}>
+          {headings.map((h) => (
+            <li class={`depth-${h.depth}`}>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </>
+  )
+}

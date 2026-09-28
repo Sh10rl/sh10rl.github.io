@@ -1,0 +1,64 @@
+---
+import { categoryLabel, formatShortDate, type Post, yearOf } from '../lib/posts';
+import Icon from './Icon.astro';
+
+interface Props {
+  posts: Post[];
+  /** Category key; entries outside it are rendered hidden so the tabs can filter in place. */
+  filter?: string;
+  /** Position of the first entry in the page's entrance sequence. */
+  revealFrom?: number;
+}
+
+const { posts, filter = '', revealFrom = 0 } = Astro.props;
+const shown = (post: Post) => !filter || post.category === filter;
+
+const years: { year: string; posts: Post[] }[] = [];
+for (const post of posts) {
+  const year = yearOf(post.date);
+  if (years.at(-1)?.year !== year) years.push({ year, posts: [] });
+  years.at(-1)!.posts.push(post);
+}
+
+let order = revealFrom;
+---
+
+<div class="entries" id="Entries" data-entries>
+  {
+    years.map(({ year, posts: group }) => (
+      <section class="year" data-year={year} hidden={!group.some(shown)}>
+        <h2 class="year-label">
+          <span>{year}</span>
+        </h2>
+        <ol class="entry-list">
+          {group.map((post) => (
+            <li class="entry" data-cat={post.category ?? ''} data-path={post.url} hidden={!shown(post)} data-reveal style={`--i: ${shown(post) ? order++ : 0}`}>
+              <time class="entry-date" datetime={post.date.toISOString()}>
+                {formatShortDate(post.date)}
+              </time>
+              <div class="entry-main">
+                <a class="entry-link" href={post.url}>
+                  <span class="entry-title" lang={post.lang}>
+                    {post.title}
+                  </span>
+                  {post.draft && <span class="draft-badge">Draft</span>}
+                </a>
+                {post.description && (
+                  <p class="entry-dek" lang={post.lang}>
+                    {post.description}
+                  </p>
+                )}
+              </div>
+              <p class="entry-meta">
+                {post.category && <span class="entry-cat">{categoryLabel(post.category)}</span>}
+                <span class="entry-time">{post.minutes} min</span>
+                <button class="entry-state" type="button" data-state data-mark-unread={post.url} aria-label={`Mark “${post.title}” as unread`} hidden />
+              </p>
+              <Icon name="arrow-right" size={16} class="entry-arrow" />
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
+</div>

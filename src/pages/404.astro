@@ -1,0 +1,27 @@
+---
+import Icon from '../components/Icon.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found">
+  <div class="page">
+    <section class="column not-found">
+      <svg class="lost-cup" width="120" height="120" viewBox="0 0 120 120" fill="none" aria-hidden="true" data-reveal style="--i: 0">
+        <g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path class="lost-steam" d="M48 34c-4-4-4-8 0-12s4-8 0-12M64 34c-4-4-4-8 0-12s4-8 0-12" />
+          <path d="M26 46h60v20a28 28 0 0 1-28 28h-4a28 28 0 0 1-28-28Z" />
+          <path d="M86 54h5a12 12 0 0 1 0 24h-6" />
+          <path d="M18 106h76" />
+        </g>
+        <path class="lost-ribbon" d="M60 42h12v36l-6-5-6 5Z" />
+      </svg>
+      <p class="kicker" data-reveal style="--i: 1"><span>404</span></p>
+      <h1 class="page-title" data-reveal="title" style="--i: 2">This page wandered off</h1>
+      <p class="not-found-text" data-reveal style="--i: 3">The link may be old, or the post has moved. Try searching for it instead.</p>
+      <div class="button-row" data-reveal style="--i: 4">
+        <button class="button" type="button" data-search-open><Icon name="search" size={15} />Search posts</button>
+        <a class="button secondary" href="/"><Icon name="arrow-left" size={15} />Back to writing</a>
+      </div>
+    </section>
+  </div>
+</Base>

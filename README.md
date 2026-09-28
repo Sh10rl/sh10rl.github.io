@@ -1,66 +1,64 @@
-# Chirpy Starter
+# Shiori's Coffee Nook
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+Source for [sh10rl.top](https://sh10rl.top). Built with [Astro](https://astro.build): static HTML, about 12 KB of JavaScript (gzipped), no web fonts, every asset self-hosted.
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+## Writing
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
+Add a Markdown file to `posts/`. That's it.
 
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
+```md
+# Title of the post
 
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
+Text starts here.
 ```
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+Nothing else is required:
 
-## Usage
+| | Where it comes from | Override (optional) |
+| --- | --- | --- |
+| Title | the leading `# heading` | `title:` in front matter |
+| Date | the commit that first added the file | `2026-09-28-` file name prefix, or `date:` |
+| Category | the folder, e.g. `posts/ctf/foo.md` | `categories: [ctf]` |
+| Summary | the first paragraph | `description:` |
+| URL | the file name: `posts/foo.md` → `/posts/foo/` | |
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+- **Images**: any relative path works. Typora's "copy image to `./../assets/img/${filename}`" setting keeps working, as does putting images next to the post.
+- **Drafts**: prefix the file name (or a folder) with `_`, e.g. `posts/_idea.md`. Drafts show up in `pnpm dev` only.
+- **File names are URLs**: two posts with the same file name would share one URL, so the build stops and names both files.
+- **Extras**: math with `$…$` / `$$…$$`, callouts with `> [!NOTE]` (`TIP`, `IMPORTANT`, `WARNING`, `CAUTION`), diagrams with a `mermaid` code block, footnotes with `[^1]`.
+- **Pages**: `pages/about.md` becomes `/about/`, and every page in `pages/` gets a link in the header.
 
-## Local Development
+## Local development
 
-Default dev server (livereload + incremental, polling required on WSL `/mnt/c` mounts):
+Requires Node 22.12+ and pnpm.
 
 ```bash
-bundle exec jekyll serve --livereload --force-polling --incremental
+pnpm install
+pnpm dev                      # http://localhost:4321, live reload
+pnpm build && pnpm preview    # production build, served at http://localhost:4321
+pnpm check                    # type-check
 ```
 
-Site at <http://127.0.0.1:4000/>.
+## Deploying
 
-Variants:
+Push to `main`. `.github/workflows/pages-deploy.yml` builds the site and publishes it to GitHub Pages.
 
-```bash
-# View drafts (_drafts/)
-bundle exec jekyll serve --livereload --force-polling --incremental --drafts
+## Design
 
-# Use a different port (when 4000 is occupied)
-bundle exec jekyll serve --port 4001 --livereload --force-polling --incremental
+The whole site sits on one flat colour with a fine print grain, and code, cards and chips are lighter slips laid on it. The header, search and popovers are frosted glass floating above.
 
-# Full rebuild (when incremental cache gets stale)
-rm -rf .jekyll-cache _site && bundle exec jekyll serve --livereload --force-polling
+- `src/styles/tokens.css` holds the colours, the type scale, the two materials and the springs. Components name a role such as `--type-meta` or `--spring-snappy` instead of a raw value.
+- Text is set in each platform's own fonts, which are drawn to pair Latin with Chinese.
+- Motion runs on springs. CSS gets them as `linear()` curves, and `src/scripts/motion.ts` uses the same constants, so a motion that gets interrupted keeps its speed and turns toward the new target.
+- Each post remembers how far you read, in `localStorage` only, and offers to pick up there on your next visit.
+- Click a reading status in the list or choose “Mark as unread” at the end of a post to reset it.
+
+## Layout
+
 ```
-
-## Contributing
-
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
-
-## License
-
-This work is published under [MIT][mit] License.
-
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+posts/          articles
+pages/          standalone pages (about, friends)
+assets/img/     post images
+public/         files served as-is (favicons, robots.txt)
+src/            site code: layouts, styles, Markdown pipeline
+```

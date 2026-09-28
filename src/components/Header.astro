@@ -1,0 +1,80 @@
+---
+import { getPages } from '../lib/posts';
+import { site } from '../site.config';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  /** Article pages get a second face: progress, the current section, contents and text size. */
+  article?: boolean;
+}
+
+const { article = false } = Astro.props;
+const path = Astro.url.pathname;
+const pages = await getPages();
+const writing = path === '/' || /^\/(posts|categories|tags)\//.test(path);
+const nav = [
+  { url: '/', title: 'Writing', current: writing },
+  ...pages.map((page) => ({ url: page.url, title: page.title, current: path.startsWith(page.url) })),
+];
+---
+
+<header class="site-header">
+  <div class="capsule" data-capsule data-state="nav">
+    <div class="face face-nav" data-face="nav">
+      <a class="brand" href="/" aria-label={`${site.title}, home`}>
+        <Logo />
+        <span class="brand-name">{site.title}</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        {
+          nav.map((item) => (
+            <a href={item.url} aria-current={item.current ? 'page' : undefined}>
+              {item.current && <span class="nav-chip" aria-hidden="true" />}
+              <span class="nav-label">{item.title}</span>
+            </a>
+          ))
+        }
+      </nav>
+      <div class="actions">
+        <button class="glass-btn search-btn" type="button" data-search-open aria-label="Search posts" aria-keyshortcuts="Meta+K Control+K /">
+          <Icon name="search" size={16} />
+          <span class="search-label">Search</span>
+          <kbd data-mod-key>⌘K</kbd>
+        </button>
+        <button class="glass-btn theme-btn" type="button" data-theme-toggle aria-label="Toggle dark mode">
+          <svg class="theme-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <mask id="ThemeMask">
+              <rect width="24" height="24" fill="#fff"></rect>
+              <circle class="theme-bite" cx="16.6" cy="7.4" r="6.4" fill="#000"></circle>
+            </mask>
+            <circle class="theme-core" cx="12" cy="12" r="5" fill="currentColor" mask="url(#ThemeMask)"></circle>
+            <g class="theme-rays" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+              <path d="M12 2.2v1.9M12 19.9v1.9M4.1 4.1l1.35 1.35M18.55 18.55l1.35 1.35M2.2 12h1.9M19.9 12h1.9M4.1 19.9l1.35-1.35M18.55 5.45l1.35-1.35"></path>
+            </g>
+          </svg>
+        </button>
+      </div>
+    </div>
+    {
+      article && (
+        <div class="face face-read" data-face="read" aria-hidden="true" inert>
+          <button class="ring-btn" type="button" data-scroll-top aria-label="Back to top">
+            <svg class="ring" viewBox="0 0 36 36" aria-hidden="true">
+              <circle class="ring-track" cx="18" cy="18" r="15" />
+              <circle class="ring-fill" cx="18" cy="18" r="15" pathLength="1" />
+            </svg>
+            <Icon name="arrow-up" size={14} />
+          </button>
+          <button class="now" type="button" data-toc-open popovertarget="TocSheet" aria-haspopup="dialog" aria-label="Contents">
+            <span class="now-text" data-now />
+            <Icon name="chevron-down" size={14} />
+          </button>
+          <button class="glass-btn prefs-btn" type="button" data-prefs-open popovertarget="ReadingPrefs" aria-haspopup="dialog" aria-label="Reading settings">
+            Aa
+          </button>
+        </div>
+      )
+    }
+  </div>
+</header>

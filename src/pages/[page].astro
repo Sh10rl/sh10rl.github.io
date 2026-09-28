@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { derivedOf, getPages } from '../lib/posts';
+
+export async function getStaticPaths() {
+  const pages = await getPages();
+  return pages.map((page) => ({ params: { page: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page.entry);
+const meta = derivedOf(page.entry);
+---
+
+<Base title={page.title} description={meta?.excerpt}>
+  <div class="page">
+    <article class:list={['column', 'standalone', page.id]}>
+      <header class="page-head">
+        <h1 class="page-title" data-reveal="title" style="--i: 0">{page.title}</h1>
+      </header>
+      <div class:list={['prose', page.id]} lang={meta?.lang} data-article data-reveal style="--i: 1">
+        <Content />
+      </div>
+    </article>
+  </div>
+</Base>

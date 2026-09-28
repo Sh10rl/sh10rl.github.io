@@ -1,0 +1,19 @@
+---
+// A cup with a bookmark ribbon tucked over the rim: the coffee nook, and "Shiori" (栞, bookmark).
+interface Props {
+  size?: number;
+}
+
+const { size = 22 } = Astro.props;
+---
+
+<svg class="logo" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <g class="logo-steam" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <path d="M8.6 7c-.9-.8-.9-1.7 0-2.5s.9-1.7 0-2.5" pathLength="1" />
+    <path d="M12.6 7c-.9-.8-.9-1.7 0-2.5s.9-1.7 0-2.5" pathLength="1" />
+  </g>
+  <path class="logo-handle" d="M17 11.4h.9a2.6 2.6 0 0 1 0 5.2h-1.4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+  <path class="logo-cup" d="M4 9.6h13v4.2a5.8 5.8 0 0 1-5.8 5.8H9.8A5.8 5.8 0 0 1 4 13.8Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+  <path class="logo-ribbon" d="M12.6 8.6h2.8v7.6l-1.4-1.1-1.4 1.1Z" />
+  <path class="logo-saucer" d="M3.2 22h14.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+</svg>

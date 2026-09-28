@@ -1,0 +1,39 @@
+---
+// Reading settings: text size and theme, remembered across visits.
+const sizes = [
+  { key: 's', label: 'Small', px: 12 },
+  { key: 'm', label: 'Default', px: 14 },
+  { key: 'l', label: 'Large', px: 16.5 },
+  { key: 'xl', label: 'Extra large', px: 19 },
+];
+const themes = [
+  { key: 'light', label: 'Light' },
+  { key: 'system', label: 'Auto' },
+  { key: 'dark', label: 'Dark' },
+];
+---
+
+<div class="prefs" id="ReadingPrefs" popover role="dialog" aria-label="Reading settings" data-prefs>
+  <p class="prefs-label" id="PrefsSize">Text size</p>
+  <div class="segmented" role="radiogroup" aria-labelledby="PrefsSize" data-group="size">
+    <span class="seg-thumb" aria-hidden="true"></span>
+    {
+      sizes.map((s) => (
+        <button type="button" role="radio" aria-checked="false" data-value={s.key} aria-label={s.label}>
+          <span style={`font-size: ${s.px}px`}>A</span>
+        </button>
+      ))
+    }
+  </div>
+  <p class="prefs-label" id="PrefsTheme">Theme</p>
+  <div class="segmented" role="radiogroup" aria-labelledby="PrefsTheme" data-group="theme">
+    <span class="seg-thumb" aria-hidden="true"></span>
+    {
+      themes.map((t) => (
+        <button type="button" role="radio" aria-checked="false" data-value={t.key}>
+          {t.label}
+        </button>
+      ))
+    }
+  </div>
+</div>
