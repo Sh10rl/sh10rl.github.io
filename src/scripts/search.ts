@@ -1,6 +1,7 @@
 import { HIGHLIGHT_KEY, highlightTerms } from './highlight';
 import { flash } from './reading';
-import { headingTarget, scrollToY } from './motion';
+import { finePointer, headingTarget, scrollToY } from './motion';
+import { closeSearch, composing, dialog, form, input, list } from './search-dialog';
 
 type Section = [id: string, heading: string, text: string];
 interface Doc {
@@ -22,10 +23,6 @@ interface Hit {
   sections: { index: number; score: number; pos: number }[];
 }
 
-const dialog = document.querySelector<HTMLDialogElement>('[data-search]')!;
-const input = dialog.querySelector('input')!;
-const form = dialog.querySelector('form')!;
-const list = dialog.querySelector<HTMLElement>('.search-results')!;
 const count = dialog.querySelector<HTMLElement>('[data-search-count]')!;
 
 let docs: Indexed[] | undefined;
@@ -34,7 +31,6 @@ let failed = false;
 let items: HTMLAnchorElement[] = [];
 let cursor: HTMLElement | null = null;
 let selected = 0;
-let composing = false;
 
 const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
@@ -68,35 +64,11 @@ export function prefetch() {
 
 let fresh = false;
 
-/** Opens (or closes) the palette. It grows out of `from`, the control that asked for it. */
-export function toggle(from?: Element | null) {
-  if (dialog.open) return close();
-  dialog.classList.remove('instant');
-  dialog.showModal();
-  if (from) {
-    const r = from.getBoundingClientRect();
-    const d = dialog.getBoundingClientRect();
-    dialog.style.setProperty('--origin', `${r.left + r.width / 2 - d.left}px ${r.top + r.height / 2 - d.top}px`);
-  }
-  input.select();
+export function open() {
   fresh = true;
   load();
   render();
 }
-
-/** Release modal focus immediately; CSS handles the visual exit. */
-function close(immediate = false) {
-  if (!dialog.open) return;
-  composing = false;
-  dialog.classList.toggle('instant', immediate);
-  dialog.close();
-}
-
-dialog.addEventListener('cancel', (e) => {
-  e.preventDefault();
-  close();
-});
-dialog.querySelector('[data-search-close]')?.addEventListener('click', () => close());
 
 function terms(query: string): string[] {
   return [...new Set(query.toLowerCase().split(/\s+/).filter(Boolean))];
@@ -240,7 +212,7 @@ function go(el: HTMLAnchorElement, newTab = false) {
   const query = JSON.parse(el.dataset.terms || '[]') as string[];
   if (newTab) return window.open(url, '_blank', 'noopener');
   const samePage = url.pathname === location.pathname;
-  close(!samePage);
+  closeSearch(!samePage);
   if (samePage) {
     history.replaceState(history.state, '', url.hash || location.pathname);
     const target = url.hash ? document.getElementById(decodeURIComponent(url.hash.slice(1))) : null;
@@ -259,9 +231,6 @@ input.addEventListener('input', () => {
   if (!docs && !loading) load();
   render();
 });
-input.addEventListener('compositionstart', () => { composing = true; });
-input.addEventListener('compositionend', () => { composing = false; });
-
 // A mobile keyboard can submit the form without a preceding Enter key event.
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -270,11 +239,7 @@ form.addEventListener('submit', (event) => {
 
 input.addEventListener('keydown', (e) => {
   if (composing || e.isComposing || e.keyCode === 229) return;
-  if (e.key === 'Escape') {
-    // A search input would spend the first Esc clearing its text; close in one press, as the hint says.
-    e.preventDefault();
-    close();
-  } else if (e.key === 'ArrowDown' || (e.key === 'n' && e.ctrlKey)) {
+  if (e.key === 'ArrowDown' || (e.key === 'n' && e.ctrlKey)) {
     e.preventDefault();
     select(selected + 1);
   } else if (e.key === 'ArrowUp' || (e.key === 'p' && e.ctrlKey)) {
@@ -287,6 +252,7 @@ input.addEventListener('keydown', (e) => {
 });
 
 list.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'touch' || !finePointer.matches) return;
   const el = (e.target as Element).closest<HTMLAnchorElement>('.search-item');
   const index = el ? items.indexOf(el) : -1;
   if (index !== -1 && index !== selected) select(index, false);
@@ -297,8 +263,4 @@ list.addEventListener('click', (e) => {
   if (!el || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
   e.preventDefault();
   go(el);
-});
-
-dialog.addEventListener('click', (e) => {
-  if (e.target === dialog) close();
 });

@@ -1,9 +1,10 @@
-import { finePointer, reducedMotion, SNAPPY, Spring } from './motion';
+import { reducedMotion, SNAPPY, Spring } from './motion';
 
 /* One hover sheet for the whole list -------------------------------------- */
 
 function hoverSheet(list: HTMLElement) {
-  if (!finePointer.matches) return;
+  const hover = matchMedia('(min-width: 40.0625rem) and (hover: hover) and (pointer: fine)');
+  if (!hover.matches) return;
   list.classList.add('live');
   const sheet = document.createElement('span');
   sheet.className = 'entry-hover';
@@ -17,6 +18,7 @@ function hoverSheet(list: HTMLElement) {
   let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
   const show = (entry: HTMLElement) => {
+    if (!hover.matches) return;
     clearTimeout(hideTimer);
     if (entry === current) return;
     const top = entry.getBoundingClientRect().top - list.getBoundingClientRect().top;
@@ -51,6 +53,7 @@ function hoverSheet(list: HTMLElement) {
   };
 
   list.addEventListener('pointerover', (e) => {
+    if (e.pointerType === 'touch') return;
     const entry = (e.target as Element).closest<HTMLElement>('.entry');
     if (entry) {
       hovered = entry;
@@ -63,6 +66,7 @@ function hoverSheet(list: HTMLElement) {
     hideTimer = setTimeout(restore, 60);
   });
   list.addEventListener('focusin', (e) => {
+    if (!(e.target as Element).matches(':focus-visible')) return;
     const entry = (e.target as Element).closest<HTMLElement>('.entry');
     if (entry) show(entry);
   });
@@ -75,6 +79,7 @@ function hoverSheet(list: HTMLElement) {
     y.set(current.getBoundingClientRect().top - list.getBoundingClientRect().top);
     h.set(current.offsetHeight);
   });
+  hover.addEventListener('change', () => { if (!hover.matches) hide(); });
   return hide;
 }
 

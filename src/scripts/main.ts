@@ -7,6 +7,7 @@ import { initProse } from './prose';
 import { initReading } from './reading';
 import { toggleTheme } from './theme';
 import { copy } from './toast';
+import { prefetchSearch, toggleSearch } from './search-dialog';
 
 const root = document.documentElement;
 
@@ -16,13 +17,9 @@ root.classList.add('fx');
 
 /* Search ---------------------------------------------------------------------- */
 
-let searchModule: Promise<typeof import('./search')> | undefined;
-const loadSearch = () => (searchModule ??= import('./search'));
-
 document.querySelectorAll('[data-search-open]').forEach((el) => {
-  const warm = () => loadSearch().then((m) => m.prefetch());
-  el.addEventListener('pointerenter', warm, { once: true });
-  el.addEventListener('focus', warm, { once: true });
+  el.addEventListener('pointerenter', prefetchSearch, { once: true });
+  el.addEventListener('focus', prefetchSearch, { once: true });
 });
 
 if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) {
@@ -36,10 +33,10 @@ document.addEventListener('keydown', (e) => {
   const trigger = document.querySelector('.search-btn');
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();
-    loadSearch().then((m) => m.toggle(trigger));
+    toggleSearch(trigger);
   } else if (e.key === '/' && !e.metaKey && !e.ctrlKey && !isTyping(e.target)) {
     e.preventDefault();
-    loadSearch().then((m) => m.toggle(trigger));
+    toggleSearch(trigger);
   }
 });
 
@@ -51,7 +48,7 @@ document.addEventListener('click', (e) => {
   const searchButton = target.closest('[data-search-open]');
   if (searchButton) {
     e.preventDefault();
-    loadSearch().then((m) => m.toggle(searchButton));
+    toggleSearch(searchButton);
     return;
   }
 

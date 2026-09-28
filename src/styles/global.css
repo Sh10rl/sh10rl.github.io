@@ -259,9 +259,7 @@ kbd {
 
 /* Selection surfaces use frost with a light inner edge. */
 .tab-chip,
-.tab-indicator,
-.entry-hover,
-.entries:not(.live) .entry:is(:hover, :focus-within) {
+.tab-indicator {
   background: var(--frost), var(--glass-sheen), var(--glass-tint);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
@@ -1073,6 +1071,7 @@ kbd {
 
 /* One highlight serves the whole list and glides from row to row with the pointer. */
 .entry-hover {
+  display: none;
   position: absolute;
   top: 0;
   left: calc(-1 * min(1.125rem, var(--column-pad) - 0.25rem));
@@ -1086,15 +1085,26 @@ kbd {
     background-color var(--t-theme) var(--ease-in-out);
 }
 
-.entries:not(.live) .entry:is(:hover, :focus-within) {
-  border-radius: var(--r-md);
-}
+@media (min-width: 40.0625rem) and (hover: hover) and (pointer: fine) {
+  .entry-hover,
+  .entries:not(.live) .entry:is(:hover, :focus-within) {
+    background: var(--frost), var(--glass-sheen), var(--glass-tint);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border-radius: var(--r-md);
+    box-shadow:
+      inset 0 1px 0 light-dark(rgb(255 255 255 / 0.8), rgb(255 255 255 / 0.14)),
+      inset 0 0 0 1px var(--line-2);
+  }
 
-.entry-hover.on {
-  opacity: 1;
-}
+  .entry-hover {
+    display: block;
+  }
 
-@media (hover: hover) and (pointer: fine) {
+  .entry-hover.on {
+    opacity: 1;
+  }
+
   .entries.live .entry[data-active] .entry-arrow,
   .entries:not(.live) .entry:hover .entry-arrow,
   .entries:not(.live):not(:hover) .entry:focus-within .entry-arrow {
@@ -2126,8 +2136,9 @@ kbd {
    ========================================================================== */
 
 .search {
+  top: var(--search-viewport-top, 0px);
   width: min(40rem, 100vw - 2rem);
-  max-height: min(34rem, 100dvh - 6rem);
+  max-height: min(34rem, var(--search-viewport-height, 100dvh) - 6rem);
   margin: 12vh auto auto;
   padding: 0;
   border: 0;
@@ -2256,6 +2267,7 @@ kbd {
 .search-results {
   position: relative;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 0.5rem;
@@ -2410,7 +2422,7 @@ kbd {
 @media (max-width: 40rem) {
   .search {
     margin-top: 0.75rem;
-    max-height: calc(100dvh - 1.5rem);
+    max-height: calc(var(--search-viewport-height, 100dvh) - 1.5rem);
   }
 
   .search-foot .hint {

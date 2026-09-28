@@ -1,0 +1,334 @@
+{
+  "date": "2026-09-28T17:17:21.283Z",
+  "scope": "Mobile homepage direct article navigation and synchronous search dialog opening, lazy search loading, touch selection and viewport handling.",
+  "status": "Local verification passed; commit and push authorized.",
+  "conditions": {
+    "chrome": "Existing owned browser-act Chrome session; native clicks and input, same-origin iframes at 320, 390 and 640 CSS px.",
+    "safari": "Safari 27.0 on macOS, Responsive Design Mode at 390×844 and 320×360. Native UI input, clicks and screenshots.",
+    "faults": "Local-only static server delayed the search chunk by 8000ms and separately returned 503 for the module and index.",
+    "synthetic": "Composition boundaries and touch pointer movement use DOM events. Keyboard occupancy is simulated by shrinking Visual Viewport height and changing offsetTop.",
+    "limits": "No physical iPhone or iOS simulator. Desktop WebKit and viewport simulation cannot verify a real iOS keyboard or touch event sequence."
+  },
+  "total": 26,
+  "passed": 26,
+  "suites": [
+    {
+      "name": "mobile-results",
+      "total": 9,
+      "passed": 9,
+      "results": [
+        {
+          "name": "Cold search opens and focuses synchronously during trusted click, before delayed module",
+          "passed": true,
+          "evidence": {
+            "tap": [
+              {
+                "open": true,
+                "focused": true,
+                "trusted": true
+              }
+            ],
+            "open": true,
+            "loading": "Loading…",
+            "loaded": false
+          }
+        },
+        {
+          "name": "Submitting while search code loads leaves the dialog open",
+          "passed": true,
+          "evidence": {
+            "open": true,
+            "path": "/",
+            "value": "ELF"
+          }
+        },
+        {
+          "name": "Closing during module load stays closed after it finishes",
+          "passed": true,
+          "evidence": {
+            "open": false,
+            "path": "/"
+          }
+        },
+        {
+          "name": "Reopening searches text entered before module load",
+          "passed": true,
+          "evidence": {
+            "open": true,
+            "value": "ELF",
+            "items": [
+              "/posts/elf-sections-segments-and-mapping/#side-note-3-wtf-is-the-output-of-readelf",
+              "/posts/elf-sections-segments-and-mapping/#program-headers-and-pt_load-segments",
+              "/posts/hgame-week1-writeup/#compress-dot-new",
+              "/posts/dart/#1re3",
+              "/posts/dart/#6re1",
+              "/posts/re-vm-challenges-collection/#acquire-side-channel-info",
+              "/posts/bash-linux-basics/#bourne-again-shell",
+              "/posts/nju-pa/#pa1-recursively-evaluate-an-expression",
+              "/posts/nctf-2025-wp/#safeprogram"
+            ]
+          }
+        },
+        {
+          "name": "Search result opens on one native click",
+          "passed": true,
+          "evidence": {
+            "path": "/posts/elf-sections-segments-and-mapping/",
+            "hash": "#side-note-3-wtf-is-the-output-of-readelf"
+          }
+        },
+        {
+          "name": "Unavailable module still opens an actionable error dialog",
+          "passed": true,
+          "evidence": {
+            "open": true,
+            "text": "Couldn’t load search. Check your connection and try again."
+          }
+        },
+        {
+          "name": "Unavailable module can be closed",
+          "passed": true
+        },
+        {
+          "name": "Unavailable index gives a visible retry message",
+          "passed": true,
+          "evidence": {
+            "open": true,
+            "text": "Couldn’t load the search index. Check your connection and try again."
+          }
+        },
+        {
+          "name": "Typing retries a failed index and finds Chinese results",
+          "passed": true,
+          "evidence": {
+            "value": "系统",
+            "items": 8
+          }
+        }
+      ]
+    },
+    {
+      "name": "mobile-layout-results",
+      "total": 13,
+      "passed": 13,
+      "results": [
+        {
+          "name": "320px: no article glass on hover; category glass remains",
+          "passed": true,
+          "evidence": {
+            "width": 320,
+            "background": "none",
+            "filter": "none",
+            "sheets": 0,
+            "active": 0,
+            "href": "/posts/dart/",
+            "categoryFilter": "blur(18px) saturate(1.7)"
+          }
+        },
+        {
+          "name": "320px: article opens with one native click",
+          "passed": true,
+          "evidence": {
+            "path": "/posts/dart/"
+          }
+        },
+        {
+          "name": "390px: no article glass on hover; category glass remains",
+          "passed": true,
+          "evidence": {
+            "width": 390,
+            "background": "none",
+            "filter": "none",
+            "sheets": 0,
+            "active": 0,
+            "href": "/posts/dart/",
+            "categoryFilter": "blur(18px) saturate(1.7)"
+          }
+        },
+        {
+          "name": "390px: article opens with one native click",
+          "passed": true,
+          "evidence": {
+            "path": "/posts/dart/"
+          }
+        },
+        {
+          "name": "640px: no article glass on hover; category glass remains",
+          "passed": true,
+          "evidence": {
+            "width": 640,
+            "background": "none",
+            "filter": "none",
+            "sheets": 0,
+            "active": 0,
+            "href": "/posts/dart/",
+            "categoryFilter": "blur(18px) saturate(1.7)"
+          }
+        },
+        {
+          "name": "640px: article opens with one native click",
+          "passed": true,
+          "evidence": {
+            "path": "/posts/dart/"
+          }
+        },
+        {
+          "name": "Desktop hover retains one glass highlight",
+          "passed": true,
+          "evidence": {
+            "active": 1,
+            "opacity": "1",
+            "display": "block",
+            "filter": "blur(18px) saturate(1.7)"
+          }
+        },
+        {
+          "name": "Touch pointer does not activate a desktop hover sheet",
+          "passed": true,
+          "evidence": {
+            "active": 0
+          }
+        },
+        {
+          "name": "Keyboard viewport shrink keeps close control and scrollable results in view",
+          "passed": true,
+          "evidence": {
+            "top": 102,
+            "bottom": 358,
+            "width": 340,
+            "resultsHeight": 160,
+            "scrollHeight": 785,
+            "close": {
+              "top": 108,
+              "bottom": 152,
+              "width": 44,
+              "height": 44
+            },
+            "fontSize": "17px"
+          }
+        },
+        {
+          "name": "Touch scroll preserves result selection; IME submit and Escape do not leave search",
+          "passed": true,
+          "evidence": {
+            "before": "SearchOption0",
+            "after": "SearchOption0",
+            "open": true,
+            "path": "/"
+          }
+        },
+        {
+          "name": "Empty search submission does not navigate or close",
+          "passed": true,
+          "evidence": {
+            "open": true,
+            "items": 0,
+            "text": "No results for “___no_matching_article___”",
+            "path": "/"
+          }
+        },
+        {
+          "name": "Mobile search reopens and finds Chinese text",
+          "passed": true,
+          "evidence": {
+            "items": 8,
+            "value": "系统"
+          }
+        },
+        {
+          "name": "Mobile result opens with one native click",
+          "passed": true,
+          "evidence": {
+            "path": "/posts/dart/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "mobile-edge-results",
+      "total": 4,
+      "passed": 4,
+      "results": [
+        {
+          "name": "Initial page leaves search module and index unloaded",
+          "passed": true,
+          "evidence": []
+        },
+        {
+          "name": "Composition started before lazy import still blocks Enter, submit and Escape",
+          "passed": true,
+          "evidence": {
+            "open": true,
+            "path": "/",
+            "items": 8
+          }
+        },
+        {
+          "name": "Native search close restores the previously focused opener",
+          "passed": true,
+          "evidence": {
+            "open": false,
+            "focus": "Search posts",
+            "tag": "BUTTON"
+          }
+        },
+        {
+          "name": "Arrow keys still select desktop results",
+          "passed": true,
+          "evidence": {
+            "selected": "SearchOption1"
+          }
+        }
+      ]
+    }
+  ],
+  "safariChecks": [
+    {
+      "name": "390×844: open search, enter ELF, one click opens the ELF article and matching section",
+      "passed": true,
+      "target": "/posts/elf-sections-segments-and-mapping/#side-note-3-wtf-is-the-output-of-readelf"
+    },
+    {
+      "name": "390×844: one homepage article click opens 软件系统安全赛",
+      "passed": true,
+      "target": "/posts/dart/"
+    },
+    {
+      "name": "390×844: Chinese 系统 query; one result click closes search and goes to the current article section",
+      "passed": true,
+      "target": "/posts/dart/#1re3"
+    },
+    {
+      "name": "320×360: search input and close control remain visible; result list scrolls within the dialog",
+      "passed": true,
+      "method": "Screenshot inspected in Safari Responsive Design Mode."
+    },
+    {
+      "name": "320×360: Escape closes; reopening preserves and selects ELF; close button returns to the page",
+      "passed": true
+    }
+  ],
+  "references": [
+    {
+      "url": "https://bugs.webkit.org/show_bug.cgi?id=195884",
+      "use": "WebKit explains why focus outside a user gesture may not bring up the iOS software keyboard. The exact reported iPhone failure was not reproduced on a physical device."
+    }
+  ],
+  "productionAssets": [
+    {
+      "file": "Base.astro_astro_type_script_index_0_lang.BwD5csg6.js",
+      "bytes": 38548,
+      "gzipBytes": 13177
+    },
+    {
+      "file": "search.ku2RnVzh.js",
+      "bytes": 5515,
+      "gzipBytes": 2634
+    }
+  ],
+  "checks": {
+    "typecheck": "pnpm check passed",
+    "build": "pnpm build passed; 40 static pages",
+    "diff": "git diff --check passed"
+  }
+}
