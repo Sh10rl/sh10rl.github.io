@@ -1,0 +1,460 @@
+{
+  "family": "Noto Serif SC",
+  "version": "2.003",
+  "license": "OFL-1.1",
+  "source": "https://raw.githubusercontent.com/google/fonts/2e61f4355afd22b801791b0df176065082423b87/ofl/notoserifsc/NotoSerifSC%5Bwght%5D.ttf",
+  "sourceSHA256": "050080d9255a86808f2945bffac582b31ef32bc36411ce29563b4961670c66f9",
+  "subsetTool": "fonttools.subset; flavor=woff2; layout_features=*; all variable weights retained",
+  "files": [
+    {
+      "file": "noto-serif-sc-fallback-001.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.5.woff2",
+      "bytes": 26792
+    },
+    {
+      "file": "noto-serif-sc-fallback-002.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.6.woff2",
+      "bytes": 15632
+    },
+    {
+      "file": "noto-serif-sc-fallback-003.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.21.woff2",
+      "bytes": 26052
+    },
+    {
+      "file": "noto-serif-sc-fallback-004.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.22.woff2",
+      "bytes": 85376
+    },
+    {
+      "file": "noto-serif-sc-fallback-005.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.23.woff2",
+      "bytes": 73816
+    },
+    {
+      "file": "noto-serif-sc-fallback-006.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.24.woff2",
+      "bytes": 82688
+    },
+    {
+      "file": "noto-serif-sc-fallback-007.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.25.woff2",
+      "bytes": 77948
+    },
+    {
+      "file": "noto-serif-sc-fallback-008.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.26.woff2",
+      "bytes": 71308
+    },
+    {
+      "file": "noto-serif-sc-fallback-009.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.27.woff2",
+      "bytes": 64624
+    },
+    {
+      "file": "noto-serif-sc-fallback-010.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.28.woff2",
+      "bytes": 67912
+    },
+    {
+      "file": "noto-serif-sc-fallback-011.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.29.woff2",
+      "bytes": 72804
+    },
+    {
+      "file": "noto-serif-sc-fallback-012.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.30.woff2",
+      "bytes": 76888
+    },
+    {
+      "file": "noto-serif-sc-fallback-013.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.31.woff2",
+      "bytes": 64200
+    },
+    {
+      "file": "noto-serif-sc-fallback-014.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.32.woff2",
+      "bytes": 67972
+    },
+    {
+      "file": "noto-serif-sc-fallback-015.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.33.woff2",
+      "bytes": 65908
+    },
+    {
+      "file": "noto-serif-sc-fallback-016.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.34.woff2",
+      "bytes": 64696
+    },
+    {
+      "file": "noto-serif-sc-fallback-017.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.35.woff2",
+      "bytes": 63740
+    },
+    {
+      "file": "noto-serif-sc-fallback-018.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.36.woff2",
+      "bytes": 57872
+    },
+    {
+      "file": "noto-serif-sc-fallback-019.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.37.woff2",
+      "bytes": 67880
+    },
+    {
+      "file": "noto-serif-sc-fallback-020.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.38.woff2",
+      "bytes": 75196
+    },
+    {
+      "file": "noto-serif-sc-fallback-021.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.39.woff2",
+      "bytes": 72296
+    },
+    {
+      "file": "noto-serif-sc-fallback-022.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.40.woff2",
+      "bytes": 66144
+    },
+    {
+      "file": "noto-serif-sc-fallback-023.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.41.woff2",
+      "bytes": 51544
+    },
+    {
+      "file": "noto-serif-sc-fallback-024.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.42.woff2",
+      "bytes": 62784
+    },
+    {
+      "file": "noto-serif-sc-fallback-025.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.43.woff2",
+      "bytes": 58376
+    },
+    {
+      "file": "noto-serif-sc-fallback-026.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.44.woff2",
+      "bytes": 72580
+    },
+    {
+      "file": "noto-serif-sc-fallback-027.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.45.woff2",
+      "bytes": 91388
+    },
+    {
+      "file": "noto-serif-sc-fallback-028.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.46.woff2",
+      "bytes": 77472
+    },
+    {
+      "file": "noto-serif-sc-fallback-029.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.47.woff2",
+      "bytes": 73920
+    },
+    {
+      "file": "noto-serif-sc-fallback-030.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.48.woff2",
+      "bytes": 64620
+    },
+    {
+      "file": "noto-serif-sc-fallback-031.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.49.woff2",
+      "bytes": 70356
+    },
+    {
+      "file": "noto-serif-sc-fallback-032.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.50.woff2",
+      "bytes": 64180
+    },
+    {
+      "file": "noto-serif-sc-fallback-033.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.51.woff2",
+      "bytes": 57280
+    },
+    {
+      "file": "noto-serif-sc-fallback-034.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.52.woff2",
+      "bytes": 67664
+    },
+    {
+      "file": "noto-serif-sc-fallback-035.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.53.woff2",
+      "bytes": 53848
+    },
+    {
+      "file": "noto-serif-sc-fallback-036.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.54.woff2",
+      "bytes": 69192
+    },
+    {
+      "file": "noto-serif-sc-fallback-037.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.55.woff2",
+      "bytes": 61492
+    },
+    {
+      "file": "noto-serif-sc-fallback-038.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.56.woff2",
+      "bytes": 69600
+    },
+    {
+      "file": "noto-serif-sc-fallback-039.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.57.woff2",
+      "bytes": 73948
+    },
+    {
+      "file": "noto-serif-sc-fallback-040.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.58.woff2",
+      "bytes": 82372
+    },
+    {
+      "file": "noto-serif-sc-fallback-041.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.59.woff2",
+      "bytes": 69556
+    },
+    {
+      "file": "noto-serif-sc-fallback-042.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.60.woff2",
+      "bytes": 61344
+    },
+    {
+      "file": "noto-serif-sc-fallback-043.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.61.woff2",
+      "bytes": 61428
+    },
+    {
+      "file": "noto-serif-sc-fallback-044.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.62.woff2",
+      "bytes": 79380
+    },
+    {
+      "file": "noto-serif-sc-fallback-045.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.63.woff2",
+      "bytes": 63876
+    },
+    {
+      "file": "noto-serif-sc-fallback-046.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.64.woff2",
+      "bytes": 51052
+    },
+    {
+      "file": "noto-serif-sc-fallback-047.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.65.woff2",
+      "bytes": 58524
+    },
+    {
+      "file": "noto-serif-sc-fallback-048.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.66.woff2",
+      "bytes": 69016
+    },
+    {
+      "file": "noto-serif-sc-fallback-049.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.67.woff2",
+      "bytes": 71720
+    },
+    {
+      "file": "noto-serif-sc-fallback-050.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.68.woff2",
+      "bytes": 54204
+    },
+    {
+      "file": "noto-serif-sc-fallback-051.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.69.woff2",
+      "bytes": 73520
+    },
+    {
+      "file": "noto-serif-sc-fallback-052.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.70.woff2",
+      "bytes": 53100
+    },
+    {
+      "file": "noto-serif-sc-fallback-053.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.71.woff2",
+      "bytes": 62984
+    },
+    {
+      "file": "noto-serif-sc-fallback-054.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.72.woff2",
+      "bytes": 65644
+    },
+    {
+      "file": "noto-serif-sc-fallback-055.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.73.woff2",
+      "bytes": 56024
+    },
+    {
+      "file": "noto-serif-sc-fallback-056.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.74.woff2",
+      "bytes": 74616
+    },
+    {
+      "file": "noto-serif-sc-fallback-057.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.75.woff2",
+      "bytes": 57820
+    },
+    {
+      "file": "noto-serif-sc-fallback-058.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.76.woff2",
+      "bytes": 65720
+    },
+    {
+      "file": "noto-serif-sc-fallback-059.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.77.woff2",
+      "bytes": 51728
+    },
+    {
+      "file": "noto-serif-sc-fallback-060.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.78.woff2",
+      "bytes": 71052
+    },
+    {
+      "file": "noto-serif-sc-fallback-061.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.79.woff2",
+      "bytes": 58748
+    },
+    {
+      "file": "noto-serif-sc-fallback-062.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.80.woff2",
+      "bytes": 45128
+    },
+    {
+      "file": "noto-serif-sc-fallback-063.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.81.woff2",
+      "bytes": 60692
+    },
+    {
+      "file": "noto-serif-sc-fallback-064.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.82.woff2",
+      "bytes": 62148
+    },
+    {
+      "file": "noto-serif-sc-fallback-065.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.83.woff2",
+      "bytes": 58764
+    },
+    {
+      "file": "noto-serif-sc-fallback-066.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.84.woff2",
+      "bytes": 42620
+    },
+    {
+      "file": "noto-serif-sc-fallback-067.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.85.woff2",
+      "bytes": 40392
+    },
+    {
+      "file": "noto-serif-sc-fallback-068.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.86.woff2",
+      "bytes": 47304
+    },
+    {
+      "file": "noto-serif-sc-fallback-077.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.100.woff2",
+      "bytes": 84624
+    },
+    {
+      "file": "noto-serif-sc-fallback-078.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.101.woff2",
+      "bytes": 77712
+    },
+    {
+      "file": "noto-serif-sc-fallback-079.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.102.woff2",
+      "bytes": 79544
+    },
+    {
+      "file": "noto-serif-sc-fallback-080.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.103.woff2",
+      "bytes": 83996
+    },
+    {
+      "file": "noto-serif-sc-fallback-081.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.104.woff2",
+      "bytes": 80996
+    },
+    {
+      "file": "noto-serif-sc-fallback-082.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.105.woff2",
+      "bytes": 81528
+    },
+    {
+      "file": "noto-serif-sc-fallback-083.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.106.woff2",
+      "bytes": 81600
+    },
+    {
+      "file": "noto-serif-sc-fallback-084.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.107.woff2",
+      "bytes": 79780
+    },
+    {
+      "file": "noto-serif-sc-fallback-085.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.108.woff2",
+      "bytes": 83428
+    },
+    {
+      "file": "noto-serif-sc-fallback-086.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.109.woff2",
+      "bytes": 79076
+    },
+    {
+      "file": "noto-serif-sc-fallback-087.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.110.woff2",
+      "bytes": 79484
+    },
+    {
+      "file": "noto-serif-sc-fallback-088.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.111.woff2",
+      "bytes": 81160
+    },
+    {
+      "file": "noto-serif-sc-fallback-089.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.112.woff2",
+      "bytes": 76032
+    },
+    {
+      "file": "noto-serif-sc-fallback-090.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.113.woff2",
+      "bytes": 75852
+    },
+    {
+      "file": "noto-serif-sc-fallback-091.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.114.woff2",
+      "bytes": 74752
+    },
+    {
+      "file": "noto-serif-sc-fallback-092.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.115.woff2",
+      "bytes": 72516
+    },
+    {
+      "file": "noto-serif-sc-fallback-093.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.116.woff2",
+      "bytes": 67224
+    },
+    {
+      "file": "noto-serif-sc-fallback-094.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.117.woff2",
+      "bytes": 66580
+    },
+    {
+      "file": "noto-serif-sc-fallback-095.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.118.woff2",
+      "bytes": 58128
+    },
+    {
+      "file": "noto-serif-sc-fallback-096.woff2",
+      "url": "https://fonts.gstatic.com/s/notoserifsc/v35/H4chBXePl9DZ0Xe7gG9cyOj7oqOcaThrVMcaeccjhXXDsOyAEEmuIi6j7j64sLjgBtMI1z49XW4.119.woff2",
+      "bytes": 103800
+    },
+    {
+      "file": "noto-serif-sc-home.woff2",
+      "subset": "一三上且两个义了二于些享今件使入全公关写出分到制剑力务助化匹协后向和善器在城域基大天安巨帮并式强当态手找拥接文新时是有服本机来杯析查档检模污泛洞测漏潜点理生用的研础究章笔算篇系练统网羊能自解计记论语读赛软运进逆道配阅陇静顺预领题首",
+      "bytes": 41368
+    },
+    {
+      "file": "noto-serif-sc-articles.woff2",
+      "subset": "、。下不与专世业东丢严中丰串临为主举么之乎乘也习事互五交亦产人什仅介仍从他代令以们任企优会传伪估似但位低体何作你佬佳例供依便保信俩修倍倒候值假偏做停傅储像允元充先免八六共兴其具典兼内册再冲决况净准减几函刀切划列则刚创初判利别前剪割功加动包区十半单卡卫危即历压原厨去参又叉及友双反发取受变叠口另只叫召可台右号各合同名吗否吧含听启呈告员周味命咱品哈响哦哪啥喂喽嘟四回因围固图地址均坐块型堆塔塞填境壳处备复外多够太夫失头夹奇套好如妙始姑娃子字存学它完官定实审家容寄密富对寻导将尊小少尝就尽尾局层展属嵌工左巧差己已布师带帧常幂干平幻广序库应底度庭廊建开异弃引张弱归录形影往征径待很得循微心必志快念怎怜思急性怪总恢息恶悉情想意感懂成我或战截户所才扑打执扩扫扮扰批技把抓护报抽担拆拉拓拖拟拦择括拼拿持指按挑挨挺换据掉排探控推掩描提插握搜携撑播撰擅操擎支收改放故效敏散数敲整料断方施族无既日明易星显普晰暂更曼最期未末术杂权材束条板构果架柏某染标栈树校样核根格案桌梭楚概次欢欧止正此步殊段每比水永求汇沙没治法波注洗活派流浏淆深混添清游源溢溯满滤演漠澄灵烦然照熟爆片版牌特状独猜率玩环现甚由申界留疑白监盒盖目直相省看真着瞬知矩短码破硬确示禁离种称移程稳空穿立站竞端符第等答筛筹签简管箱类粒精素索约级纯线组细织终绍经绑结给络绝继续维缀缓编缩缺罗置翻老考者而耐耦职联肯胜胡脚脱至致舍般色节花若草荐获菜落蓝藏虑虚虽行衡补表被装裹西要覆见观规视览觉角触言订认讨让训讲许设访证评识诉词译试话询该误说请谁调象负责败质购贴费资赋赖走起超越趣跃跟路跳踪身转轮载较辑输边达过迎近返还这远连述退送适选逐递通逝造逻遇遍遵避那邻部都采释里重量针钥钩钱链锁错键长门闭问间防阴阵阶阿附际陈降限除险随隐隧难集雇零雾需非面项须顾顿频额风饱馈驱验骤高魔麻黑默齐！（），：；？",
+      "bytes": 269172
+    }
+  ]
+}

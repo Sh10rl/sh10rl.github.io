@@ -73,8 +73,8 @@
     'Apple Color Emoji', 'Segoe UI Emoji';
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', 'Cascadia Code', Menlo, Consolas,
     'Liberation Mono', 'PingFang SC', 'Microsoft YaHei', monospace;
-  --font-serif: 'Times New Roman', 'Songti SC', 'Noto Serif CJK SC', 'Noto Serif SC', SimSun, serif;
-  --font-source: 'Source Serif 4', 'Songti SC', 'Noto Serif CJK SC', 'Noto Serif SC', SimSun, serif;
+  --font-serif: 'Times New Roman', 'Noto Serif SC', 'Songti SC', 'Noto Serif CJK SC', SimSun, serif;
+  --font-source: 'Source Serif 4', 'Noto Serif SC', 'Songti SC', 'Noto Serif CJK SC', SimSun, serif;
   --font-text: var(--font-source);
 
   /* One scale. Everything on the site is set in one of these steps. */
