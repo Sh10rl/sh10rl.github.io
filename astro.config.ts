@@ -7,7 +7,6 @@ import { remarkCallouts, remarkLegacy, remarkMeta } from './src/lib/markdown/rem
 import { shikiContrast } from './src/lib/markdown/shiki-contrast';
 import { shikiFold } from './src/lib/markdown/shiki-fold';
 import { site } from './src/site.config';
-import { localEditor } from './src/integrations/editor';
 
 // Lightning CSS encodes browser versions as (major << 16) | (minor << 8).
 const v = (major: number, minor = 0) => (major << 16) | (minor << 8);
@@ -16,7 +15,6 @@ export default defineConfig({
   site: site.url,
   compressHTML: true,
   devToolbar: { enabled: false },
-  integrations: [localEditor()], // The writing interface is injected only during astro dev.
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   redirects: {
     '/page2/': '/',

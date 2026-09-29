@@ -851,13 +851,6 @@ kbd {
   margin-bottom: clamp(0.75rem, 2.5vw, 1.25rem);
 }
 
-.write-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font: var(--type-meta);
-  color: var(--accent);
-}
-
 /* A glass indicator follows the selected category. */
 .tabs {
   position: relative;
