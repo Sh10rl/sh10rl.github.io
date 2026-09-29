@@ -46,8 +46,10 @@ const jsonLd = {
         <div class="post-meta" data-reveal style="--i: 0">
           <p class="kicker">
             {post.category && <a class="kicker-cat" href={`/categories/${post.category}/`}>{categoryLabel(post.category)}</a>}
-            <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
-            <span>{post.minutes} min read</span>
+            <span class="kicker-details">
+              <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+              <span>{post.minutes} min read</span>
+            </span>
           </p>
         </div>
         <h1 class="post-title" id="PostTitle" lang={post.lang} style="--i: 1" data-reveal="title">
