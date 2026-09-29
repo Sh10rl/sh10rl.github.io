@@ -9,6 +9,8 @@ export const site = {
     name: 'Shiori',
     email: '24080516@hdu.edu.cn',
     github: 'https://github.com/sh10rl',
+    bangumi: 'https://bgm.tv/user/720538',
+    yamibo: 'https://bbs.yamibo.com/?585914',
   },
   /** Display names for category folders / front-matter categories. Anything else is title-cased. */
   categories: {

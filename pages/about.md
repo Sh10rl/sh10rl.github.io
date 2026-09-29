@@ -5,6 +5,6 @@ order: 5
 math: true
 ---
 
-Hello! I'm Shiori. Thanks for stopping by my modest corner of the web!
 
-I'm a Cybersecurity undergraduate @ Hangzhou Dianzi University \| Reverse Engineering CTFer @ [Vidar-Team](https://vidar.club/).
+A third-year Cybersecurity undergraduate at Hangzhou Dianzi University.
+Thanks for stopping by, where I write about my life and thoughts.

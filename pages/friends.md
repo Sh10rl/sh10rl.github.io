@@ -5,8 +5,8 @@ order: 4
 ---
 
 - [Seal](https://blog.seal.college/)
-- [Tremse](https://www.tremse.cn/)
-- [toFv](https://www.cnblogs.com/T0fV404)
+- [Tremse](https://blog.tremse.cn/)
+- [toFv](https://t0fv404.top/)
 - [nan0in](https://nan0in27.cn/)
 - [z221x](https://www.z221x.website/)
 - [CSMantle](https://csmantle.top/)
@@ -20,3 +20,6 @@ order: 4
 - [柏喵Sakura](https://baimeow.cn/)
 - [summ2](https://summ2.link/)
 - [M1sak1](https://blog.yodelist.icu)
+- [Arkerny](https://blog.akn.moe/)
+- [ScaredCube](https://sccube.link/)
+- [c0d4](https://c0d4.ink/)
