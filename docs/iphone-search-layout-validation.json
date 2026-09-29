@@ -1,0 +1,821 @@
+{
+  "date": "2026-09-29",
+  "scope": "iPhone Safari search results height, mobile search layout, touch targets and safe areas",
+  "change": "Mobile search has a definite Visual Viewport height and grid rows: auto auto minmax(0, 1fr). Results scroll independently. Input focus stays synchronous; the index loads on demand with a timeout and retry.",
+  "limits": "No physical iPhone or iOS simulator was available. Safari checks used desktop WebKit responsive mode; keyboard dimensions were simulated in Chrome. These checks do not verify a real iOS keyboard animation.",
+  "checks": [
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 320,
+      "font": "",
+      "controls": [
+        {
+          "left": 12,
+          "right": 64.296875,
+          "w": 52.296875,
+          "h": 44
+        },
+        {
+          "left": 66.296875,
+          "right": 118.453125,
+          "w": 52.15625,
+          "h": 44
+        },
+        {
+          "left": 120.453125,
+          "right": 164.453125,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 168.453125,
+          "right": 212.453125,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 212.453125,
+          "right": 256.453125,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 256.453125,
+          "right": 300.453125,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 320,
+      "font": "serif",
+      "controls": [
+        {
+          "left": 12,
+          "right": 56,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 58,
+          "right": 102,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 104,
+          "right": 148,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 164,
+          "right": 208,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 208,
+          "right": 252,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 252,
+          "right": 296,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 320,
+      "font": "sans",
+      "controls": [
+        {
+          "left": 12,
+          "right": 60.578125,
+          "w": 48.578125,
+          "h": 44
+        },
+        {
+          "left": 62.578125,
+          "right": 112.625,
+          "w": 50.046875,
+          "h": 44
+        },
+        {
+          "left": 114.625,
+          "right": 158.625,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 164,
+          "right": 208,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 208,
+          "right": 252,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 252,
+          "right": 296,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 375,
+      "font": "",
+      "controls": [
+        {
+          "left": 16,
+          "right": 71.609375,
+          "w": 55.609375,
+          "h": 44
+        },
+        {
+          "left": 73.609375,
+          "right": 128.15625,
+          "w": 54.546875,
+          "h": 44
+        },
+        {
+          "left": 130.15625,
+          "right": 177.84375,
+          "w": 47.6875,
+          "h": 44
+        },
+        {
+          "left": 217,
+          "right": 261,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 261,
+          "right": 305,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 305,
+          "right": 349,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 375,
+      "font": "serif",
+      "controls": [
+        {
+          "left": 16,
+          "right": 70.984375,
+          "w": 54.984375,
+          "h": 44
+        },
+        {
+          "left": 72.984375,
+          "right": 126.984375,
+          "w": 54,
+          "h": 44
+        },
+        {
+          "left": 128.984375,
+          "right": 175.984375,
+          "w": 47,
+          "h": 44
+        },
+        {
+          "left": 217,
+          "right": 261,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 261,
+          "right": 305,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 305,
+          "right": 349,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 375,
+      "font": "sans",
+      "controls": [
+        {
+          "left": 16,
+          "right": 75.53125,
+          "w": 59.53125,
+          "h": 44
+        },
+        {
+          "left": 77.53125,
+          "right": 138.640625,
+          "w": 61.109375,
+          "h": 44
+        },
+        {
+          "left": 140.640625,
+          "right": 192.46875,
+          "w": 51.828125,
+          "h": 44
+        },
+        {
+          "left": 217,
+          "right": 261,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 261,
+          "right": 305,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 305,
+          "right": 349,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 390,
+      "font": "",
+      "controls": [
+        {
+          "left": 16,
+          "right": 79.421875,
+          "w": 63.421875,
+          "h": 44
+        },
+        {
+          "left": 81.421875,
+          "right": 144.71875,
+          "w": 63.296875,
+          "h": 44
+        },
+        {
+          "left": 146.71875,
+          "right": 199.53125,
+          "w": 52.8125,
+          "h": 44
+        },
+        {
+          "left": 232,
+          "right": 276,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 276,
+          "right": 320,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 320,
+          "right": 364,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 390,
+      "font": "serif",
+      "controls": [
+        {
+          "left": 16,
+          "right": 70.984375,
+          "w": 54.984375,
+          "h": 44
+        },
+        {
+          "left": 72.984375,
+          "right": 126.984375,
+          "w": 54,
+          "h": 44
+        },
+        {
+          "left": 128.984375,
+          "right": 175.984375,
+          "w": 47,
+          "h": 44
+        },
+        {
+          "left": 232,
+          "right": 276,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 276,
+          "right": 320,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 320,
+          "right": 364,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 390,
+      "font": "sans",
+      "controls": [
+        {
+          "left": 16,
+          "right": 75.53125,
+          "w": 59.53125,
+          "h": 44
+        },
+        {
+          "left": 77.53125,
+          "right": 138.640625,
+          "w": 61.109375,
+          "h": 44
+        },
+        {
+          "left": 140.640625,
+          "right": 192.46875,
+          "w": 51.828125,
+          "h": 44
+        },
+        {
+          "left": 232,
+          "right": 276,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 276,
+          "right": 320,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 320,
+          "right": 364,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 430,
+      "font": "",
+      "controls": [
+        {
+          "left": 16,
+          "right": 79.421875,
+          "w": 63.421875,
+          "h": 44
+        },
+        {
+          "left": 81.421875,
+          "right": 144.71875,
+          "w": 63.296875,
+          "h": 44
+        },
+        {
+          "left": 146.71875,
+          "right": 199.53125,
+          "w": 52.8125,
+          "h": 44
+        },
+        {
+          "left": 272,
+          "right": 316,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 316,
+          "right": 360,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 360,
+          "right": 404,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 430,
+      "font": "serif",
+      "controls": [
+        {
+          "left": 16,
+          "right": 70.984375,
+          "w": 54.984375,
+          "h": 44
+        },
+        {
+          "left": 72.984375,
+          "right": 126.984375,
+          "w": 54,
+          "h": 44
+        },
+        {
+          "left": 128.984375,
+          "right": 175.984375,
+          "w": 47,
+          "h": 44
+        },
+        {
+          "left": 272,
+          "right": 316,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 316,
+          "right": 360,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 360,
+          "right": 404,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Header touch targets and bounds",
+      "pass": true,
+      "width": 430,
+      "font": "sans",
+      "controls": [
+        {
+          "left": 16,
+          "right": 75.53125,
+          "w": 59.53125,
+          "h": 44
+        },
+        {
+          "left": 77.53125,
+          "right": 138.640625,
+          "w": 61.109375,
+          "h": 44
+        },
+        {
+          "left": 140.640625,
+          "right": 192.46875,
+          "w": 51.828125,
+          "h": 44
+        },
+        {
+          "left": 272,
+          "right": 316,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 316,
+          "right": 360,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 360,
+          "right": 404,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "name": "Synchronous input focus and page lock",
+      "pass": true,
+      "active": "INPUT"
+    },
+    {
+      "name": "Results visible with full titles",
+      "pass": true,
+      "height": 734,
+      "results": 7,
+      "first": "ELF sections, segments, and their mapping in memory"
+    },
+    {
+      "name": "Keyboard viewport height 460",
+      "pass": true,
+      "dialog": {
+        "x": 0,
+        "y": 24,
+        "width": 390,
+        "height": 460,
+        "top": 24,
+        "right": 390,
+        "bottom": 484,
+        "left": 0
+      },
+      "list": {
+        "x": 0,
+        "y": 134.5,
+        "width": 390,
+        "height": 349.5,
+        "top": 134.5,
+        "right": 390,
+        "bottom": 484,
+        "left": 0
+      }
+    },
+    {
+      "name": "Keyboard viewport height 280",
+      "pass": true,
+      "dialog": {
+        "x": 0,
+        "y": 24,
+        "width": 390,
+        "height": 280,
+        "top": 24,
+        "right": 390,
+        "bottom": 304,
+        "left": 0
+      },
+      "list": {
+        "x": 0,
+        "y": 134.5,
+        "width": 390,
+        "height": 169.5,
+        "top": 134.5,
+        "right": 390,
+        "bottom": 304,
+        "left": 0
+      }
+    },
+    {
+      "name": "Keyboard viewport height 200",
+      "pass": true,
+      "dialog": {
+        "x": 0,
+        "y": 24,
+        "width": 390,
+        "height": 200,
+        "top": 24,
+        "right": 390,
+        "bottom": 224,
+        "left": 0
+      },
+      "list": {
+        "x": 0,
+        "y": 134.5,
+        "width": 390,
+        "height": 89.5,
+        "top": 134.5,
+        "right": 390,
+        "bottom": 224,
+        "left": 0
+      }
+    },
+    {
+      "name": "Closing restores page position",
+      "pass": true,
+      "scrollY": 500
+    },
+    {
+      "name": "Chinese results",
+      "pass": true,
+      "first": "软件系统安全赛",
+      "count": "3 posts found"
+    },
+    {
+      "name": "Clear restores recent posts and input focus",
+      "pass": true
+    },
+    {
+      "name": "No results is visible and escaped",
+      "pass": true,
+      "text": "No results for “zzzz-no-matches-<script>”"
+    },
+    {
+      "name": "New query scrolls results to top",
+      "pass": true,
+      "scrollTop": 0
+    },
+    {
+      "name": "IME Enter does not navigate",
+      "pass": true
+    },
+    {
+      "name": "One click opens result",
+      "pass": true,
+      "url": "http://localhost:4321/posts/elf-sections-segments-and-mapping/#side-note-3-wtf-is-the-output-of-readelf"
+    },
+    {
+      "name": "Same article search closes and jumps",
+      "pass": true,
+      "hash": "#program-headers-and-pt_load-segments"
+    },
+    {
+      "name": "Network error exposes retry in short viewport",
+      "pass": true,
+      "list": 250,
+      "message": "Search couldn’t load.Try again"
+    },
+    {
+      "name": "Retry restores current-query results",
+      "pass": true,
+      "items": 7
+    },
+    {
+      "name": "Loading state keeps allocated result height",
+      "pass": true,
+      "height": 250
+    },
+    {
+      "name": "Stalled index request becomes retryable",
+      "pass": true,
+      "message": "Search couldn’t load.Try again"
+    },
+    {
+      "name": "Failure can be dismissed",
+      "pass": true
+    },
+    {
+      "name": "320px search font and theme layout",
+      "pass": true,
+      "theme": "light",
+      "font": "",
+      "listHeight": 250
+    },
+    {
+      "name": "320px search font and theme layout",
+      "pass": true,
+      "theme": "light",
+      "font": "serif",
+      "listHeight": 250
+    },
+    {
+      "name": "320px search font and theme layout",
+      "pass": true,
+      "theme": "light",
+      "font": "sans",
+      "listHeight": 250
+    },
+    {
+      "name": "320px search font and theme layout",
+      "pass": true,
+      "theme": "dark",
+      "font": "",
+      "listHeight": 250
+    },
+    {
+      "name": "320px search font and theme layout",
+      "pass": true,
+      "theme": "dark",
+      "font": "serif",
+      "listHeight": 250
+    },
+    {
+      "name": "320px search font and theme layout",
+      "pass": true,
+      "theme": "dark",
+      "font": "sans",
+      "listHeight": 250
+    },
+    {
+      "name": "Mobile keyboard form submission opens match",
+      "pass": true,
+      "path": "/posts/dart/"
+    },
+    {
+      "name": "Desktop dialog after fresh page load",
+      "pass": true,
+      "width": 640,
+      "height": 544,
+      "results": 7
+    },
+    {
+      "name": "Desktop ArrowDown selection",
+      "pass": true,
+      "selected": "SearchOption1"
+    },
+    {
+      "name": "Landscape 844×390",
+      "pass": true,
+      "dialogWidth": 844,
+      "dialogHeight": 390,
+      "listHeight": 280,
+      "results": 7,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "Mobile article width",
+      "pass": true,
+      "viewport": 390,
+      "documentScrollWidth": 378,
+      "proseWidth": 338,
+      "codeScrollsInternally": true
+    }
+  ],
+  "safari": [
+    {
+      "name": "390×460 English search",
+      "pass": true,
+      "layout": "grid",
+      "dialogWidth": 390,
+      "dialogHeight": 460,
+      "listHeight": 350,
+      "results": 7
+    },
+    {
+      "name": "320×280 Chinese search",
+      "pass": true,
+      "listHeight": 170,
+      "results": 3,
+      "firstResult": {
+        "top": 110.5,
+        "bottom": 167.6875
+      },
+      "clearButton": 44
+    },
+    {
+      "name": "Clear search retains dialog and recent posts",
+      "pass": true
+    },
+    {
+      "name": "One click on Chinese result",
+      "pass": true,
+      "path": "/posts/dart/"
+    }
+  ],
+  "visualInspection": [
+    "Mobile homepage",
+    "Mobile English article and code width",
+    "Light search",
+    "Dark search",
+    "Full multiline result titles"
+  ],
+  "verification": [
+    "pnpm check",
+    "pnpm build",
+    "git diff --check"
+  ],
+  "assets": [
+    {
+      "file": "Base.DYaaeyhS.css",
+      "bytes": 50858,
+      "gzip": 11572
+    },
+    {
+      "file": "Base.astro_astro_type_script_index_0_lang.BSEqwqmy.js",
+      "bytes": 44579,
+      "gzip": 15176
+    },
+    {
+      "file": "prose.B412GWmQ.css",
+      "bytes": 22366,
+      "gzip": 5137
+    }
+  ],
+  "fixtureNote": "An initial desktop check used a page loaded before the rebuild and requested a removed lazy search chunk. The fresh-page desktop check passed. Search code now ships in the main script, removing that extra deferred request."
+}

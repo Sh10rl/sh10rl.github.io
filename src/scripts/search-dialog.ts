@@ -3,27 +3,33 @@ export const input = dialog.querySelector('input')!;
 export const form = dialog.querySelector('form')!;
 export const list = dialog.querySelector<HTMLElement>('.search-results')!;
 export let composing = false;
+const clear = dialog.querySelector<HTMLButtonElement>('[data-search-clear]')!;
+const root = document.documentElement;
+let pagePosition: { x: number; y: number } | undefined;
 
-let searchModule: Promise<typeof import('./search')> | undefined;
-const loadSearch = () => (searchModule ??= import('./search').catch((error) => {
-  searchModule = undefined;
-  throw error;
-}));
-
-function loadFailed() {
-  if (!dialog.open) return;
-  list.innerHTML = '<p class="search-empty">Couldn’t load search. Check your connection and try again.</p>';
+function lockPage() {
+  pagePosition = { x: scrollX, y: scrollY };
+  root.style.setProperty('--search-page-top', `${-scrollY}px`);
+  root.setAttribute('data-search-active', '');
 }
 
-export function prefetchSearch() {
-  void loadSearch().then((module) => module.prefetch()).catch(loadFailed);
+function unlockPage() {
+  if (!pagePosition) return;
+  const { x, y } = pagePosition;
+  pagePosition = undefined;
+  root.removeAttribute('data-search-active');
+  root.style.removeProperty('--search-page-top');
+  scrollTo({ left: x, top: y, behavior: 'instant' });
 }
 
 /** Focus stays in the tap handler so iOS can open its software keyboard. */
 export function toggleSearch(from?: Element | null) {
   if (dialog.open) return closeSearch();
   dialog.classList.remove('instant');
+  dialog.classList.remove('keyboard-selection');
+  clear.hidden = !input.value;
   if (!list.hasChildNodes()) list.innerHTML = '<p class="search-empty">Loading…</p>';
+  lockPage();
   fitViewport();
   dialog.showModal();
   if (from) {
@@ -33,13 +39,15 @@ export function toggleSearch(from?: Element | null) {
   }
   input.focus({ preventScroll: true });
   input.select();
-  void loadSearch().then((module) => { if (dialog.open) module.open(); }).catch(loadFailed);
+  dialog.dispatchEvent(new Event('search:open'));
 }
 
 export function closeSearch(immediate = false) {
   if (!dialog.open) return;
   dialog.classList.toggle('instant', immediate);
+  input.blur();
   dialog.close();
+  unlockPage();
 }
 
 function fitViewport() {
@@ -52,7 +60,7 @@ function fitViewport() {
 visualViewport?.addEventListener('resize', () => { if (dialog.open) fitViewport(); });
 visualViewport?.addEventListener('scroll', () => { if (dialog.open) fitViewport(); });
 
-// Keep close and submit safe even while the search module is still loading.
+// Native form submission must never navigate away from the page.
 form.addEventListener('submit', (event) => event.preventDefault());
 dialog.addEventListener('cancel', (event) => {
   event.preventDefault();
@@ -60,7 +68,16 @@ dialog.addEventListener('cancel', (event) => {
 });
 dialog.querySelector('[data-search-close]')?.addEventListener('click', () => closeSearch());
 dialog.addEventListener('click', (event) => { if (event.target === dialog) closeSearch(); });
-dialog.addEventListener('close', () => { composing = false; });
+dialog.addEventListener('close', () => {
+  if (!dialog.open) { composing = false; unlockPage(); }
+});
+clear.addEventListener('click', () => {
+  composing = false;
+  input.value = '';
+  input.focus({ preventScroll: true });
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+});
+input.addEventListener('input', () => { clear.hidden = !input.value; });
 input.addEventListener('compositionstart', () => { composing = true; });
 input.addEventListener('compositionend', () => { composing = false; });
 input.addEventListener('keydown', (event) => {

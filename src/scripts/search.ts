@@ -24,6 +24,7 @@ interface Hit {
 }
 
 const count = dialog.querySelector<HTMLElement>('[data-search-count]')!;
+const heading = dialog.querySelector<HTMLElement>('[data-search-heading]')!;
 
 let docs: Indexed[] | undefined;
 let loading: Promise<void> | undefined;
@@ -35,7 +36,11 @@ let selected = 0;
 const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
 function load() {
-  loading ??= fetch('/search.json')
+  if (loading) return loading;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  failed = false;
+  loading = fetch('/search.json', { signal: controller.signal })
     .then((r) => {
       if (!r.ok) throw new Error(String(r.status));
       return r.json() as Promise<Doc[]>;
@@ -47,28 +52,30 @@ function load() {
         const title = doc.t.toLowerCase();
         return { ...doc, title, lower, all: `${title} ${lower.map((s) => `${s[1]} ${s[2]}`).join(' ')}` };
       });
-      count.textContent = `${docs.length} posts`;
       render();
     })
     .catch(() => {
       loading = undefined;
       failed = true;
       render();
-    });
+    })
+    .finally(() => clearTimeout(timeout));
   return loading;
 }
 
-export function prefetch() {
-  load();
+export function prefetchSearch() {
+  void load();
 }
 
 let fresh = false;
 
-export function open() {
+function open() {
   fresh = true;
   load();
   render();
 }
+
+dialog.addEventListener('search:open', open);
 
 function terms(query: string): string[] {
   return [...new Set(query.toLowerCase().split(/\s+/).filter(Boolean))];
@@ -102,7 +109,7 @@ function search(query: string[]): Hit[] {
     });
     sections.sort((a, b) => b.score - a.score);
     score += sections[0]?.score ?? 0;
-    hits.push({ doc, score, sections: sections.slice(0, 2) });
+    hits.push({ doc, score, sections: sections.slice(0, 1) });
   }
   return hits.sort((a, b) => b.score - a.score || b.doc.d.localeCompare(a.doc.d)).slice(0, 12);
 }
@@ -136,50 +143,50 @@ function snippet(text: string, pos: number, query: string[]): string {
   return `${start > 0 ? '…' : ''}${mark(chars.slice(start, end).join(''), query)}${end < chars.length ? '…' : ''}`;
 }
 
-const ICON = {
-  file: '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M16 13H8m8 4H8m2-8H8"/></svg>',
-  hash: '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16M4 15h16M10 3 8 21m8-18-2 18"/></svg>',
-};
+const FILE_ICON = '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M16 13H8m8 4H8m2-8H8"/></svg>';
 
-function item(href: string, icon: string, title: string, sub: string, body: string, query: string[]) {
-  return `<a class="search-item" role="option" href="${escape(href)}" data-terms="${escape(JSON.stringify(query))}">${icon}<span class="search-title"><span class="search-name">${title}</span>${sub ? `<small>${sub}</small>` : ''}</span>${body ? `<span class="search-snippet">${body}</span>` : ''}</a>`;
+function item(href: string, title: string, sub: string, body: string, query: string[]) {
+  return `<a class="search-item" role="option" href="${escape(href)}" data-terms="${escape(JSON.stringify(query))}">${FILE_ICON}<span class="search-title"><span class="search-name">${title}</span>${sub ? `<small>${sub}</small>` : ''}</span>${body ? `<span class="search-snippet">${body}</span>` : ''}</a>`;
 }
 
 function render() {
   const query = terms(input.value.trim());
   let html = '';
+  heading.textContent = query.length ? 'Search results' : 'Recent posts';
+  count.textContent = '';
+  list.setAttribute('aria-busy', String(!docs && !failed));
 
   if (!docs) {
-    if (failed) html = '<div class="search-empty">Couldn’t load the search index. Check your connection and try again.</div>';
-    else if (query.length) html = '<div class="search-empty">Loading…</div>';
+    if (failed) html = '<div class="search-empty"><p>Search couldn’t load.</p><button class="button secondary" type="button" data-search-retry>Try again</button></div>';
+    else html = '<div class="search-empty">Loading…</div>';
   } else if (!query.length) {
-    html = '<p class="search-group">Recent</p>';
-    for (const doc of docs.slice(0, 6)) html += item(doc.u, ICON.file, escape(doc.t), escape(doc.c ? `${doc.c} · ${doc.f}` : doc.f), '', []);
+    count.textContent = `${docs.length} posts`;
+    for (const doc of docs.slice(0, 6)) {
+      const metadata = `${doc.c ? `<span>${escape(doc.c)}</span> ` : ''}<span>${escape(doc.f)}</span>`;
+      html += item(doc.u, escape(doc.t), metadata, '', []);
+    }
   } else {
     const hits = search(query);
+    count.textContent = `${hits.length} ${hits.length === 1 ? 'post' : 'posts'} found`;
     if (!hits.length) {
       html = `<div class="search-empty">No results for “${escape(input.value.trim())}”</div>`;
     }
     for (const { doc, sections } of hits) {
-      const [first, second] = sections;
+      const [first] = sections;
       const section = first ? doc.s[first.index] : undefined;
       const href = section?.[0] ? `${doc.u}#${section[0]}` : doc.u;
       html += item(
         href,
-        ICON.file,
         mark(doc.t, query),
         section?.[1] ? escape(section[1]) : '',
         first ? snippet(section![2], first.pos, query) : '',
         query,
       );
-      if (second) {
-        const s = doc.s[second.index];
-        html += item(s[0] ? `${doc.u}#${s[0]}` : doc.u, ICON.hash, mark(s[1] || doc.t, query), '', snippet(s[2], second.pos, query), query);
-      }
     }
   }
 
   list.innerHTML = html ? `<div class="search-cursor instant" aria-hidden="true"></div>${html}` : '';
+  list.scrollTop = 0;
   cursor = list.querySelector<HTMLElement>('.search-cursor');
   items = [...list.querySelectorAll<HTMLAnchorElement>('.search-item')];
   items.forEach((el, i) => (el.id = `SearchOption${i}`));
@@ -228,6 +235,7 @@ function go(el: HTMLAnchorElement, newTab = false) {
 }
 
 input.addEventListener('input', () => {
+  dialog.classList.remove('keyboard-selection');
   if (!docs && !loading) load();
   render();
 });
@@ -241,9 +249,11 @@ input.addEventListener('keydown', (e) => {
   if (composing || e.isComposing || e.keyCode === 229) return;
   if (e.key === 'ArrowDown' || (e.key === 'n' && e.ctrlKey)) {
     e.preventDefault();
+    dialog.classList.add('keyboard-selection');
     select(selected + 1);
   } else if (e.key === 'ArrowUp' || (e.key === 'p' && e.ctrlKey)) {
     e.preventDefault();
+    dialog.classList.add('keyboard-selection');
     select(selected - 1);
   } else if (e.key === 'Enter') {
     e.preventDefault();
@@ -259,6 +269,12 @@ list.addEventListener('pointermove', (e) => {
 });
 
 list.addEventListener('click', (e) => {
+  if ((e.target as Element).closest('[data-search-retry]')) {
+    void load();
+    render();
+    input.focus({ preventScroll: true });
+    return;
+  }
   const el = (e.target as Element).closest<HTMLAnchorElement>('.search-item');
   if (!el || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
   e.preventDefault();

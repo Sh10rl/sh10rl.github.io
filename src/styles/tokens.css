@@ -119,7 +119,7 @@
   --page-pad: clamp(0.75rem, 3vw, 2rem);
   --capsule-h: 3rem;
   --capsule-gap: 0.625rem;
-  --head-room: calc(var(--capsule-h) + var(--capsule-gap) * 2);
+  --head-room: calc(var(--capsule-h) + var(--capsule-gap) * 2 + env(safe-area-inset-top, 0px));
 
   --r-xs: 6px;
   --r-sm: 10px;
@@ -188,6 +188,7 @@
 
 @media (max-width: 40rem) {
   :root {
+    --capsule-h: 3.5rem;
     --capsule-gap: 0.5rem;
   }
 }

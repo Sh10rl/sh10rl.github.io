@@ -7,7 +7,8 @@ import { initProse } from './prose';
 import { initReading } from './reading';
 import { toggleTheme } from './theme';
 import { copy } from './toast';
-import { prefetchSearch, toggleSearch } from './search-dialog';
+import { prefetchSearch } from './search';
+import { toggleSearch } from './search-dialog';
 
 const root = document.documentElement;
 

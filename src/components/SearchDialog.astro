@@ -4,29 +4,38 @@ import Icon from './Icon.astro';
 
 <dialog class="search glass" aria-label="Search posts" data-search>
   <form class="search-field" method="dialog" role="search">
-    <Icon name="search" size={18} />
-    <input
-      type="search"
-      name="q"
-      placeholder="Search posts, headings, code…"
-      autocomplete="off"
-      spellcheck="false"
-      enterkeyhint="go"
-      aria-label="Search"
-      aria-controls="SearchResults"
-      aria-autocomplete="list"
-      role="combobox"
-      aria-expanded="true"
-    />
+    <div class="search-box">
+      <Icon name="search" size={18} />
+      <input
+        type="search"
+        name="q"
+        placeholder="Search posts…"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="go"
+        aria-label="Search posts, headings, and code"
+        aria-controls="SearchResults"
+        aria-autocomplete="list"
+        role="combobox"
+        aria-expanded="true"
+      />
+      <button class="search-clear" type="button" aria-label="Clear search" data-search-clear hidden>
+        <Icon name="x" size={16} />
+      </button>
+    </div>
     <button class="search-close" type="button" aria-label="Close search" data-search-close>
       <kbd aria-hidden="true">Esc</kbd>
-      <Icon name="x" size={18} />
+      <span>Cancel</span>
     </button>
   </form>
+  <div class="search-summary">
+    <span data-search-heading>Recent posts</span>
+    <span data-search-count role="status" aria-live="polite" aria-atomic="true"></span>
+  </div>
   <div class="search-results" id="SearchResults" role="listbox" aria-label="Results"></div>
   <div class="search-foot">
     <span class="hint"><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
     <span class="hint"><kbd><Icon name="enter" size={11} /></kbd> Open</span>
-    <span class="count" data-search-count></span>
   </div>
 </dialog>
