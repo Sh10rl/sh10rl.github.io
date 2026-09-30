@@ -2350,6 +2350,7 @@ kbd {
   right: 0.5rem;
   height: var(--h, 0);
   translate: 0 var(--y, 0);
+  opacity: 0;
   border-radius: var(--r-md);
   background: var(--raised);
   box-shadow:
@@ -2357,8 +2358,13 @@ kbd {
     0 2px 8px -2px light-dark(rgb(58 44 30 / 0.12), rgb(0 0 0 / 0.4));
   pointer-events: none;
   transition:
+    opacity 0.1s var(--ease-out),
     translate var(--dur-snappy) var(--spring-snappy),
     height var(--dur-snappy) var(--spring-snappy);
+}
+
+.search-cursor.active {
+  opacity: 1;
 }
 
 .search-cursor.instant {

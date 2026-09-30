@@ -201,11 +201,8 @@
   font-weight: 750;
 }
 
-.prose em:lang(zh-CN) {
-  font-style: normal;
-  text-emphasis: none;
-  font-weight: 540;
-  color: var(--ink);
+.prose em {
+  font-style: italic;
 }
 
 .prose del {

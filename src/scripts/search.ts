@@ -32,6 +32,7 @@ let failed = false;
 let items: HTMLAnchorElement[] = [];
 let cursor: HTMLElement | null = null;
 let selected = 0;
+let pointerSelection = false;
 
 const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
@@ -150,6 +151,7 @@ function item(href: string, title: string, sub: string, body: string, query: str
 }
 
 function render() {
+  pointerSelection = false;
   const query = terms(input.value.trim());
   let html = '';
   heading.textContent = query.length ? 'Search results' : 'Recent posts';
@@ -210,6 +212,7 @@ function select(index: number, scroll = true) {
   if (cursor) {
     cursor.style.setProperty('--y', `${item.offsetTop}px`);
     cursor.style.setProperty('--h', `${item.offsetHeight}px`);
+    cursor.classList.add('active');
   }
   if (scroll) item.scrollIntoView({ block: 'nearest' });
 }
@@ -242,31 +245,49 @@ input.addEventListener('input', () => {
 // A mobile keyboard can submit the form without a preceding Enter key event.
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-  if (!composing && items[selected]) go(items[selected]);
+  const item = items[Math.max(0, selected)];
+  if (!composing && item) go(item);
 });
 
 input.addEventListener('keydown', (e) => {
   if (composing || e.isComposing || e.keyCode === 229) return;
   if (e.key === 'ArrowDown' || (e.key === 'n' && e.ctrlKey)) {
     e.preventDefault();
+    pointerSelection = false;
     dialog.classList.add('keyboard-selection');
     select(selected + 1);
   } else if (e.key === 'ArrowUp' || (e.key === 'p' && e.ctrlKey)) {
     e.preventDefault();
+    pointerSelection = false;
     dialog.classList.add('keyboard-selection');
-    select(selected - 1);
+    select(selected < 0 ? items.length - 1 : selected - 1);
   } else if (e.key === 'Enter') {
     e.preventDefault();
-    if (items[selected]) go(items[selected], e.metaKey || e.ctrlKey);
+    const item = items[Math.max(0, selected)];
+    if (item) go(item, e.metaKey || e.ctrlKey);
   }
 });
+
+function clearPointerSelection() {
+  if (!pointerSelection) return;
+  pointerSelection = false;
+  selected = -1;
+  cursor?.classList.remove('active');
+  items.forEach((item) => item.setAttribute('aria-selected', 'false'));
+  input.removeAttribute('aria-activedescendant');
+}
 
 list.addEventListener('pointermove', (e) => {
   if (e.pointerType === 'touch' || !finePointer.matches) return;
   const el = (e.target as Element).closest<HTMLAnchorElement>('.search-item');
   const index = el ? items.indexOf(el) : -1;
-  if (index !== -1 && index !== selected) select(index, false);
+  if (index === -1) return clearPointerSelection();
+  pointerSelection = true;
+  dialog.classList.remove('keyboard-selection');
+  if (index !== selected) select(index, false);
 });
+
+list.addEventListener('pointerleave', clearPointerSelection);
 
 list.addEventListener('click', (e) => {
   if ((e.target as Element).closest('[data-search-retry]')) {
