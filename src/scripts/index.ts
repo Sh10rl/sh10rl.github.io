@@ -1,35 +1,48 @@
-import { reducedMotion, SNAPPY, Spring } from './motion';
+import { reducedMotion, SNAPPY, Spring, SWIFT } from './motion';
 
 /* One hover sheet for the whole list -------------------------------------- */
 
+// The shared sheet follows the pointer or keyboard focus with critically damped edges.
 function hoverSheet(list: HTMLElement) {
   const hover = matchMedia('(min-width: 40.0625rem) and (hover: hover) and (pointer: fine)');
-  if (!hover.matches) return;
   list.classList.add('live');
   const sheet = document.createElement('span');
   sheet.className = 'entry-hover';
   sheet.setAttribute('aria-hidden', 'true');
+  const arrow = list.querySelector('.entry-arrow')?.cloneNode(true);
+  if (arrow) sheet.append(arrow);
   list.prepend(sheet);
 
-  const y = new Spring(0, (v) => (sheet.style.translate = `0 ${v.toFixed(2)}px`), SNAPPY);
-  const h = new Spring(0, (v) => (sheet.style.height = `${v.toFixed(2)}px`), SNAPPY);
+  const paint = () => {
+    sheet.style.translate = `0 ${upper.value.toFixed(2)}px`;
+    sheet.style.height = `${(lower.value - upper.value).toFixed(2)}px`;
+  };
+  const upper = new Spring(0, paint, SWIFT);
+  const lower = new Spring(0, paint, SWIFT);
   let current: HTMLElement | null = null;
   let hovered: HTMLElement | null = null;
   let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
+  // Measure layout positions without entrance or filter animation offsets.
+  const edges = (entry: HTMLElement) => {
+    const style = getComputedStyle(entry);
+    const shift = new DOMMatrix(style.transform).m42 + (parseFloat(style.translate.split(' ')[1]) || 0);
+    const box = entry.getBoundingClientRect();
+    const top = box.top - list.getBoundingClientRect().top - shift;
+    return [top, top + box.height] as const;
+  };
   const show = (entry: HTMLElement) => {
     if (!hover.matches) return;
     clearTimeout(hideTimer);
     if (entry === current) return;
-    const top = entry.getBoundingClientRect().top - list.getBoundingClientRect().top;
-    const height = entry.offsetHeight;
-    // Appearing from nothing: start in place. Moving between rows: glide.
-    if (!sheet.classList.contains('on')) {
-      y.set(top);
-      h.set(height);
+    const [top, bottom] = edges(entry);
+    // Glide while visible; appear in place after fading out.
+    if (Number(getComputedStyle(sheet).opacity) > 0.05) {
+      upper.approach(top);
+      lower.approach(bottom);
     } else {
-      y.to(top);
-      h.to(height);
+      upper.set(top);
+      lower.set(bottom);
     }
     current?.removeAttribute('data-active');
     current = entry;
@@ -54,11 +67,8 @@ function hoverSheet(list: HTMLElement) {
 
   list.addEventListener('pointerover', (e) => {
     if (e.pointerType === 'touch') return;
-    const entry = (e.target as Element).closest<HTMLElement>('.entry');
-    if (entry) {
-      hovered = entry;
-      show(entry);
-    }
+    hovered = (e.target as Element).closest<HTMLElement>('.entry');
+    restore();
   });
   list.addEventListener('pointerleave', () => {
     hovered = null;
@@ -74,11 +84,13 @@ function hoverSheet(list: HTMLElement) {
     clearTimeout(hideTimer);
     hideTimer = setTimeout(restore, 0);
   });
-  addEventListener('fontchange', () => {
+  // Keep the sheet aligned when rows reflow.
+  new ResizeObserver(() => {
     if (!current) return;
-    y.set(current.getBoundingClientRect().top - list.getBoundingClientRect().top);
-    h.set(current.offsetHeight);
-  });
+    const [top, bottom] = edges(current);
+    upper.set(top);
+    lower.set(bottom);
+  }).observe(list);
   hover.addEventListener('change', () => { if (!hover.matches) hide(); });
   return hide;
 }

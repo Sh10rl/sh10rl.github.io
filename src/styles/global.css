@@ -962,6 +962,10 @@ kbd {
 .entries {
   position: relative;
   isolation: isolate;
+  /* The sheet appears quickly and fades out more slowly. */
+  --hover-in: 160ms;
+  --hover-out: 240ms;
+  --hover-bleed: min(1.125rem, var(--column-pad) - 0.25rem);
 }
 
 .entry {
@@ -980,7 +984,7 @@ kbd {
   right: 0;
   height: 1px;
   background: var(--line);
-  transition: opacity var(--t-hover);
+  transition: opacity var(--hover-out) var(--ease-out);
 }
 
 .entry-date {
@@ -1084,14 +1088,14 @@ kbd {
   display: none;
   position: absolute;
   top: 0;
-  left: calc(-1 * min(1.125rem, var(--column-pad) - 0.25rem));
-  right: calc(-1 * min(1.125rem, var(--column-pad) - 0.25rem));
+  left: calc(-1 * var(--hover-bleed));
+  right: calc(-1 * var(--hover-bleed));
   z-index: -1;
   border-radius: var(--r-md);
   pointer-events: none;
   opacity: 0;
   transition:
-    opacity 160ms var(--ease-out),
+    opacity var(--hover-out) var(--ease-out),
     background-color var(--t-theme) var(--ease-in-out);
 }
 
@@ -1113,9 +1117,22 @@ kbd {
 
   .entry-hover.on {
     opacity: 1;
+    transition-duration: var(--hover-in), var(--t-theme);
   }
 
-  .entries.live .entry[data-active] .entry-arrow,
+  /* Keep the arrow on the sheet throughout its fade. */
+  .entry-hover .entry-arrow {
+    right: var(--hover-bleed);
+    opacity: 1;
+    visibility: visible;
+    transition: translate 0s var(--hover-out);
+  }
+
+  .entry-hover.on .entry-arrow {
+    translate: 0 0;
+    transition: translate var(--dur-swift) var(--spring-swift);
+  }
+
   .entries:not(.live) .entry:hover .entry-arrow,
   .entries:not(.live):not(:hover) .entry:focus-within .entry-arrow {
     opacity: 1;
@@ -1127,11 +1144,13 @@ kbd {
     padding-right: 1.75rem;
   }
 
-  .entries.live .entry[data-active] + .entry::before,
+  /* Hide dividers above and below the active row, skipping filtered rows. */
   .entries.live .entry[data-active]::before,
-  .entries:not(.live) .entry:hover + .entry::before,
-  .entries:not(.live) .entry:hover::before {
+  .entries.live .entry[data-active] ~ .entry:not([hidden]):not(.entry[data-active] ~ .entry:not([hidden]) ~ .entry)::before,
+  .entries:not(.live) .entry:is(:hover, :focus-within)::before,
+  .entries:not(.live) .entry:is(:hover, :focus-within) ~ .entry:not([hidden]):not(.entry:is(:hover, :focus-within) ~ .entry:not([hidden]) ~ .entry)::before {
     opacity: 0;
+    transition: opacity var(--dur-swift) var(--spring-swift);
   }
 }
 

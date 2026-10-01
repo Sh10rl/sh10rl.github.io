@@ -15,6 +15,7 @@ export interface SpringConfig {
 }
 
 // Same constants as the CSS tokens (--spring-*), so JS-driven and CSS-driven motion agree.
+export const SWIFT: SpringConfig = { stiffness: 2500, damping: 100 };
 export const SNAPPY: SpringConfig = { stiffness: 520, damping: 36 };
 export const SMOOTH: SpringConfig = { stiffness: 280, damping: 32 };
 export const BOUNCY: SpringConfig = { stiffness: 380, damping: 20 };
@@ -22,10 +23,11 @@ export const GENTLE: SpringConfig = { stiffness: 170, damping: 26 };
 
 const running = new Set<Spring>();
 let frame = 0;
-let last = 0;
+let last = -1;
 
 function tick(now: number) {
-  const dt = Math.min(0.05, Math.max(0, now - last) / 1000);
+  // Advance new springs on their first frame even if its timestamp precedes the event.
+  const dt = last < 0 ? 1 / 60 : Math.min(0.05, Math.max(0, now - last) / 1000);
   last = now;
   for (const spring of running) spring.step(dt);
   frame = running.size ? requestAnimationFrame(tick) : 0;
@@ -55,9 +57,17 @@ export class Spring {
     if (this.value === target && !this.velocity) return;
     running.add(this);
     if (!frame) {
-      last = performance.now();
+      last = -1;
       frame = requestAnimationFrame(tick);
     }
+  }
+
+  /** Retarget a critically damped spring without crossing its target. */
+  approach(target: number) {
+    const gap = target - this.value;
+    const toward = Math.max(0, this.velocity * Math.sign(gap));
+    this.velocity = Math.sign(gap) * Math.min(toward, Math.sqrt(this.config.stiffness) * Math.abs(gap));
+    this.to(target);
   }
 
   /** Freezes the spring where it is. */

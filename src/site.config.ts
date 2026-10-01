@@ -1,6 +1,5 @@
 export const site = {
   title: "Shiori's Coffee Nook",
-  tagline: 'One cup at a time',
   description: 'Hello! I’m Shiori. Thanks for stopping by my modest corner of the web!',
   url: 'https://sh10rl.top',
   lang: 'en',

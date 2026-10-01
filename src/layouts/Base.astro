@@ -23,7 +23,7 @@ interface Props {
 }
 
 const { title, description = site.description, type = 'website', published, updated, article = false, jsonLd } = Astro.props;
-const pageTitle = title ? `${title} · ${site.title}` : `${site.title} — ${site.tagline}`;
+const pageTitle = title ? `${title} · ${site.title}` : site.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
 ---
