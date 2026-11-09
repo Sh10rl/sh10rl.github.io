@@ -30,11 +30,17 @@ mermaid: true
 3. 编译C的编译器`gcc`, `g++`, 全称是什么? 属于什么?
 4. Unix和Unix-like的关系是什么?
 
-***Terminal / Shell / CLI / Bash 都是一个东西吗？***    当然———不是, 他们相关, 但不属于一个层级, Terminal (**终端程序**, 是个程序[^7], 负责显示和输入) 提供一个界面让你访问, Shell (**命令解释器**) 是一个抽象的集合, 具体包括Bash等等, 他们既可以让你在终端中敲命令与操作系统交互[^6], 还能写成脚本批量执行 (Bash既是交互式命令解释器, 也是脚本语言[^4], 暂且把它想成Python[^5]); [CLI](https://en.wikipedia.org/wiki/Command-line_interface#:~:text=a%20means%20of%20interacting%20with%20software%20via%20commands%20%E2%80%93%20each%20formatted%20as%20a%20line%20of%20text) (**命令行界面**) 更抽象, 是一种交互方式. Shell及其他的CLI程序 (e.g., `git`, `curl` 等等) 是CLI的具体化, 都是使用line-by-line的命令行方式与软件本身交互.
+***Terminal / Shell / CLI / Bash 都是一个东西吗？***
 
-***Linux, GNU/Linux, GNU Project, GNU Operating System 都是一个东西吗?***    也不是, **Linux**严格来讲是Linux内核 (组成操作系统的核心); **GNU/Linux** = Linux 内核[^3] + GNU 用户空间的工具们 (包括Bash); **GNU Project**顾名思义是个项目, 由 Richard Stallman 发起, 感兴趣可以看看[官方的介绍](https://www.gnu.org/gnu/thegnuproject.en.html); **GNU Operating System** = GNU Hurd内核 + GNU 用户空间的工具们 (包括Bash), 虽然单说Linux并不是完整的操作系统, 但随着人们的误解和这么说的人越来越多, Linux也可以指代 GNU/Linux ,感兴趣可以看看[GNU创始人的澄清](https://www.gnu.org/gnu/linux-and-gnu.html).
+当然———不是, 他们相关, 但不属于一个层级, Terminal (**终端程序**, 是个程序[^7], 负责显示和输入) 提供一个界面让你访问, Shell (**命令解释器**) 是一个抽象的集合, 具体包括Bash等等, 他们既可以让你在终端中敲命令与操作系统交互[^6], 还能写成脚本批量执行 (Bash既是交互式命令解释器, 也是脚本语言[^4], 暂且把它想成Python[^5]); [CLI](https://en.wikipedia.org/wiki/Command-line_interface#:~:text=a%20means%20of%20interacting%20with%20software%20via%20commands%20%E2%80%93%20each%20formatted%20as%20a%20line%20of%20text) (**命令行界面**) 更抽象, 是一种交互方式. Shell及其他的CLI程序 (e.g., `git`, `curl` 等等) 是CLI的具体化, 都是使用line-by-line的命令行方式与软件本身交互.
 
-***编译C的编译器`gcc`, `g++`, 全称是什么? 属于什么?***    **gcc (原本只是GNU C Compiler, 后来是GNU Compiler Collection)**, 它不仅可以编译C, 还可以编译C++, Objective-C, Fortran, Ada, Go等挺多语言; **g++ (GNU C++ Compiler, 是GCC 中的 C++ 前端)** g++（GNU C++ Compiler）是 GCC 的 C++ 前端/驱动程序。就命令 `g++` 而言，它调用 GCC 的 C++ 前端，默认按 C++ 语法处理源文件（包括 .c，除非用 -x c 指定为 C），并默认链接 C++ 标准库。GCC 属于 GNU Project 的一部分。
+***Linux, GNU/Linux, GNU Project, GNU Operating System 都是一个东西吗?***
+
+也不是, **Linux**严格来讲是Linux内核 (组成操作系统的核心); **GNU/Linux** = Linux 内核[^3] + GNU 用户空间的工具们 (包括Bash); **GNU Project**顾名思义是个项目, 由 Richard Stallman 发起, 感兴趣可以看看[官方的介绍](https://www.gnu.org/gnu/thegnuproject.en.html); **GNU Operating System** = GNU Hurd内核 + GNU 用户空间的工具们 (包括Bash), 虽然单说Linux并不是完整的操作系统, 但随着人们的误解和这么说的人越来越多, Linux也可以指代 GNU/Linux ,感兴趣可以看看[GNU创始人的澄清](https://www.gnu.org/gnu/linux-and-gnu.html).
+
+***编译C的编译器`gcc`, `g++`, 全称是什么? 属于什么?***
+
+**gcc (原本只是GNU C Compiler, 后来是GNU Compiler Collection)**, 它不仅可以编译C, 还可以编译C++, Objective-C, Fortran, Ada, Go等挺多语言; **g++ (GNU C++ Compiler, 是GCC 中的 C++ 前端)** g++（GNU C++ Compiler）是 GCC 的 C++ 前端/驱动程序。就命令 `g++` 而言，它调用 GCC 的 C++ 前端，默认按 C++ 语法处理源文件（包括 .c，除非用 -x c 指定为 C），并默认链接 C++ 标准库。GCC 属于 GNU Project 的一部分。
 
 省流版丢个表格能清晰点, 当我们使用`gcc main.* -o main`时:
 
@@ -49,7 +55,7 @@ mermaid: true
 
 所以`.cpp` 用`g++`, `.c`用`gcc`.
 
-***Unix和Unix-like的关系是什么?***    Unix-like系统现在包含正统的Unix系统,, 一个直观的树形图:
+***Unix和Unix-like的关系是什么?***    Unix-like系统现在包含正统的Unix系统, 一个直观的树形图:
 
 ```
 Unix-like

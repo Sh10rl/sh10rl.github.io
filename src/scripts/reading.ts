@@ -94,9 +94,22 @@ export function initReading() {
   let lastY = scrollY;
   let headerHidden = false;
   const desktopPointer = () => finePointer.matches && innerWidth > 640;
+  // Phones get a full-width bar (global.css, max-width: 40rem); only the floating capsule changes width.
+  const fullBar = matchMedia('(max-width: 40rem)');
+  // The floating capsule paces itself. A mouse wheel moves about 100px a notch and one flick spans
+  // several notches, so each gesture (scrolling one way without a GESTURE_GAP pause) changes the
+  // capsule at most once, and a face stays STEADY ms before scrolling moves it on. Revealing a
+  // hidden capsule never waits. The phone bar keeps its immediate response.
+  const GESTURE_GAP = 200;
+  const STEADY = 800;
+  let gestureDir = 0;
+  let lastMove = 0;
+  let stepped = false;
+  let changedAt = 0;
   const hideHeader = (hidden: boolean) => {
     if (headerHidden === hidden) return;
     headerHidden = hidden;
+    changedAt = performance.now();
     capsule.toggleAttribute('data-reading-hidden', hidden);
   };
   const revealHeader = () => {
@@ -128,12 +141,15 @@ export function initReading() {
   const readWidth = () => Math.min(faceRead.scrollWidth, innerWidth - 16);
 
   const width = new Spring(0, (w) => {
-    capsule.style.width = state === 'nav' && !width.moving ? '' : `${w.toFixed(2)}px`;
+    capsule.style.width = fullBar.matches || (state === 'nav' && !width.moving) ? '' : `${w.toFixed(2)}px`;
   }, SMOOTH);
+  // Crossing the phone breakpoint swaps bar and capsule: take the new layout's width at once.
+  fullBar.addEventListener('change', () => width.set(state === 'read' ? readWidth() : navWidth()));
 
   const setState = (next: State, instant = false) => {
     if (next === 'nav') hideHeader(false);
     if (next === state) return;
+    changedAt = performance.now();
     const from = capsule.getBoundingClientRect().width;
     state = next;
     capsule.dataset.state = next;
@@ -144,7 +160,7 @@ export function initReading() {
     const to = next === 'read' ? readWidth() : navWidth();
     // Start from the width on screen (without drawing an intermediate frame).
     if (!width.moving) width.value = width.target = from;
-    if (instant) width.set(to);
+    if (instant || fullBar.matches) width.set(to);
     else width.to(to, SMOOTH);
   };
 
@@ -157,7 +173,7 @@ export function initReading() {
     nowText.textContent = text;
     sectionAnimation?.cancel();
     sectionAnimation = springAnimate(nowText, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], SNAPPY);
-    if (state === 'read') width.to(readWidth(), SNAPPY);
+    if (state === 'read' && !fullBar.matches) width.to(readWidth(), SNAPPY);
   };
 
   const setActive = (index: number) => {
@@ -239,18 +255,41 @@ export function initReading() {
       if (!inBody) setState('nav');
       return;
     }
+    const now = performance.now();
+    const paced = !fullBar.matches;
+    if (dy) {
+      // A pause or a turn starts a new gesture.
+      if (Math.sign(dy) !== gestureDir || now - lastMove > GESTURE_GAP) stepped = false;
+      gestureDir = Math.sign(dy);
+      lastMove = now;
+    }
+    // On the capsule only scrolling moves it on, and the gesture that changed it moves it no further.
+    if (paced && (stepped || !dy)) return;
     travel = dy > 0 ? Math.max(0, travel) + dy : dy < 0 ? Math.min(0, travel) + dy : travel;
+    if (paced && headerHidden) {
+      if (travel < -12) {
+        hideHeader(false);
+        stepped = true;
+      }
+      return;
+    }
+    if (paced && now - changedAt < STEADY) return;
     if (state === 'nav' && travel > 16) {
       setState('read');
       revealHeader();
+      stepped = true;
     } else if (state === 'read' && travel < -240) {
       setState('nav');
+      stepped = true;
     } else if (travel < -12) {
       hideHeader(false);
     } else if (state === 'read' && travel > 96) {
       const interacting = capsule.matches(':hover') || capsule.querySelector(':focus-visible')
         || document.querySelector('.prefs:popover-open, .toc-sheet:popover-open');
-      if (!interacting) hideHeader(true);
+      if (!interacting) {
+        hideHeader(true);
+        stepped = true;
+      }
     }
   };
 
@@ -297,7 +336,7 @@ export function initReading() {
 
   const relayout = () => {
     measure();
-    if (state === 'read') {
+    if (state === 'read' && !fullBar.matches) {
       const target = readWidth();
       // Content and font loading can resize the article during a header transition.
       // Preserve its velocity unless the viewport has become too narrow.

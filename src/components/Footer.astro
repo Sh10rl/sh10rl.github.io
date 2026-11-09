@@ -7,7 +7,9 @@ import yamiboIcon from '../assets/yamibo.png?url';
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <a class="footer-mark" href="/">{site.title}</a>
+    <p class="footer-mark">
+      Unless otherwise noted, all posts on this site are licensed under <a href={site.license.url} rel="license noopener" target="_blank" title={site.license.title}>{site.license.name}<span class="license-icons" aria-hidden="true"><Icon name="cc" /><Icon name="cc-by" /><Icon name="cc-sa" /></span></a>
+    </p>
     <nav class="footer-links" aria-label="Elsewhere">
       <a class="glass-btn" href={site.author.github} aria-label="GitHub" title="GitHub" rel="me noopener" target="_blank"><Icon name="github" /></a>
       <a class="glass-btn" href={site.author.bangumi} aria-label="Bangumi" title="Bangumi" rel="me noopener" target="_blank"><span class="bangumi-mark" style={{ backgroundImage: `url(${bangumiMusume})` }} aria-hidden="true"></span></a>

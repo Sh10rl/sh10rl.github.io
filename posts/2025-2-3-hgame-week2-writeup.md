@@ -1,5 +1,5 @@
 ---
-title: "Hgame 2025 week 2"
+title: "HGAME 2025 WEEK 2"
 date: 2025-3-5
 description: Hgame 2025 week 2 writeup
 categories: [ctf]
@@ -9,12 +9,8 @@ math: true
 mermaid: true
 ---
 
----
-- Alias: Sh10l (个人赛事)
 - Status: re -1; crypto 1; misc 2; 
 - Rank: 2
-
----
 
 ## signin
 

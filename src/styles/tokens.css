@@ -50,6 +50,9 @@
     inset 0 0 0 1px light-dark(rgb(255 255 255 / 0.32), rgb(255 255 255 / 0.045)),
     0 0 0 1px light-dark(rgb(58 44 30 / 0.1), rgb(0 0 0 / 0.55));
 
+  /* The phone header bar: the page's paint, a little see-through over the blurred page beneath. */
+  --bar-tint: light-dark(rgb(248 245 238 / 0.82), rgb(20 17 14 / 0.82));
+
   /* Depth. Shadows are warm (ink-coloured), layered: contact, then ambient. */
   --shadow-xs: 0 1px 2px light-dark(rgb(58 44 30 / 0.07), rgb(0 0 0 / 0.35));
   --shadow-card:
@@ -193,8 +196,8 @@
 
 @media (max-width: 40rem) {
   :root {
-    --capsule-h: 3.5rem;
-    --capsule-gap: 0.5rem;
+    --capsule-h: 2.75rem;
+    --capsule-gap: 0px;
   }
 }
 
@@ -204,5 +207,6 @@
     --glass-tint: var(--raised);
     --glass-tint-strong: var(--raised);
     --glass-blur: none;
+    --bar-tint: var(--page-paint);
   }
 }
