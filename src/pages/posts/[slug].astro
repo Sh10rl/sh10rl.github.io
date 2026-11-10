@@ -19,6 +19,9 @@ const { post, newer, older, related } = Astro.props;
 const { Content } = await render(post.entry);
 const toc = post.meta.toc ?? [];
 const dek = post.entry.data.description?.trim();
+const titleSegments = post.lang === 'zh-CN'
+  ? new Intl.Segmenter(post.lang, { granularity: 'word' }).segment(post.title)
+  : undefined;
 const tags = tagsOf(post);
 const url = new URL(post.url, Astro.site).href;
 
@@ -53,7 +56,12 @@ const jsonLd = {
           </p>
         </div>
         <h1 class="post-title" id="PostTitle" lang={post.lang} style="--i: 1" data-reveal="title">
-          {post.title}
+          {
+            titleSegments
+              ? Array.from(titleSegments, ({ segment, isWordLike }) =>
+                  isWordLike ? <span class="post-title-word">{segment}</span> : segment)
+              : post.title
+          }
           {post.draft && <span class="draft-badge">Draft</span>}
         </h1>
         {

@@ -4,8 +4,6 @@ date: 2025-8-4
 categories: [sundries]
 tags: []
 pin: false
-math: true
-mermaid: true
 ---
 
 ## The problem: `/mnt/hgfs` does not show shared folders

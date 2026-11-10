@@ -216,6 +216,7 @@
 }
 
 .prose :not(pre) > code {
+  position: relative;
   padding: 0.12em 0.38em;
   border-radius: 5px;
   font: 500 var(--em-small) / 1 var(--font-mono);
@@ -225,6 +226,25 @@
   overflow-wrap: anywhere;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
+}
+
+.prose .code-wrap-hints {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.prose .code-wrap-hints > span {
+  position: absolute;
+  width: 0.75em;
+  height: 0.75em;
+  translate: calc(-100% - 0.25em) -50%;
+  background: var(--ink-3);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 2v6a3 3 0 0 0 3 3h7m-3-3 3 3-3 3'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .prose kbd {
@@ -423,12 +443,39 @@
   border-top: 1px solid var(--line);
 }
 
+/* Column alignment from `| :---: |` and `| ---: |`; headers follow their column. */
+.prose :is(th, td)[align='center'] {
+  text-align: center;
+}
+
+.prose :is(th, td)[align='right'] {
+  text-align: right;
+}
+
 .prose tr:first-child td {
   border-top: 0;
 }
 
-.prose :is(th, td):first-child {
+.prose :is(th, td):first-child:not([align='center']) {
   padding-left: 0.25rem;
+}
+
+/* The last column keeps room for the header's Copy button, so it never covers text. */
+.prose table:has(th > .code-copy) :is(th, td):last-child {
+  padding-right: 2.75rem;
+}
+
+.prose th:has(> .code-copy) {
+  position: relative;
+}
+
+.prose th > .code-copy {
+  top: calc(50% - 0.9375rem);
+  right: 0.375rem;
+}
+
+.prose th > .code-copy::after {
+  display: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -604,16 +651,30 @@
     translate var(--dur-snappy) var(--spring-snappy);
 }
 
-.prose .code:is(:hover, :focus-within)[data-lang]::before {
+.prose .code:is(:hover, :has(.code-copy:focus-visible), :has(.code-copy[data-copied]))[data-lang]::before {
   opacity: 0;
   translate: 0 -4px;
 }
 
-.prose .code-copy {
+.prose .code-copy,
+.prose .code-tools {
   position: absolute;
   top: 0.4375rem;
   right: 0.4375rem;
   z-index: 2;
+}
+
+/* Long listings put a shortcut beside Copy in the same corner. */
+.prose .code-tools {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.prose .code-tools .code-copy {
+  position: static;
+}
+
+.prose :is(.code-copy, .code-less) {
   display: none;
   align-items: center;
   gap: 0.375rem;
@@ -636,7 +697,7 @@
     translate var(--dur-snappy) var(--spring-snappy);
 }
 
-.js .prose .code-copy {
+.js .prose :is(.code-copy, .code-less) {
   display: inline-flex;
 }
 
@@ -651,6 +712,10 @@
 
 .prose .code-copy::after {
   content: 'Copy';
+}
+
+.prose .code-less .icon {
+  rotate: 180deg;
 }
 
 .prose .code-copy[data-copied] {
@@ -676,12 +741,12 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .prose .code-copy:hover {
+  .prose :is(.code-copy, .code-less):hover {
     color: var(--ink);
   }
 }
 
-.prose .code:hover .code-copy,
+.prose :is(.code, .table):hover :is(.code-copy, .code-less),
 .prose .code-copy:focus-visible,
 .prose .code-copy[data-copied] {
   opacity: 1;
@@ -690,7 +755,7 @@
 }
 
 @media (hover: none) {
-  .prose .code-copy {
+  .prose :is(.code-copy, .code-less) {
     opacity: 1;
     scale: 1;
     translate: 0 0;
@@ -705,7 +770,7 @@
   }
 }
 
-.prose .code .code-copy:active {
+.prose :is(.code, .table) :is(.code-copy, .code-less):active {
   scale: 0.96;
   transition-duration: var(--t-press);
 }
@@ -716,7 +781,8 @@
   overflow-y: hidden;
 }
 
-.js .prose .code.folded .code-tail {
+/* The tail stays in layout while a listing is still moving. */
+.js .prose .code.folded:not([data-moving]) .code-tail {
   display: none;
 }
 
@@ -1083,19 +1149,15 @@
   white-space: nowrap;
 }
 
-.zoom-counter,
-.zoom-controls .zoom-location {
+.zoom-counter {
   position: relative;
+  display: flex;
+  gap: 4px;
   min-width: 48px;
   height: 44px;
   padding-inline: 12px;
   font: var(--type-meta);
   font-variant-numeric: tabular-nums;
-}
-
-.zoom-counter {
-  display: flex;
-  gap: 4px;
 }
 
 .zoom-number {
@@ -1113,9 +1175,39 @@
 }
 
 .zoom-controls .zoom-location {
-  width: auto;
-  height: 44px;
-  font-weight: 500;
+  position: relative;
+}
+
+/* The icon's label rises above it only while a pointer rests on it (or keyboard focus lands). */
+.zoom-location::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  padding: 6px 10px;
+  border-radius: var(--r-pill);
+  font: var(--type-meta);
+  white-space: nowrap;
+  color: var(--ink);
+  background: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--line), var(--shadow-float);
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% 4px;
+  transition: opacity var(--t-hover) var(--ease-out), translate var(--t-hover) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .zoom-location:hover::after {
+    opacity: 1;
+    translate: -50% 0;
+    transition-delay: 0.2s;
+  }
+}
+
+.zoom-location:focus-visible::after {
+  opacity: 1;
+  translate: -50% 0;
 }
 
 .zoom-gallery [hidden] { display: none; }
@@ -1134,6 +1226,7 @@
     top: max(16px, env(safe-area-inset-top));
     left: 50%;
     translate: -50% 0;
+    padding-inline: 10px;
   }
   .zoom-controls .zoom-location {
     position: absolute;
@@ -1141,9 +1234,7 @@
     left: 50%;
     translate: -50% 0;
   }
-  .zoom-counter,
-  .zoom-controls .zoom-location { padding-inline: 10px; }
 }
 
 
-@media print { .zoom-gallery, .code-fold { display: none !important; } }
+@media print { .zoom-gallery, .code-fold, .code-wrap-hints { display: none !important; } }

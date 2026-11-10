@@ -5,8 +5,6 @@ description: A record for some approaches tackling VM challenges
 categories: [ctf]
 tags: [vm, go, writeup]
 pin: false
-math: true
-mermaid: true
 ---
 
 ## Foreword

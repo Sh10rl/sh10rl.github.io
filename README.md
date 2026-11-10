@@ -1,20 +1,14 @@
 需要 Node.js 22.12+ 和 pnpm。
 
 ```sh
-pnpm install
+pnpm install  # 首次使用
 pnpm dev
 ```
 
-直接编辑 `posts/` 下的 Markdown，在终端显示的地址预览。详见[写作说明](docs/writing.md)。
+打开终端显示的地址预览。编辑并保存 `posts/` 下的 Markdown，页面会自动更新。
 
-检查与构建预览：
+没有更新时，重启 `pnpm dev` 并刷新浏览器。
 
-```sh
-pnpm check
-pnpm build
-pnpm preview
-```
+写文章见[写作说明](docs/writing.md)。
 
-推送到 `main` 后自动部署。
-
-手机顶部导航按文字宽度留白，使用 13px 常规字重。选中底板高 32px，点击区域仍为 44px；调整样式时需检查 320px 窄屏及文章阅读状态，避免文字与工具按钮重叠。
+提交文章修改并推送到 `main` 后，网站会自动发布。

@@ -81,10 +81,7 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
   status.className = 'sr-only';
   status.setAttribute('role', 'status');
   controls.append(status);
-  const jump = document.createElement('button');
-  jump.type = 'button';
-  jump.className = 'zoom-location';
-  jump.textContent = 'Jump to location';
+  const jump = button('location', 'Jump to location', 'M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0');
   footer.append(counter, jump);
   controls.append(footer);
   gallery.append(overlay, clone, controls);
@@ -115,6 +112,11 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
     previous.disabled = index === 0;
     next.disabled = index === images.length - 1;
     previous.hidden = next.hidden = counter.hidden = images.length < 2;
+    // The page cannot scroll while the viewer is open, so this holds until the next image.
+    const spot = img.getBoundingClientRect();
+    const shown = Math.min(spot.bottom, innerHeight) - Math.max(spot.top, 0);
+    jump.hidden = shown >= Math.min(spot.height, innerHeight) - 1;
+    if (jump.hidden && document.activeElement === jump) gallery.focus({ preventScroll: true });
     number.value = String(index + 1);
     status.textContent = `Image ${index + 1} of ${images.length}`;
     gallery.dataset.index = String(index);

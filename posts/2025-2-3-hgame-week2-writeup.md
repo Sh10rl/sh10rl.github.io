@@ -1,12 +1,10 @@
 ---
 title: "HGAME 2025 WEEK 2"
 date: 2025-3-5
-description: Hgame 2025 week 2 writeup
+description: HGAME 2025 WEEK 2 Writeup
 categories: [ctf]
 tags: [writeup]
 pin: false
-math: true
-mermaid: true
 ---
 
 - Status: re -1; crypto 1; misc 2; 

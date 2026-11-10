@@ -1,12 +1,10 @@
 ---
-title: "关于Bash和Linux"
+title: "关于 Bash 和 Linux"
 date: 2025-10-10
 description: 出题顺手写的文档, 帮助新生了解一些计算机基础
 categories: [learn]
 tags: [bash, linux]
 pin: false
-math: true
-mermaid: true
 ---
 
 ## [Bourne](https://www.youtube.com/watch?v=dc0hg7w8rbs) Again SHell

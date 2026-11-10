@@ -5,8 +5,6 @@ description: 练手
 categories: [ctf]
 tags: [writeup]
 pin: false
-math: true
-mermaid: true
 ---
 
 ## Lesscommon

@@ -5,6 +5,7 @@ import { SKIP, visit } from 'unist-util-visit';
 
 interface MdFile {
   path?: string;
+  value?: unknown;
   data: { astro?: { frontmatter?: Record<string, any> } };
 }
 
@@ -224,6 +225,49 @@ export function remarkCallouts() {
       if (first.children[0]?.type === 'break') first.children.shift();
       if (!first.children.length) node.children.shift();
       markCallout(node, m[1].toLowerCase());
+    });
+  };
+}
+
+/** Keeps each table's Markdown as written, so readers can copy the table itself. */
+export function remarkTableSource() {
+  return (tree: Root, file: MdFile) => {
+    const lines = String(file.value ?? '').split(/\r?\n/);
+    visit(tree, 'table', (node) => {
+      const { start, end } = node.position ?? {};
+      if (!start || !end) return;
+      // Tables inside quotes or lists repeat the container's prefix on every line.
+      const indent = start.column - 1;
+      const source = lines
+        .slice(start.line - 1, end.line)
+        .map((line, i, all) => line.slice(indent, i === all.length - 1 ? end.column - 1 : undefined))
+        .join('\n')
+        .trimEnd();
+      if (!source) return;
+      node.data = { ...node.data, hProperties: { dataMarkdown: source } };
+    });
+  };
+}
+
+interface MathBlock {
+  type: 'math';
+  value: string;
+  data?: { hChildren?: { type: string; children?: { type: 'text'; value: string }[] }[] };
+}
+
+/**
+ * Typora (MathJax) breaks display math at a top-level `\\`. MathML has no line breaks of its
+ * own, so such blocks become a centred `gathered` environment, which renders as rows.
+ */
+export function remarkMathLines() {
+  return (tree: Root) => {
+    visit(tree, (node) => {
+      if ((node.type as string) !== 'math') return;
+      const math = node as unknown as MathBlock;
+      if (!math.value.includes('\\\\') || math.value.includes('\\begin{')) return;
+      math.value = `\\begin{gathered}\n${math.value}\n\\end{gathered}`;
+      const code = math.data?.hChildren?.[0];
+      if (code) code.children = [{ type: 'text', value: math.value }];
     });
   };
 }

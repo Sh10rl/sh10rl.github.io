@@ -61,7 +61,7 @@ document.addEventListener('click', (e) => {
 
   const linkButton = target.closest<HTMLElement>('[data-copy-link]');
   if (linkButton) {
-    copy(linkButton.dataset.copyLink || location.href, 'Link copied');
+    copy(linkButton.dataset.copyLink || location.href, 'Link copied', linkButton);
     return;
   }
 

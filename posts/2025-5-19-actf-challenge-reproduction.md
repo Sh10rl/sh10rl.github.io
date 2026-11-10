@@ -5,8 +5,6 @@ description: ACTF 2025 reverse engineering challenges
 categories: [ctf]
 tags: [verilog, cuda, writeup]
 pin: false
-math: true
-mermaid: true
 ---
 
 ## ezFPGA

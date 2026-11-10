@@ -4,8 +4,6 @@ date: 2025-7-20
 categories: [learn]
 tags: [explore, elf]
 pin: false
-math: true
-mermaid: true
 ---
 
 This article's aim is to generally explain what sections and segments are in an ELF file on x86-64 GNU/Linux and how they are mapped to memory. It's a good practice to understand ELF file structure and virtual memory mapping; this article also serves as my personal note.

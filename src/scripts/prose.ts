@@ -1,4 +1,4 @@
-import { finePointer, reducedMotion, SMOOTH, springAnimate } from './motion';
+import { finePointer, reducedMotion, SMOOTH, Spring } from './motion';
 import { zoom } from './gallery';
 import { flash, goToHeading } from './reading';
 import { currentTheme } from './theme';
@@ -21,27 +21,156 @@ function codeBlocks(prose: HTMLElement) {
     bar.innerHTML = `<button type="button" aria-expanded="false" aria-controls="${pre.id}">${CHEVRON}<span>Show all ${lines} lines</span></button>`;
     block.append(bar);
     const button = bar.querySelector('button')!;
-    let animation: Animation | undefined;
-    button.addEventListener('click', () => {
-      const from = pre.getBoundingClientRect().height;
-      const before = button.getBoundingClientRect();
-      const expanding = block.classList.contains('folded');
-      animation?.cancel();
-      block.classList.toggle('folded', !expanding);
-      button.setAttribute('aria-expanded', String(expanding));
-      button.querySelector('span')!.textContent = expanding ? 'Show less' : `Show all ${lines} lines`;
-      if (expanding) {
-        const to = pre.scrollHeight;
-        animation = springAnimate(pre, [{ height: `${from}px`, overflow: 'hidden' }, { height: `${to}px`, overflow: 'hidden' }], SMOOTH);
-      } else {
-        if (before.top >= 0 && before.top < innerHeight) {
-          scrollBy({ top: button.getBoundingClientRect().top - before.top, behavior: 'instant' });
+    const label = button.querySelector('span')!;
+
+    // A pointer shortcut beside Copy at the top of a long expanded listing. It shows only while
+    // the listing is taller than the window, so it never shares the screen with the one below.
+    const copyButton = block.querySelector('.code-copy');
+    const tools = document.createElement('div');
+    tools.className = 'code-tools';
+    const less = document.createElement('button');
+    less.type = 'button';
+    less.className = 'code-less';
+    less.tabIndex = -1;
+    less.hidden = true;
+    less.setAttribute('aria-hidden', 'true');
+    less.innerHTML = `${CHEVRON}<span>Show less</span>`;
+    const syncLess = () => {
+      less.hidden = block.classList.contains('folded')
+        || button.getBoundingClientRect().top - tools.getBoundingClientRect().bottom <= innerHeight;
+    };
+
+    // While folding, the pressed control stays where it was and the page moves instead.
+    let pin: Element | undefined;
+    let pinTop = 0;
+    const release = () => {
+      pin = undefined;
+      removeEventListener('wheel', release);
+      removeEventListener('touchstart', release);
+      removeEventListener('keydown', release);
+    };
+    const height = new Spring(
+      0,
+      (value) => {
+        pre.style.height = `${value}px`;
+        const offset = pin ? pin.getBoundingClientRect().top - pinTop : 0;
+        if (offset) {
+          scrollBy({ top: offset, behavior: 'instant' });
+          dispatchEvent(new Event('textsizechange'));
         }
-        if (!reducedMotion.matches) bar.animate([{ opacity: 0.5 }, { opacity: 1 }], { duration: 160, easing: 'ease-out' });
+        if (height.moving) return;
+        release();
+        delete block.dataset.moving;
+        pre.style.removeProperty('height');
+        pre.style.removeProperty('max-height');
+        pre.style.removeProperty('overflow-y');
+      },
+      { ...SMOOTH, precision: 0.5 },
+    );
+
+    const toggle = (control: HTMLButtonElement) => {
+      const folding = !block.classList.contains('folded');
+      // Folding takes the bar out of the flow, so the listing starts at the whole block's height.
+      const from = (folding ? block : pre).getBoundingClientRect().height;
+      const rect = control.getBoundingClientRect();
+      release();
+      if (folding && rect.bottom > 0 && rect.top < innerHeight) {
+        pin = control === less ? block : button;
+        pinTop = pin.getBoundingClientRect().top;
+        addEventListener('wheel', release, { passive: true });
+        addEventListener('touchstart', release, { passive: true });
+        addEventListener('keydown', release);
       }
+      block.dataset.moving = '';
+      block.classList.toggle('folded', folding);
+      button.setAttribute('aria-expanded', String(!folding));
+      label.textContent = folding ? `Show all ${lines} lines` : 'Show less';
+      pre.style.removeProperty('height');
+      pre.style.removeProperty('max-height');
+      const to = pre.getBoundingClientRect().height;
+      pre.style.height = `${from}px`;
+      pre.style.maxHeight = 'none';
+      pre.style.overflowY = 'hidden';
+      syncLess();
+      height.value = from;
+      if (from === to) height.set(to);
+      else height.to(to);
       dispatchEvent(new Event('textsizechange'));
-    });
+    };
+
+    button.addEventListener('click', () => toggle(button));
+    if (copyButton) {
+      copyButton.before(tools);
+      tools.append(less, copyButton);
+      less.addEventListener('click', () => toggle(less));
+      new ResizeObserver(syncLess).observe(block);
+      addEventListener('resize', syncLess, { passive: true });
+    }
   }
+}
+
+/* Inline code: mark visual continuations without changing the text ---------- */
+
+function inlineCodeWraps(prose: HTMLElement) {
+  const entries: { code: HTMLElement; hints: HTMLSpanElement | null }[] = [];
+  for (const code of prose.querySelectorAll<HTMLElement>(':not(pre) > code')) {
+    if (!code.closest('pre') && !code.querySelector('br')) entries.push({ code, hints: null });
+  }
+  if (!entries.length) return;
+
+  const update = () => {
+    for (const entry of entries) {
+      const rects = entry.code.getClientRects();
+      if (rects.length < 2) {
+        entry.hints?.remove();
+        entry.hints = null;
+        continue;
+      }
+
+      let hints = entry.hints;
+      if (!hints) {
+        hints = document.createElement('span');
+        hints.className = 'code-wrap-hints';
+        hints.setAttribute('aria-hidden', 'true');
+        entry.code.append(hints);
+        entry.hints = hints;
+      }
+      const origin = hints.getBoundingClientRect();
+      let top = rects[0].top;
+      let count = 0;
+      for (const rect of rects) {
+        if (!rect.width || !rect.height || Math.abs(rect.top - top) < 1) continue;
+        top = rect.top;
+        let hint = hints.children[count] as HTMLSpanElement | undefined;
+        if (!hint) {
+          hint = document.createElement('span');
+          hints.append(hint);
+        }
+        hint.style.left = `${rect.left - origin.left}px`;
+        hint.style.top = `${rect.top + rect.height / 2 - origin.top}px`;
+        count++;
+      }
+      while (hints.children.length > count) hints.lastElementChild!.remove();
+      if (!count) {
+        hints.remove();
+        entry.hints = null;
+      }
+    }
+  };
+
+  let frame = 0;
+  const queue = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      update();
+    });
+  };
+  new ResizeObserver(queue).observe(prose);
+  document.fonts.ready.then(queue);
+  addEventListener('fontchange', queue);
+  addEventListener('textsizechange', queue);
+  queue();
 }
 
 /* Tables: shade the edge that has more table beyond it ----------------------- */
@@ -165,6 +294,7 @@ export function initProse() {
   const prose = document.querySelector<HTMLElement>('[data-article]');
   if (!prose) return;
   codeBlocks(prose);
+  inlineCodeWraps(prose);
   tables(prose);
   footnotes();
   diagrams(prose);
@@ -184,8 +314,9 @@ export function initProse() {
 
     const button = target.closest<HTMLButtonElement>('.code-copy');
     if (button) {
-      const code = button.parentElement?.querySelector('pre')?.textContent ?? '';
-      if (await copy(code.replace(/\n$/, ''), 'Code copied')) {
+      const table = button.dataset.markdown;
+      const text = table ?? (button.closest('.code')?.querySelector('pre')?.textContent ?? '').replace(/\n$/, '');
+      if (await copy(text, table === undefined ? 'Code copied' : 'Table copied', button)) {
         delete button.dataset.copied;
         void button.offsetWidth;
         button.dataset.copied = '';

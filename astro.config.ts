@@ -1,9 +1,11 @@
+import { fileURLToPath } from 'node:url';
 import { rehypeHeadingIds, unified } from '@astrojs/markdown-remark';
 import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
+import { unusedImages } from './scripts/unused-images';
 import { rehypeArticle, rehypeLegacyHtml, rehypeSections } from './src/lib/markdown/rehype';
-import { remarkCallouts, remarkLegacy, remarkMeta } from './src/lib/markdown/remark';
+import { remarkCallouts, remarkLegacy, remarkMathLines, remarkMeta, remarkTableSource } from './src/lib/markdown/remark';
 import { shikiContrast } from './src/lib/markdown/shiki-contrast';
 import { shikiFold } from './src/lib/markdown/shiki-fold';
 import { site } from './src/site.config';
@@ -14,6 +16,7 @@ const v = (major: number, minor = 0) => (major << 16) | (minor << 8);
 export default defineConfig({
   site: site.url,
   compressHTML: true,
+  integrations: [unusedImages()],
   devToolbar: { enabled: false },
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   redirects: {
@@ -29,7 +32,7 @@ export default defineConfig({
   },
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkMath, remarkLegacy, remarkCallouts, remarkMeta],
+      remarkPlugins: [remarkMath, remarkMathLines, remarkLegacy, remarkCallouts, remarkTableSource, remarkMeta],
       rehypePlugins: [
         rehypeLegacyHtml,
         [rehypeKatex, { output: 'mathml', throwOnError: false, strict: false }],
@@ -46,6 +49,19 @@ export default defineConfig({
     },
   },
   vite: {
+    server: {
+      // Native file events are lost on WSL Windows mounts; poll only there.
+      watch: process.env.WSL_DISTRO_NAME && /^\/mnt\/[a-z]\//i.test(new URL('.', import.meta.url).pathname)
+        ? {
+            usePolling: true,
+            interval: 500,
+            // Images and fonts rarely change; checking them less often keeps polling cheap.
+            binaryInterval: 3000,
+            // Do not poll legacy Jekyll dependencies, generated sites or Astro's build scratch space.
+            ignored: ['vendor', '_site', '.jekyll-cache', '.astro/.prerender'].map((dir) => fileURLToPath(new URL(dir, import.meta.url))),
+          }
+        : undefined,
+    },
     css: {
       transformer: 'lightningcss',
       lightningcss: { targets: { chrome: v(100), edge: v(100), firefox: v(100), safari: v(15, 4), ios_saf: v(15, 4) } },

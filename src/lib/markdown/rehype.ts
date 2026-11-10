@@ -8,7 +8,9 @@ interface HtmlFile {
 
 // Article text is at most 48rem; smaller screens subtract page and column gutters.
 const IMAGE_SIZES = '(min-width: 56rem) 48rem, (min-width: 40rem) 86vw, (min-width: 31.25rem) 92vw, calc(100vw - 2.5rem)';
-const IMAGE_WIDTHS = [480, 640, 800, 1200, 1600];
+// The largest tier is for the image viewer: Astro caps it at the original width, so wide
+// screenshots also get a full-resolution copy, while `sizes` keeps the article on smaller ones.
+const IMAGE_WIDTHS = [480, 640, 800, 1200, 1600, 3200];
 
 const el = (tagName: string, properties: Element['properties'], children: ElementContent[] = []): Element => ({
   type: 'element',
@@ -129,6 +131,15 @@ export function rehypeArticle() {
       }
 
       if (tag === 'table') {
+        const markdown = node.properties.dataMarkdown;
+        delete node.properties.dataMarkdown;
+        // Copy sits at the end of the header row, in room the last column keeps free for it.
+        const child = (parentNode: Element | undefined, name: string) =>
+          parentNode?.children.filter((c): c is Element => c.type === 'element' && c.tagName === name);
+        const lastHeader = child(child(child(node, 'thead')?.[0], 'tr')?.[0], 'th')?.at(-1);
+        if (typeof markdown === 'string' && lastHeader) {
+          lastHeader.children.push(el('button', { type: 'button', className: ['code-copy'], ariaLabel: 'Copy table as Markdown', title: 'Copy', dataMarkdown: markdown }));
+        }
         // The table's own children (links, images) are still visited after wrapping.
         parent.children[index] = el('div', { className: ['table'] }, [node]);
         return;

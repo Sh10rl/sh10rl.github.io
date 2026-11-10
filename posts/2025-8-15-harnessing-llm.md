@@ -5,8 +5,6 @@ description: 今天分享一篇来自 TSEM (Transactions on Software Engineering
 categories: [reading]
 tags: [papers, vul]
 pin: false
-math: true
-mermaid: true
 ---
 
 ![image-20250810133015399](./../assets/img/2025-8-15-harnessing-llm/image-20250810133015399.png)

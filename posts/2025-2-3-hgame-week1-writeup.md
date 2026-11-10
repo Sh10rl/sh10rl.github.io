@@ -1,12 +1,10 @@
 ---
 title: "HGAME 2025 WEEK 1"
 date: 2025-3-4
-description: Hgame 2025 week 1 writeup
+description: HGAME 2025 WEEK 1 Writeup
 categories: [ctf]
 tags: [writeup]
 pin: false
-math: true
-mermaid: true
 ---
 
 - Alias: Sh10l (个人赛事)

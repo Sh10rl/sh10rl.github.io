@@ -76,12 +76,21 @@ export function initReading() {
       railHeight = Math.max(1, railBox.height);
       // Piecewise map from page position to rail position: article start → rail top,
       // each heading → the middle of its entry, article end → rail bottom.
-      railAnchors = [[bodyTop, 0]];
-      linkSets[0].forEach((a, i) => {
+      // The reading line (35% down the window) never sits higher than at the page top, so the
+      // map starts there; headings it has already passed share the first stretch of scrolling.
+      const start = Math.max(bodyTop, innerHeight * 0.35);
+      const marks = linkSets[0].map((a, i): [number, number] => {
         const r = a.getBoundingClientRect();
-        railAnchors.push([tops[i], Math.min(railHeight, Math.max(0, r.top + r.height / 2 - railBox.top))]);
+        return [tops[i], Math.min(railHeight, Math.max(0, r.top + r.height / 2 - railBox.top))];
       });
-      railAnchors.push([bodyTop + bodyHeight, railHeight]);
+      const passed = marks.filter(([y]) => y <= start).length;
+      const end = Math.max(bodyTop + bodyHeight, start + 1);
+      const next = marks[passed]?.[0] ?? end;
+      railAnchors = [
+        [start, 0],
+        ...marks.map(([y, r], i): [number, number] => [i < passed ? start + ((next - start) * (i + 1)) / (passed + 1) : y, r]),
+        [end, railHeight],
+      ];
     }
     tocEdges();
   };
