@@ -39,7 +39,10 @@ html {
   scroll-padding-top: calc(var(--head-room) + 1.25rem);
   scrollbar-color: rgb(128 121 111 / 0.6) transparent;
   scrollbar-gutter: stable;
-  background: var(--grain), var(--page-paint);
+  /* Past the page's ends (a rubber-band scroll, an overscroll stretch) a browser shows this
+     colour, flat. It is the paper's average, so the page does not end in a band. The paper
+     itself, paint under grain, is on body. */
+  background-color: var(--page-average);
   transition: background-color var(--t-theme) var(--ease-in-out);
 }
 
@@ -77,6 +80,11 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  /* A stacking context of its own, so the layers behind the content (the sketch) draw on the
+     paper and not under it. */
+  isolation: isolate;
+  background: var(--grain), var(--page-paint);
+  transition: background-color var(--t-theme) var(--ease-in-out);
   color: var(--ink-2);
   font: 400 var(--step-1) / 1.6 var(--font-text);
   font-kerning: normal;
@@ -921,7 +929,8 @@ kbd {
 
 /* The licence link reads like a link in an article (prose.css): a fine underline, green on hover.
    It is a single box, so its name and icons stay on one line and its focus ring is one rectangle. */
-.footer-mark a {
+.footer-mark a,
+.sketch-corner :is(a, button) {
   display: inline-flex;
   align-items: center;
   /* A little room inside the focus ring, which sits right on the edge. */
@@ -936,14 +945,16 @@ kbd {
 }
 
 /* The lines are only 18px apart: a ring standing off the link would cut the words around it. */
-.footer-mark a:focus-visible {
+.footer-mark a:focus-visible,
+.sketch-corner :is(a, button):focus-visible {
   outline-offset: 0;
   color: var(--accent-2);
   text-decoration-color: currentColor;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .footer-mark a:hover {
+  .footer-mark a:hover,
+  .sketch-corner :is(a, button):hover {
     color: var(--accent-2);
     text-decoration-color: currentColor;
   }
@@ -962,6 +973,160 @@ kbd {
 
 .page-index {
   padding-top: calc(var(--head-room) + clamp(1rem, 2vw, 1.5rem));
+}
+
+/* A sketch behind the list, a different one on each load (src/scripts/sketch.ts). The figure
+   stands in the right-hand margin and may reach into the column. The window's lower edge cuts
+   it off. It is fainter where words run over it, and its other cut edges fade away: the left
+   one always, the right one where the window is wide enough to show it, and the top one where
+   the art itself is cut there. */
+.sketch {
+  /* Where the words end: the right edge of the list's text. */
+  --words: calc(50% + min(var(--column-w) / 2, 50% - var(--page-pad)) - var(--column-pad));
+  /* Each sketch brings --aspect (width over height) and --face (where the face begins, as a
+     share of the width from the left). Its height is at most 85% of the screen's, and half in a
+     portrait window like a phone's, so it never fills a phone's screen and the top of the list
+     stays clear; past a phone's width (100vw - 15rem) it grows back. Its width is at most 71% of
+     the window's, or 34rem where that is more, so a wide sketch stays large enough on a phone.
+     svh is the screen with a phone browser's bars shown, and stays put as they hide, so the
+     drawing keeps its size while the page scrolls. shownWidth in scripts/generate-sketches.mjs
+     repeats --w, and .omp/skills/home-sketch/lib.mjs the limit on the lean. */
+  --w: min(min(85svh, max(50svh, 100vw - 15rem)) * var(--aspect), max(71vw, 34rem));
+  /* The face keeps to the margin while there is one. In a narrower window the figure leans in
+     from a little beyond the edge, and in a very wide one it stays within reach of the list. */
+  --lean: clamp(0px, var(--w) * (1 - var(--face)) - (100% - var(--words)), var(--w) * 0.08);
+  --left: min(100% - var(--w) + var(--lean), var(--words) + 24rem - var(--w) * var(--face));
+  --right: calc(var(--left) + var(--w));
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  color: var(--ink);
+  /* Light lines on dark paper look heavier and weaker than dark lines on light paper at the same
+     measured contrast. The lines are thin, and the night strength is a little higher. */
+  opacity: calc(0.48 + 0.08 * var(--dark));
+  /* Three fades, multiplied: the left edge; the part under the words; and the right edge, as
+     far as it lies inside the window. */
+  mask-image:
+    linear-gradient(to right, transparent var(--left), #000 calc(var(--left) + 7rem)),
+    linear-gradient(to right, rgb(0 0 0 / 0.4) calc(var(--words) - 2rem), #000 calc(var(--words) + 4rem)),
+    linear-gradient(to right, #000 calc(var(--right) - clamp(0px, 100% - var(--right), 5rem)), transparent var(--right));
+  mask-composite: intersect;
+  transition:
+    color var(--t-theme) var(--ease-in-out),
+    opacity var(--t-theme) var(--ease-in-out);
+}
+
+/* The sketch is a canvas (src/scripts/sketch-ink.ts). The script moves it onto whole device
+   pixels around this place; the probe, an empty box with the same rules, tells it where the
+   place is once the window changes. */
+.sketch :is(canvas, .sketch-probe) {
+  position: absolute;
+  left: var(--left);
+  bottom: 0;
+  width: var(--w);
+  max-width: none;
+  height: auto;
+  aspect-ratio: var(--aspect);
+}
+
+.sketch-probe {
+  visibility: hidden;
+}
+
+/* The generator marks a sketch whose ink runs off the top of its scan. */
+.sketch [data-cut~='top'] {
+  mask-image: linear-gradient(transparent, #000 6%);
+}
+
+/* The corner the drawing stands in, where a painter signs: the credit for the sketch shown, and
+   above it a button that puts the sketches away. Once they are away, a note takes the credit's
+   place and brings them back. Beside a margin wide enough for it the corner is fixed to the
+   window; otherwise it closes the list. */
+.sketch-corner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 2.75rem 0 0;
+  font: 400 var(--step--2) / 1.65 var(--font-text);
+  color: var(--ink-3);
+  text-align: right;
+}
+
+.sketch-credit,
+.sketch-note {
+  margin: 0;
+  text-wrap: balance;
+}
+
+.credit-line {
+  display: block;
+}
+
+.credit-bar {
+  color: var(--ink-4);
+}
+
+/* Kana are only in a 104 KB shard of the self-hosted Chinese serif, so a Japanese name takes the
+   system's Mincho. */
+.sketch-credit :lang(ja) {
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, 'Noto Serif CJK JP', 'Noto Serif JP', serif;
+}
+
+/* With a mouse the button shows only while the pointer is in the corner, or it has the focus. */
+@media (hover: hover) and (pointer: fine) {
+  .sketch-hide {
+    opacity: 0;
+    transition:
+      opacity var(--t-fade) var(--ease-out),
+      color 160ms var(--ease-out),
+      text-decoration-color 160ms var(--ease-out);
+  }
+
+  .sketch-corner:hover .sketch-hide,
+  .sketch-hide:focus-visible {
+    opacity: 1;
+  }
+}
+
+/* A finger needs the button clear of the credit's links, so on a touch screen it is always
+   there, below the credit, with room around it. */
+@media (hover: none), (pointer: coarse) {
+  .sketch-hide {
+    order: 1;
+    margin-top: 0.375rem;
+    padding-block: 0.25rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  /* The padding is part of the corner, so the pointer finds the button from all around the credit. */
+  .sketch-corner {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    /* It wraps before it reaches the list's text. */
+    max-width: calc((100% - min(var(--column-w), 100% - 2 * var(--page-pad))) / 2 + var(--column-pad));
+    margin: 0;
+    padding: 1.5rem max(1.5rem, env(safe-area-inset-right)) max(1.25rem, env(safe-area-inset-bottom)) 1.5rem;
+    /* Lines of the drawing pass behind it; a halo of paper keeps the words clear of them. */
+    text-shadow:
+      0 0 0.6em var(--page),
+      0 0 0.25em var(--page);
+  }
+}
+
+/* A sketch that is being put away fades out with the layer's own transition. */
+.sketch.is-leaving {
+  opacity: 0;
+}
+
+/* Asked for more contrast, the words get the page to themselves. */
+@media (prefers-contrast: more), (forced-colors: active) {
+  .sketch {
+    display: none;
+  }
 }
 
 .index {
@@ -2229,8 +2394,12 @@ kbd {
   }
 }
 
-.toc-sheet::backdrop {
-  background: transparent;
+/* A popover's backdrop is a clear box the size of the window. Safari on iOS treats a fixed box
+   at the window's edge as a bar of the page's own, and stops showing the page beneath its
+   translucent toolbar while one is there. None of these needs a backdrop: they close on a tap
+   outside without it. */
+:is(.prefs, .note-pop, .toc-sheet)::backdrop {
+  display: none;
 }
 
 /* Toast: a glass pill that rises from the bottom; the tick draws itself. */
@@ -2671,7 +2840,11 @@ html[data-search-active] body {
     }
   }
 
+  /* Safari's bars and the keyboard's top row are translucent, so what lies beyond the dialog's
+     lower edge shows through them. The backdrop reaches the bottom of the screen: as paper, it
+     keeps the page beneath from showing there. */
   .search::backdrop {
+    background: var(--grain), var(--page-paint);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -2807,6 +2980,17 @@ html[data-search-active] body {
     animation-timing-function: var(--ease-out);
     animation-delay: calc(min(var(--i, 0), 5) * 8ms);
   }
+
+  /* The credit signs the drawing once it is done (--sketch-done, in milliseconds, set by the
+     script), and the button that hides it arrives with it. */
+  .sketch-credit,
+  .sketch-hide {
+    animation: rise 0.7s var(--spring-gentle) calc(var(--sketch-done, 0) * 1ms + 100ms) backwards;
+  }
+
+  .sketch-note {
+    animation: rise 0.7s var(--spring-gentle) backwards;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2839,6 +3023,8 @@ html[data-search-active] body {
 @media print {
   .site-header,
   .site-footer,
+  .sketch,
+  .sketch-corner,
   .toc,
   .toc-inline,
   .pager,

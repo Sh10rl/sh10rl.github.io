@@ -1,0 +1,66 @@
+{
+  "hush": {
+    "mirror": true,
+    "focus": [
+      624,
+      792
+    ],
+    "face": 1018,
+    "credit": {
+      "artist": {
+        "name": "えなれいん",
+        "lang": "ja"
+      },
+      "source": {
+        "name": "Pixiv",
+        "url": "https://www.pixiv.net/artworks/151869489"
+      },
+      "lineArt": {
+        "name": "AniLines",
+        "url": "https://github.com/zhenglinpan/AniLines-Anime-Lineart-Extractor"
+      }
+    }
+  },
+  "glam": {
+    "mirror": false,
+    "focus": [
+      1530,
+      850
+    ],
+    "face": 1000,
+    "crop": [
+      0,
+      200,
+      2760,
+      3240
+    ],
+    "erase": [
+      [
+        0,
+        748,
+        786,
+        12
+      ],
+      [
+        1805,
+        748,
+        955,
+        12
+      ]
+    ],
+    "credit": {
+      "artist": {
+        "name": "とびうお",
+        "lang": "ja"
+      },
+      "source": {
+        "name": "Pixiv",
+        "url": "https://www.pixiv.net/artworks/150508942"
+      },
+      "lineArt": {
+        "name": "AniLines",
+        "url": "https://github.com/zhenglinpan/AniLines-Anime-Lineart-Extractor"
+      }
+    }
+  }
+}

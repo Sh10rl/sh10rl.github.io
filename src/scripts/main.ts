@@ -8,13 +8,29 @@ import { initReading } from './reading';
 import { toggleTheme } from './theme';
 import { copy } from './toast';
 import { prefetchSearch } from './search';
+import { initSketch } from './sketch';
 import { toggleSearch } from './search-dialog';
+import shardsUrl from '../styles/fonts-cjk-shards.css?url';
 
 const root = document.documentElement;
 
 // Styles that depend on this script (image fade-in) key off this class, so a failed
 // script load never leaves content hidden.
 root.classList.add('fx');
+
+// Two font subsets hold the Chinese every page shows (src/styles/fonts-cjk.css). The shards for
+// the rest, such as a search for a rare character, would only hold up the first paint, so their
+// stylesheet is linked once the page has loaded, at low priority so the sketch fetched then comes
+// first. Imported as a URL: a CSS import, even a dynamic one, would put it in the page's head.
+const loadShards = () => {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.fetchPriority = 'low';
+  link.href = shardsUrl;
+  document.head.append(link);
+};
+if (document.readyState === 'complete') loadShards();
+else addEventListener('load', loadShards, { once: true });
 
 /* Search ---------------------------------------------------------------------- */
 
@@ -95,6 +111,7 @@ if ('share' in navigator && !finePointer.matches) {
 
 initHeaderGlow();
 initIndex();
+initSketch();
 initReading();
 initProse();
 initPrefs();
