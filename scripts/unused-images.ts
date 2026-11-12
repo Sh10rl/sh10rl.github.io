@@ -79,15 +79,15 @@ export function unusedImages(): AstroIntegration {
             const report = unused.join('\n');
             if (!closed && report !== previous) {
               if (unused.length) {
-                logger.warn(`发现 ${unused.length} 张未被 Markdown 引用的图片（仅提示，不会自动删除）：\n${unused.map((file) => `  ${file}`).join('\n')}`);
+                logger.warn(`Found ${unused.length} image${unused.length === 1 ? '' : 's'} not referenced in Markdown (report only; nothing is deleted automatically):\n${unused.map((file) => `  ${file}`).join('\n')}`);
               } else {
-                logger.info('assets/img 中没有未被 Markdown 引用的图片。');
+                logger.info('All images in assets/img are referenced in Markdown.');
               }
               previous = report;
             }
           } catch (error) {
             previous = undefined;
-            if (!closed) logger.error(`未引用图片检查失败：${error instanceof Error ? error.message : String(error)}`);
+            if (!closed) logger.error(`Unused image check failed: ${error instanceof Error ? error.message : String(error)}`);
           } finally {
             running = false;
             if (pending) {

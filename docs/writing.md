@@ -24,3 +24,11 @@ tags: [Linux]
 公式用 `$...$` 或 `$$...$$`；图表用 `mermaid` 代码块。不需要填写 `math`、`mermaid` 字段。
 
 行内代码续行左侧的箭头表示自动折行；复制时不会带入箭头或额外换行。
+
+中文和西文字体都只包含网站已经用到的字。发布新文章前运行一次：
+
+```sh
+pnpm build && uv run scripts/generate-fonts.py && pnpm build
+```
+
+如果有页面用到了字体子集里没有的字，`pnpm build` 结尾会给出提醒并列出这些字。
