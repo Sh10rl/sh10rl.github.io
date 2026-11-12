@@ -1,7 +1,7 @@
 ---
 import { site } from '../site.config';
 import Icon from './Icon.astro';
-import bangumiMusume from '../assets/bangumi-musume.png?url';
+import bangumiMusume from '../assets/bangumi-musume.webp?url';
 import yamiboIcon from '../assets/yamibo.png?url';
 ---
 
@@ -21,15 +21,14 @@ import yamiboIcon from '../assets/yamibo.png?url';
 </footer>
 
 <style>
-  /* Official musume_2 frame: https://bgm.tv/img/rc3/bg_musume_2x.png */
+  /* Official musume_2 frame: https://bgm.tv/img/rc3/bg_musume_2x.png, the 74 × 94 px from
+     (160, 6) of the sprite, greyed with the weights of grayscale() and stored at 45 × 57, the
+     pixels a 3x screen shows. */
   .bangumi-mark {
-    /* Visible bounds are 74 × 94 px, starting at (160, 6) in the sprite. */
     width: 14.8px;
     height: 18.8px;
     background-repeat: no-repeat;
-    background-size: 112px 30px;
-    background-position: -32px -1.2px;
-    filter: grayscale(1);
+    background-size: 100% 100%;
     opacity: 0.8;
     transition: opacity var(--t-hover);
   }

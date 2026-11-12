@@ -1,10 +1,21 @@
 ---
+import sketchEntries from '../assets/sketches/sketches.json';
 import { getCategories, getPosts } from '../lib/posts';
 import { site } from '../site.config';
 import PostList from './PostList.astro';
 
 interface Props {
   category?: string;
+}
+
+interface Link {
+  name: string;
+  url: string;
+}
+
+/** What the page reads from an entry of sketches.json. */
+interface SketchEntry {
+  credit: { artist: { name: string; lang?: string }; source: Link; lineArt?: Link };
 }
 
 const { category = '' } = Astro.props;
@@ -16,6 +27,15 @@ const tabs = [
   { key: '', label: 'All', count: posts.length, url: '/', title: site.title },
   ...categories.map((c) => ({ key: c.key, label: c.label, count: c.count, url: `/categories/${c.key}/`, title: `${c.label} · ${site.title}` })),
 ];
+// One sketch is drawn behind the list, a different one on each load; src/scripts/sketch.ts picks it and fetches it.
+// With an empty sketches.json the page has neither the layer nor the corner, and the script fetches nothing.
+const entries: Record<string, SketchEntry> = sketchEntries;
+const urls = import.meta.glob<string>('../assets/sketches/*.svg', { query: '?url', import: 'default', eager: true });
+const sketches = Object.entries(entries).map(([name, { credit }]) => {
+  const url = urls[`../assets/sketches/${name}.svg`];
+  if (!url) throw new Error(`src/assets/sketches/${name}.svg is missing: run node scripts/generate-sketches.mjs`);
+  return { name, url, credit };
+});
 ---
 
 <div class="page page-index">
@@ -38,5 +58,29 @@ const tabs = [
       </nav>
     </header>
     <PostList posts={posts} filter={category} revealFrom={1} />
+    {
+      sketches.length > 0 && (
+        <div class="sketch-corner" data-sketch-corner hidden>
+          <button class="sketch-hide" type="button" data-sketch-hide hidden>Hide artwork</button>
+          {sketches.map(({ name, credit }) => (
+            <p class="sketch-credit" data-sketch-credit={name} hidden>
+              <span class="credit-line">
+                © <span lang={credit.artist.lang}>{credit.artist.name}</span> <span class="credit-bar">|</span>{' '}
+                <a href={credit.source.url} rel="noopener" target="_blank">{credit.source.name}</a>
+              </span>
+              {credit.lineArt && (
+                <span class="credit-line">
+                  processed with <a href={credit.lineArt.url} rel="noopener" target="_blank">{credit.lineArt.name}</a>
+                </span>
+              )}
+            </p>
+          ))}
+          <p class="sketch-note" data-sketch-note hidden>
+            Artwork hidden <span class="credit-bar">|</span> <button type="button" data-sketch-show aria-label="Show artwork">Show</button>
+          </p>
+        </div>
+      )
+    }
   </section>
+  {sketches.length > 0 && <div class="sketch" aria-hidden="true" data-sketches={JSON.stringify(sketches.map(({ name, url }) => ({ name, url })))}></div>}
 </div>

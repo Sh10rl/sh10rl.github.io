@@ -3,6 +3,7 @@ import { rehypeHeadingIds, unified } from '@astrojs/markdown-remark';
 import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
+import { fontCoverage } from './scripts/font-coverage';
 import { unusedImages } from './scripts/unused-images';
 import { rehypeArticle, rehypeLegacyHtml, rehypeSections } from './src/lib/markdown/rehype';
 import { remarkCallouts, remarkLegacy, remarkMathLines, remarkMeta, remarkTableSource } from './src/lib/markdown/remark';
@@ -16,7 +17,11 @@ const v = (major: number, minor = 0) => (major << 16) | (minor << 8);
 export default defineConfig({
   site: site.url,
   compressHTML: true,
-  integrations: [unusedImages()],
+  // GitHub Pages lets browsers keep a file for ten minutes. A linked stylesheet costs a first visit
+  // a round trip before anything is painted, and the fonts and the paper's grain it names are only
+  // found once it has arrived. In the page, the CSS comes with the HTML.
+  build: { inlineStylesheets: 'always' },
+  integrations: [unusedImages(), fontCoverage()],
   devToolbar: { enabled: false },
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   redirects: {

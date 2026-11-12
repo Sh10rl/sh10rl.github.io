@@ -16,3 +16,9 @@ _site/
 .jekyll-metadata
 .bundle/
 vendor/
+
+# local agent skill, kept out of the repo
+.omp/skills/home-sketch/
+
+# local archive of artwork that is not published, kept out of the repo
+/archive/

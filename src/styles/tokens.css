@@ -9,15 +9,18 @@
   color-scheme: light dark;
 
   /* ---------------------------------------------------------------- Colour
-     Picked in OKLCH, written as hex. Warm paper, espresso ink, and the moss
-     from the avatar painting as the one accent. Every text role clears
-     WCAG AA on both paper tones (ink-3 is the floor: 4.8:1 on the desk). */
+     Picked in OKLCH, written as hex. Warm paper, espresso ink, and moss as
+     the one accent. Every text role clears WCAG AA on both paper tones
+     (ink-3 is the floor: 4.8:1 on the desk). */
   /* The page is one flat colour under a print grain. --page is the colour as it reads with
      the grain on; the paint beneath is a touch lighter by day, because on light paper the
      dark specks outweigh the light ones. --raised is for slips laid on the page: code,
      chips, cards. --page-2 is a shade sunk into it. */
   --page: light-dark(#f3f0e8, #161311);
   --page-paint: light-dark(#f8f5ee, #14110e);
+  /* The paint and the grain averaged, measured from the grain tiles: what the paper is where a
+     browser shows it flat, past the page's ends. Measure again if the tiles change. */
+  --page-average: light-dark(#f0ede7, #191714);
   --page-2: light-dark(#ebe7dd, #1e1b17);
   --raised: light-dark(#fbfaf6, #221f1b);
   --ink: light-dark(#231d17, #f0ece5);
@@ -152,6 +155,9 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* The pace of a home page sketch's drawing as a whole: its speed falls steadily from 1.9 times
+     its mean at the start to under half of it at the end. */
+  --ease-sketch: cubic-bezier(0.33, 0.62, 0.67, 0.85);
   --t-press: 70ms;
   --t-release: 160ms;
   --t-hover: 120ms;
