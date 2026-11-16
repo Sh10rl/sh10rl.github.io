@@ -60,10 +60,12 @@ VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "met
 # Not set in the page's fonts: scripts and styles, inline icons, and Japanese, which the CSS sets
 # in the system's Mincho (.sketch-credit :lang(ja)).
 SKIP = {"script", "style", "template", "svg"}
+# Attributes whose text the page shows: field placeholders, and glosses on terms (CSS attr()).
+SHOWN = ("placeholder", "data-tooltip")
 
 
 class PageText(HTMLParser):
-    """The characters a page shows: its text, and the placeholders of its fields."""
+    """The characters a page shows: its text, its fields' placeholders and its terms' glosses."""
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -73,18 +75,22 @@ class PageText(HTMLParser):
     def _skipped(self):
         return bool(self.stack) and self.stack[-1][1]
 
+    def _shown(self, attrs):
+        for name in SHOWN:
+            self.chars.update(attrs.get(name) or "")
+
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         skipped = self._skipped() or tag in SKIP or (attrs.get("lang") or "").startswith("ja")
-        if not skipped and attrs.get("placeholder"):
-            self.chars.update(attrs["placeholder"])
+        if not skipped:
+            self._shown(attrs)
         if tag not in VOID:
             self.stack.append((tag, skipped))
 
     def handle_startendtag(self, tag, attrs):
         attrs = dict(attrs)
-        if not self._skipped() and attrs.get("placeholder"):
-            self.chars.update(attrs["placeholder"])
+        if not self._skipped():
+            self._shown(attrs)
 
     def handle_endtag(self, tag):
         for i in range(len(self.stack) - 1, -1, -1):

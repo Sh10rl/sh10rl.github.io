@@ -1,7 +1,12 @@
-import { reducedMotion, SNAPPY, Spring } from './motion';
+import { reducedMotion, SNAPPY, Spring, springAnimate, type SpringConfig } from './motion';
 
 let dismissActive: (() => void) | undefined;
 const icon = (path: string) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg>`;
+
+// Opening and closing run on the compositor (WAAPI): they keep their frame rate while the page is
+// busy, and the image is rastered once at its largest scale rather than at every frame's scale.
+const OPEN: SpringConfig = { stiffness: 320, damping: 32 };
+const CLOSE: SpringConfig = { stiffness: 380, damping: 36 };
 
 function largestSource(img: HTMLImageElement) {
   let best = img.currentSrc || img.src;
@@ -27,13 +32,11 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
   let scale = 1;
   let tx = 0;
   let ty = 0;
-  let p = 0;
   let dx = 0;
   let dy = 0;
   let closing = false;
   let disposed = false;
-  let closeFrom = rect;
-  let closeOpacity = 1;
+  let zoomAnimations: Animation[] = [];
   let switchAnimation: Animation | undefined;
   let imageRequest = 0;
 
@@ -86,6 +89,7 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
   controls.append(footer);
   gallery.append(overlay, clone, controls);
   document.body.append(gallery);
+  document.documentElement.toggleAttribute('data-zoom-open', true);
 
   const fit = () => {
     rect = img.getBoundingClientRect();
@@ -104,8 +108,9 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
     if (hiRes !== clone.src) {
       const loader = new Image();
       loader.src = hiRes;
-      loader.decode().then(() => {
-        if (!disposed && request === imageRequest) clone.src = hiRes;
+      // The sharper file comes in once the zoom has landed: new pixels mid-flight cost a raster.
+      Promise.all([loader.decode(), ...zoomAnimations.map(animation => animation.finished.catch(() => {}))]).then(() => {
+        if (!disposed && !closing && request === imageRequest) clone.src = hiRes;
       }, () => {});
     }
     img.style.visibility = 'hidden';
@@ -121,25 +126,25 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
     status.textContent = `Image ${index + 1} of ${images.length}`;
     gallery.dataset.index = String(index);
   };
-  const render = () => {
-    if (closing) {
-      // Follow the source while the page continues scrolling underneath.
-      const target = img.getBoundingClientRect();
-      const x = target.left + (closeFrom.left - target.left) * p;
-      const y = target.top + (closeFrom.top - target.top) * p;
-      const w = target.width + (closeFrom.width - target.width) * p;
-      const h = target.height + (closeFrom.height - target.height) * p;
-      clone.style.transform = `translate(${x - rect.left}px, ${y - rect.top}px) scale(${w / rect.width}, ${h / rect.height})`;
-      overlay.style.opacity = String(closeOpacity * Math.max(0, Math.min(1, p)));
-      return;
-    }
-    const s = 1 + (scale - 1) * p;
-    clone.style.transform = `translate(${tx * p + dx}px, ${ty * p + dy}px) scale(${s})`;
-    overlay.style.opacity = String(Math.max(0, Math.min(1, p) * (1 - Math.min(1, Math.hypot(dx, dy) / 420))));
+  // A drag moves the image by `translate`, which applies on top of the zoom's `transform`, and thins
+  // the veil by --fade, which scales its colour under the zoom's `opacity`: neither touches what the
+  // compositor animates.
+  const drag = () => {
+    clone.style.translate = `${dx}px ${dy}px`;
+    overlay.style.setProperty('--fade', String(1 - Math.min(1, Math.hypot(dx, dy) / 420)));
   };
-  const open = new Spring(0, value => { p = value; render(); }, { stiffness: 320, damping: 32, precision: 0.001 });
-  const sx = new Spring(0, value => { dx = value; render(); }, SNAPPY);
-  const sy = new Spring(0, value => { dy = value; render(); }, SNAPPY);
+  const zoomed = () => `translate(${tx}px, ${ty}px) scale(${scale})`;
+  /** The transform that lays the clone's box (the source's rect at the last fit) over `to`. */
+  const over = (to: DOMRect) => `translate(${to.left - rect.left}px, ${to.top - rect.top}px) scale(${to.width / rect.width}, ${to.height / rect.height})`;
+  /** Ends any zoom in flight, with the image at rest in the middle of the screen. */
+  const land = () => {
+    for (const animation of zoomAnimations) animation.cancel();
+    zoomAnimations = [];
+    clone.style.transform = zoomed();
+    overlay.style.opacity = '1';
+  };
+  const sx = new Spring(0, value => { dx = value; drag(); }, SNAPPY);
+  const sy = new Spring(0, value => { dy = value; drag(); }, SNAPPY);
   let start: { x: number; y: number } | null = null;
   let moved = false;
   let vx = 0;
@@ -158,10 +163,10 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
     start = null;
     clone.classList.remove('dragging');
     fit();
+    land();
     source();
     sx.set(0);
     sy.set(0);
-    open.set(1);
     if (!reducedMotion.matches) switchAnimation = clone.animate([
       { opacity: 0.6, translate: `${Math.sign(direction) * 12}px 0` },
       { opacity: 1, translate: '0 0' },
@@ -176,38 +181,50 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
     removeEventListener('scroll', close);
     removeEventListener('resize', close);
   };
+  let home = rect;
+  // A wheel closes the viewer and the page keeps scrolling under the closing image: carry it along.
+  const follow = () => {
+    const now = img.getBoundingClientRect();
+    clone.style.translate = `${now.left - home.left}px ${now.top - home.top}px`;
+  };
   const dispose = () => {
     if (disposed) return;
     disposed = true;
     detach();
-    open.stop();
+    removeEventListener('scroll', follow);
     sx.stop();
     sy.stop();
     switchAnimation?.cancel();
+    for (const animation of zoomAnimations) animation.cancel();
     gallery.remove();
+    document.documentElement.removeAttribute('data-zoom-open');
     img.style.visibility = '';
     if (dismissActive === dispose) dismissActive = undefined;
   };
   const close = () => {
     if (closing) return;
-    closeFrom = clone.getBoundingClientRect();
-    switchAnimation?.cancel();
-    closeOpacity = Number(overlay.style.opacity);
+    // Closing starts wherever the image and the veil are now, mid-flight or mid-drag.
+    const from = clone.getBoundingClientRect();
+    const fade = getComputedStyle(overlay).opacity;
     closing = true;
     gallery.classList.add('closing');
+    document.documentElement.removeAttribute('data-zoom-open');
     detach();
     sx.stop();
     sy.stop();
-    open.config = { stiffness: 380, damping: 36, precision: 0.002 };
-    open.set(1);
-    open.to(0);
+    switchAnimation?.cancel();
+    for (const animation of zoomAnimations) animation.cancel();
+    home = img.getBoundingClientRect();
+    clone.style.translate = '';
+    clone.style.transform = over(home);
+    overlay.style.opacity = '0';
+    addEventListener('scroll', follow, { passive: true });
+    zoomAnimations = [
+      springAnimate(clone, [{ transform: over(from) }, { transform: over(home) }], CLOSE),
+      springAnimate(overlay, [{ opacity: fade }, { opacity: 0 }], CLOSE),
+    ];
+    zoomAnimations[0].finished.then(dispose, () => {});
     previousFocus?.focus({ preventScroll: true });
-    const done = () => {
-      if (disposed) return;
-      if (open.moving) return requestAnimationFrame(done);
-      dispose();
-    };
-    requestAnimationFrame(done);
   };
   const commitNumber = () => {
     const value = number.value.trim();
@@ -304,7 +321,11 @@ export function zoom(initial: HTMLImageElement, images: HTMLImageElement[]) {
   addEventListener('resize', close);
   dismissActive = dispose;
   fit();
+  land();
+  zoomAnimations = [
+    springAnimate(clone, [{ transform: 'translate(0px, 0px) scale(1)' }, { transform: zoomed() }], OPEN),
+    springAnimate(overlay, [{ opacity: 0 }, { opacity: 1 }], OPEN),
+  ];
   source();
-  open.to(1);
   gallery.focus({ preventScroll: true });
 }

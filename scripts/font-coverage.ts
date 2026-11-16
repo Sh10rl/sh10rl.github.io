@@ -28,7 +28,7 @@ function shown(html: string) {
     .replace(/<(script|style|template|svg)\b[\s\S]*?<\/\1>/gi, ' ')
     .replace(/<(\w+)\b[^>]*\blang="ja[^"]*"[^>]*>[\s\S]*?<\/\1>/gi, ' ')
     .replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/<[^>]*\bplaceholder="([^"]*)"[^>]*>/gi, ' $1 ')
+    .replace(/<[^>]*\b(?:placeholder|data-tooltip)="([^"]*)"[^>]*>/gi, ' $1 ')
     .replace(/<[^>]+>/g, ' ');
 }
 

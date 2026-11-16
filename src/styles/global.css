@@ -155,6 +155,12 @@ button {
   color: var(--ink);
 }
 
+/* A selected image keeps its colours: a wash of the selection green over a screenshot is a colour
+   cast, not a highlight. */
+img::selection {
+  background: transparent;
+}
+
 /* Focus rings draw in slightly larger and settle onto the element. */
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -477,8 +483,24 @@ kbd {
     background-color var(--t-theme) var(--ease-in-out);
 }
 
+/* Browsers without corner-shape (Safari, Firefox) would draw the half-height radius as a stadium.
+   This circular radius cuts the corners as deep as the squircle does: at 45° its curve sits
+   1 − 1/√2 of the radius in from the edge, the squircle's 1 − 2^(−1/4), so 0.54 of the radius. */
+@supports not (corner-shape: squircle) {
+  .capsule {
+    border-radius: calc(var(--capsule-h) * 0.27);
+  }
+}
+
 .capsule[data-reading-hidden] {
   translate: 0 calc(-100% - var(--capsule-gap) - env(safe-area-inset-top) - 0.5rem);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The image viewer opens beneath the header (prose.css); the header steps aside while it is open
+   and returns as the image slides back under it. */
+[data-zoom-open] .capsule {
   opacity: 0;
   pointer-events: none;
 }

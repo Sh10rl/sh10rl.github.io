@@ -5,7 +5,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import { fontCoverage } from './scripts/font-coverage';
 import { unusedImages } from './scripts/unused-images';
-import { rehypeArticle, rehypeLegacyHtml, rehypeSections } from './src/lib/markdown/rehype';
+import { rehypeArticle, rehypeGlosses, rehypeLegacyHtml, rehypeSections } from './src/lib/markdown/rehype';
 import { remarkCallouts, remarkLegacy, remarkMathLines, remarkMeta, remarkTableSource } from './src/lib/markdown/remark';
 import { shikiContrast } from './src/lib/markdown/shiki-contrast';
 import { shikiFold } from './src/lib/markdown/shiki-fold';
@@ -42,6 +42,7 @@ export default defineConfig({
         rehypeLegacyHtml,
         [rehypeKatex, { output: 'mathml', throwOnError: false, strict: false }],
         rehypeHeadingIds,
+        rehypeGlosses,
         rehypeArticle,
         rehypeSections,
       ],
@@ -51,6 +52,7 @@ export default defineConfig({
       themes: { light: 'vitesse-light', dark: 'vitesse-dark' },
       defaultColor: false,
       transformers: [shikiContrast(), shikiFold()],
+      langAlias: { pwndbg: 'bash' },
     },
   },
   vite: {

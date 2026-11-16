@@ -1,6 +1,7 @@
 import { consumePendingHighlight } from './highlight';
 import { initHeaderGlow } from './header-glow';
 import { initIndex } from './index';
+import { selectionMarkdown } from './markdown';
 import { finePointer, scrollToY } from './motion';
 import { initPrefs } from './prefs';
 import { initProse } from './prose';
@@ -55,6 +56,18 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     toggleSearch(trigger);
   }
+});
+
+/* Copying ------------------------------------------------------------------------- */
+
+// The clipboard gets the selection as Markdown in plain text, never as HTML (markdown.ts).
+document.addEventListener('copy', (e) => {
+  const selection = getSelection();
+  if (!e.clipboardData || isTyping(e.target) || !selection || selection.isCollapsed) return;
+  const text = selectionMarkdown(selection);
+  if (!text) return;
+  e.clipboardData.setData('text/plain', text);
+  e.preventDefault();
 });
 
 /* Clicks ------------------------------------------------------------------------ */

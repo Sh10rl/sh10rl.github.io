@@ -1,4 +1,5 @@
-import type { Element, ElementContent, Nodes, Root } from 'hast';
+import type { Element, ElementContent, Nodes, Properties, Root, RootContent } from 'hast';
+import { fromHtml } from 'hast-util-from-html';
 import { SKIP, visit } from 'unist-util-visit';
 
 interface HtmlFile {
@@ -50,6 +51,82 @@ export function rehypeLegacyHtml() {
         .replace(/<\/center>/gi, '</p>')
         .replace(/`([^`\n]+)`/g, '<code>$1</code>');
     });
+  };
+}
+
+const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Code stays verbatim, and links and controls keep a single meaning, so terms there go unglossed.
+const GLOSS_SKIP = new Set(['a', 'button', 'code', 'kbd', 'math', 'pre', 'samp', 'script', 'style', 'svg', 'textarea']);
+
+/**
+ * A term glossed once (`<span data-tooltip="加载器" tabindex="0">loader</span>`) is glossed the same
+ * way wherever it comes up later in the article, outside code, links and controls.
+ */
+export function rehypeGlosses() {
+  return (tree: Root) => {
+    const glosses = new Map<string, Properties>();
+    let pattern: RegExp | undefined;
+    const learn = (term: string, tag: string) => {
+      const span = fromHtml(`${tag}</span>`, { fragment: true }).children[0];
+      if (!term || span?.type !== 'element') return;
+      glosses.set(term, span.properties);
+      // Longest term first; a Latin term only as a whole word, so `loader` leaves `downloader` alone.
+      pattern = new RegExp(
+        [...glosses.keys()]
+          .sort((a, b) => b.length - a.length)
+          .map((t) => `${/^\w/.test(t) ? '(?<!\\w)' : ''}${escapeRegExp(t)}${/\w$/.test(t) ? '(?!\\w)' : ''}`)
+          .join('|'),
+        'g',
+      );
+    };
+    const walk = (parent: Root | Element) => {
+      // Inline HTML arrives as raw open and close tags, with the text between them as siblings.
+      let defining: { tag: string; term: string } | undefined;
+      let inside: string | undefined;
+      for (let i = 0; i < parent.children.length; i++) {
+        const node = parent.children[i] as RootContent | Raw;
+        if (isRaw(node)) {
+          const tag = node.value.trim();
+          const open = /^<([a-z][\w-]*)\b[^>]*>$/i.exec(tag)?.[1].toLowerCase();
+          const close = /^<\/([a-z][\w-]*)\s*>$/i.exec(tag)?.[1].toLowerCase();
+          if (defining) {
+            if (close !== 'span') continue;
+            learn(defining.term.trim(), defining.tag);
+            defining = undefined;
+          } else if (inside) {
+            if (close === inside) inside = undefined;
+          } else if (open === 'span' && /\sdata-tooltip=/i.test(tag)) {
+            defining = { tag, term: '' };
+          } else if (open && GLOSS_SKIP.has(open) && !tag.endsWith('/>')) {
+            inside = open;
+          }
+          continue;
+        }
+        if (defining) {
+          defining.term += hastText(node as Nodes);
+          continue;
+        }
+        if (inside) continue;
+        if (node.type === 'element') {
+          if (!GLOSS_SKIP.has(node.tagName)) walk(node);
+          continue;
+        }
+        if (node.type !== 'text' || !pattern) continue;
+        const parts: ElementContent[] = [];
+        let last = 0;
+        for (const match of node.value.matchAll(pattern)) {
+          if (match.index > last) parts.push({ type: 'text', value: node.value.slice(last, match.index) });
+          parts.push(el('span', { ...glosses.get(match[0]) }, [{ type: 'text', value: match[0] }]));
+          last = match.index + match[0].length;
+        }
+        if (!parts.length) continue;
+        if (last < node.value.length) parts.push({ type: 'text', value: node.value.slice(last) });
+        (parent.children as ElementContent[]).splice(i, 1, ...parts);
+        i += parts.length - 1;
+      }
+    };
+    walk(tree);
   };
 }
 
