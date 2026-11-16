@@ -9,9 +9,9 @@
   color-scheme: light dark;
 
   /* ---------------------------------------------------------------- Colour
-     Picked in OKLCH, written as hex. Warm paper, espresso ink, and the moss
-     from the avatar painting as the one accent. Every text role clears
-     WCAG AA on both paper tones (ink-3 is the floor: 4.8:1 on the desk). */
+     Picked in OKLCH, written as hex. Warm paper, espresso ink, and moss as
+     the one accent. Every text role clears WCAG AA on both paper tones
+     (ink-3 is the floor: 4.8:1 on the desk). */
   /* The page is one flat colour under a print grain. --page is the colour as it reads with
      the grain on; the paint beneath is a touch lighter by day, because on light paper the
      dark specks outweigh the light ones. --raised is for slips laid on the page: code,
