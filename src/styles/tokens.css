@@ -5,7 +5,10 @@
    same five springs.
    ========================================================================== */
 
-:root {
+/* The fade to light's pill (.dawn, global.css) keeps the night's colours on a light page. Its
+   color-scheme is dark, and the tokens are worked out again under it there. */
+:root,
+.dawn {
   color-scheme: light dark;
 
   /* ---------------------------------------------------------------- Colour
@@ -162,7 +165,17 @@
   --t-release: 160ms;
   --t-hover: 120ms;
   --t-fade: 220ms;
-  --t-theme: 240ms;
+
+  /* Dark to light (src/scripts/theme.ts). The light page comes in under a black veil of
+     --dawn-veil, which leaves it about as dark as the dark page was, and the veil lifts over
+     --dawn-time along --ease-dawn. Say E is how far the page has come from the veiled paper to
+     full light, as seen (in encoded RGB, which is how the veil fades it). Luminance first climbs
+     in even steps, up to 3 stops a second after easing in over 0.75 s, until E is 0.55; from
+     there E slows at a constant rate to a stop at full light, so the brightest part comes on
+     gently. Sampled for a veil of 0.9 and 3.7 s: sample again if either changes. */
+  --dawn-time: 3.7s;
+  --dawn-veil: 0.9;
+  --ease-dawn: cubic-bezier(0.64, 0.04, 0.59, 0.95);
 }
 
 @supports (transition-timing-function: linear(0, 1)) {
@@ -182,6 +195,10 @@
       0.654, 0.6963, 0.7343, 0.7682, 0.7982, 0.8248, 0.8482, 0.8687, 0.8866, 0.9022, 0.9159, 0.9277, 0.9379, 0.9468,
       0.9544, 0.961, 0.9667, 0.9716, 0.9757, 0.9793, 0.9824, 0.985, 0.9873, 0.9892, 0.9908, 0.9922, 0.9934, 0.9944,
       0.9953, 0.996, 0.9966, 0.9971, 0.9976, 0.9979, 0.9983, 1);
+    --ease-dawn: linear(0, 0.0006, 0.0024, 0.0055, 0.01, 0.016, 0.0238, 0.0336, 0.0458, 0.0602, 0.0758, 0.0929,
+      0.1116, 0.1319, 0.1542, 0.1784, 0.2049, 0.2338, 0.2653, 0.2997, 0.3373, 0.3783, 0.423, 0.4719, 0.5252, 0.5819,
+      0.6358, 0.6859, 0.7324, 0.7751, 0.8142, 0.8495, 0.8811, 0.9089, 0.9331, 0.9535, 0.9703, 0.9833, 0.9926, 0.9981,
+      1);
   }
 }
 
@@ -209,7 +226,8 @@
 
 /* No transparency wanted: glass turns into solid paper. */
 @media (prefers-reduced-transparency: reduce) {
-  :root {
+  :root,
+  .dawn {
     --glass-tint: var(--raised);
     --glass-tint-strong: var(--raised);
     --glass-blur: none;

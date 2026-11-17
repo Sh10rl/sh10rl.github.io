@@ -1,4 +1,5 @@
 ---
+import Dawn from '../components/Dawn.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import Prefs from '../components/Prefs.astro';
@@ -44,13 +45,25 @@ const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
       (() => {
         const root = document.documentElement;
         root.classList.add('js');
+        let theme;
         try {
-          const theme = localStorage.getItem('theme');
-          if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
+          theme = localStorage.getItem('theme');
           const size = localStorage.getItem('text-size');
           if (size === 's' || size === 'l' || size === 'xl') root.dataset.size = size;
           const font = localStorage.getItem('text-font');
           if (font === 'serif' || font === 'sans') root.dataset.font = font;
+        } catch {}
+        // The look is always set here, so a change of the system theme shows only once the script
+        // fades it in (src/scripts/theme.ts). Without a script, the CSS follows the system.
+        const dark = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        root.dataset.theme = dark ? 'dark' : 'light';
+        try {
+          // A fade to light that a link cut short goes on here from the first frame.
+          const dawn = Number(sessionStorage.getItem('dawn'));
+          if (dawn && !dark) {
+            root.dataset.dawning = '';
+            root.style.setProperty('--dawn-at', `${Date.now() - dawn}ms`);
+          }
         } catch {}
         if (!root.dataset.font) {
           const preload = document.createElement('link');
@@ -140,6 +153,7 @@ const ogImage = new URL('/web-app-manifest-512x512.png', Astro.site);
       </span>
       <span class="toast-text"></span>
     </div>
+    <Dawn />
     {article && <div class="note-pop" popover="manual" role="tooltip" id="FootnotePreview" />}
     <script>
       import '../scripts/main';

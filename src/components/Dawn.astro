@@ -1,0 +1,30 @@
+---
+// Dark to light: a veil that lifts slowly, and a pill on the theme button where the moon sets and
+// the sun comes up (src/scripts/theme.ts).
+---
+
+<div class="dawn" popover="manual" data-dawn>
+  <div class="dawn-veil"></div>
+  <button class="dawn-hud" type="button">
+    <span class="dawn-swap">
+      <span class="dawn-bar" aria-hidden="true"><span class="dawn-fill"></span></span>
+      <span class="dawn-label">Switch now</span>
+    </span>
+    <svg class="dawn-sun" viewBox="0 0 24 24" aria-hidden="true">
+      <defs>
+        <clipPath id="DawnSky"><rect width="24" height="19.6"></rect></clipPath>
+        <!-- The theme button's moon: its disc and the bite out of it (Header.astro). -->
+        <mask id="DawnBite">
+          <rect width="24" height="24" fill="#fff"></rect>
+          <circle cx="16.6" cy="7.4" r="6.4" fill="#000"></circle>
+        </mask>
+      </defs>
+      <path class="dawn-horizon" d="M2.5 20.6h19"></path>
+      <g clip-path="url(#DawnSky)">
+        <circle class="dawn-moon" cx="12" cy="12" r="8.6" mask="url(#DawnBite)"></circle>
+        <circle class="dawn-disc" cx="12" cy="12" r="5"></circle>
+      </g>
+      <path class="dawn-rays" d="M12 2.2v1.9M12 19.9v1.9M4.1 4.1l1.35 1.35M18.55 18.55l1.35 1.35M2.2 12h1.9M19.9 12h1.9M4.1 19.9l1.35-1.35M18.55 5.45l1.35-1.35"></path>
+    </svg>
+  </button>
+</div>

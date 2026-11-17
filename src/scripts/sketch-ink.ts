@@ -447,23 +447,18 @@ async function inkImage(source: string) {
 
 /** Keeps the paper in the theme's colour and at the drawing's size while it is in the page. */
 function keep(paper: HTMLCanvasElement, image: HTMLImageElement, probe: HTMLElement, layer: HTMLElement) {
-  const colour = () => getComputedStyle(layer).color;
-  let painted = colour();
-  let following = 0;
-  // A theme switch moves the layer's colour over a transition; follow it frame by frame.
-  const follow = (until: number) => (time: number) => {
-    if (!paper.isConnected) return;
-    const now = colour();
-    if (now !== painted) {
-      painted = now;
-      tint(paper, now);
-    }
-    if (time < until) following = requestAnimationFrame(follow(until));
-  };
+  let painted = getComputedStyle(layer).color;
+  let frame = 0;
+  // A theme switch gives the layer its new colour at once; the paper takes it in the next frame.
   const onTheme = () => {
     if (!paper.isConnected) return removeEventListener('themechange', onTheme);
-    cancelAnimationFrame(following);
-    following = requestAnimationFrame((time) => follow(time + 600)(time));
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => {
+      const now = getComputedStyle(layer).color;
+      if (now === painted) return;
+      painted = now;
+      tint(paper, now);
+    });
   };
   addEventListener('themechange', onTheme);
 

@@ -619,7 +619,6 @@
   margin-inline: 0;
   overflow: clip;
   border-radius: var(--r-md);
-  transition: background-color var(--t-theme) var(--ease-in-out);
   box-shadow:
     0 0 0 1px var(--line),
     0 1px 2px light-dark(rgb(58 44 30 / 0.05), rgb(0 0 0 / 0.3));
@@ -676,7 +675,6 @@
 
 .prose .astro-code {
   background: var(--code-bg) !important;
-  transition: background-color var(--t-theme) var(--ease-in-out);
 }
 
 /* The language sits quietly in the corner; hovering the block turns it into Copy. */

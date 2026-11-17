@@ -2,7 +2,8 @@
    Base
    ========================================================================== */
 
-:root {
+:root,
+.dawn {
   --dark: 0;
   --hover-wash: light-dark(rgb(58 44 30 / 0.055), rgb(255 246 230 / 0.06));
   --press-wash: light-dark(rgb(58 44 30 / 0.09), rgb(255 246 230 / 0.1));
@@ -43,10 +44,10 @@ html {
      colour, flat. It is the paper's average, so the page does not end in a band. The paper
      itself, paint under grain, is on body. */
   background-color: var(--page-average);
-  transition: background-color var(--t-theme) var(--ease-in-out);
 }
 
-/* Keep Chrome's native light/dark track repaint out of the colour transition. */
+/* Chrome's native track would turn light at once with the theme. This one is clear: the paper
+   beside it shows through, and dims with the rest of the page in a fade to light. */
 @supports selector(::-webkit-scrollbar) {
   html {
     scrollbar-color: auto;
@@ -84,7 +85,6 @@ body {
      paper and not under it. */
   isolation: isolate;
   background: var(--grain), var(--page-paint);
-  transition: background-color var(--t-theme) var(--ease-in-out);
   color: var(--ink-2);
   font: 400 var(--step-1) / 1.6 var(--font-text);
   font-kerning: normal;
@@ -94,25 +94,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* Live colour transitions can reverse on the next click. */
-body,
-.prose,
-.prose :where(h2, h3, h4, h5, h6, strong, em, code),
-.entry-link,
-.entry-date,
-.entry-dek,
-.entry-meta,
-.year-label,
-.post-title,
-.post-meta,
-.post-dek,
-.page-title,
-.page-lede,
-.toc-title,
-.site-footer {
-  transition: color var(--t-theme) var(--ease-in-out);
 }
 
 main {
@@ -270,7 +251,6 @@ kbd {
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--glass-edge), var(--shadow-float);
-  transition: background-color var(--t-theme) var(--ease-in-out);
 }
 
 /* Selection surfaces use frost with a light inner edge. */
@@ -313,7 +293,8 @@ kbd {
 .now,
 .search-close,
 .search-clear,
-.segmented button {
+.segmented button,
+.dawn-hud {
   transition:
     color var(--t-hover),
     background-color var(--t-hover),
@@ -323,7 +304,7 @@ kbd {
     translate var(--t-release) var(--spring-snappy);
 }
 
-:is(.glass-btn, .chip, .button, .brand, .ring-btn, .now, .search-close, .search-clear):active {
+:is(.glass-btn, .chip, .button, .brand, .ring-btn, .now, .search-close, .search-clear, .dawn-hud):active {
   scale: 0.96;
   transition-duration: var(--t-press);
   transition-timing-function: var(--ease-out);
@@ -479,8 +460,7 @@ kbd {
   isolation: isolate;
   transition:
     translate 0.22s var(--ease-out),
-    opacity 0.16s var(--ease-out),
-    background-color var(--t-theme) var(--ease-in-out);
+    opacity 0.16s var(--ease-out);
 }
 
 /* Browsers without corner-shape (Safari, Firefox) would draw the half-height radius as a stadium.
@@ -1034,9 +1014,6 @@ kbd {
     linear-gradient(to right, rgb(0 0 0 / 0.4) calc(var(--words) - 2rem), #000 calc(var(--words) + 4rem)),
     linear-gradient(to right, #000 calc(var(--right) - clamp(0px, 100% - var(--right), 5rem)), transparent var(--right));
   mask-composite: intersect;
-  transition:
-    color var(--t-theme) var(--ease-in-out),
-    opacity var(--t-theme) var(--ease-in-out);
 }
 
 /* The sketch is a canvas (src/scripts/sketch-ink.ts). The script moves it onto whole device
@@ -1228,7 +1205,6 @@ kbd {
   height: calc(100% - 0.5rem);
   border-radius: var(--r-pill);
   pointer-events: none;
-  transition: background-color var(--t-theme) var(--ease-in-out);
 }
 
 .tabs.live .tab-chip {
@@ -1402,9 +1378,7 @@ kbd {
   border-radius: var(--r-md);
   pointer-events: none;
   opacity: 0;
-  transition:
-    opacity var(--hover-out) var(--ease-out),
-    background-color var(--t-theme) var(--ease-in-out);
+  transition: opacity var(--hover-out) var(--ease-out);
 }
 
 @media (min-width: 40.0625rem) and (hover: hover) and (pointer: fine) {
@@ -1425,7 +1399,7 @@ kbd {
 
   .entry-hover.on {
     opacity: 1;
-    transition-duration: var(--hover-in), var(--t-theme);
+    transition-duration: var(--hover-in);
   }
 
   /* Keep the arrow on the sheet throughout its fade. */
@@ -2491,6 +2465,206 @@ kbd {
 }
 
 /* ==========================================================================
+   Dawn: dark to light
+   ========================================================================== */
+
+/* Light all at once dazzles eyes that were on the dark page. The page turns light at once, but
+   under a black veil that leaves it about as dark as it was, and the veil lifts over --dawn-time
+   (src/scripts/theme.ts). The layer is a popover, so it also covers a popover that is already
+   open; only its pill takes the pointer. The pill keeps the night's colours: it appears on a
+   dark page. */
+.dawn {
+  position: fixed;
+  inset: 0;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+  pointer-events: none;
+  color-scheme: dark;
+  --frost: var(--grain-night);
+}
+
+/* Not needed, and a nuisance in Safari on iOS: see the popovers' backdrops above. */
+.dawn::backdrop {
+  display: none;
+}
+
+.dawn-veil {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+}
+
+/* The pill lies over the header's tools with its sun on the theme button's, so the two are one
+   (src/scripts/theme.ts places it and keeps it there while the header moves). It grows out of the
+   button, the moon sets and the sun comes up as the veil lifts, the bar beside it fills, and at
+   full light it shrinks back into the button and melts into the header. The whole pill is a
+   button that ends the wait: a pointer on it, or focus, turns the bar into the offer. */
+.dawn-hud {
+  --offer: 0;
+  position: absolute;
+  top: var(--top, 0px);
+  right: var(--right, 0px);
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: var(--width, auto);
+  min-width: max-content;
+  height: 2.25rem;
+  /* The sun sits in the middle of the pill's round end, as the icon does in its round button. */
+  padding: 0 calc((2.25rem - 1.125rem) / 2) 0 0.875rem;
+  border-radius: var(--r-pill);
+  color: var(--ink);
+  /* Solid, with the glass's grain and edge: the tools beneath must not show through. */
+  background: var(--frost), var(--glass-sheen), var(--raised);
+  box-shadow: var(--glass-edge);
+  pointer-events: auto;
+  isolation: isolate;
+  /* A press draws it in towards its sun, the point it goes back into. */
+  transform-origin: calc(100% - 1.125rem) 50%;
+}
+
+/* While the header has slid away on an article, the pill goes with it. */
+.dawn-hud[data-away] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dawn-hud:focus-visible {
+  --offer: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dawn-hud:hover {
+    --offer: 1;
+  }
+}
+
+/* The header buttons' wash, under a pointer. */
+.dawn-hud::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  corner-shape: inherit;
+  background: var(--hover-wash);
+  opacity: var(--offer);
+  pointer-events: none;
+  transition: opacity var(--t-hover) var(--ease-out);
+}
+
+/* The theme button's icon, at its size: its moon, the sun with its rays, and a horizon between. */
+.dawn-sun {
+  width: 1.125rem;
+  height: 1.125rem;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+}
+
+.dawn-sun * {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+}
+
+.dawn-disc,
+.dawn-moon {
+  fill: currentColor;
+  stroke: none;
+}
+
+.dawn-horizon {
+  stroke: var(--ink-3);
+  opacity: 0;
+}
+
+.dawn-moon {
+  opacity: 0;
+}
+
+/* The bar and the offer take turns in one place, so the pill keeps its size. */
+.dawn-swap {
+  flex: 1;
+  display: grid;
+  align-items: center;
+}
+
+.dawn-swap > * {
+  grid-area: 1 / 1;
+  transition:
+    opacity 0.16s var(--ease-out),
+    translate var(--dur-snappy) var(--spring-snappy);
+}
+
+.dawn-bar {
+  min-width: 4.5rem;
+  height: 0.25rem;
+  overflow: hidden;
+  border-radius: var(--r-pill);
+  background: var(--line-2);
+  opacity: calc(1 - var(--offer));
+  translate: 0 calc(var(--offer) * -0.375rem);
+}
+
+.dawn-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: currentColor;
+}
+
+.dawn-label {
+  justify-self: center;
+  font: var(--type-ui);
+  white-space: nowrap;
+  opacity: var(--offer);
+  translate: 0 calc((1 - var(--offer)) * 0.375rem);
+}
+
+/* A fade that a link cut short goes on in the next page from its first frame, until the script
+   takes it over: the veil, and the paper a browser shows past the page's ends and beside its
+   scroll bar. */
+:root[data-dawning] {
+  animation: dawn-paper var(--dawn-time) var(--ease-dawn) calc(-1 * var(--dawn-at, 0ms)) both;
+}
+
+:root[data-dawning]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  background: #000;
+  animation: dawn-veil var(--dawn-time) var(--ease-dawn) calc(-1 * var(--dawn-at, 0ms)) both;
+}
+
+@keyframes dawn-veil {
+  from {
+    opacity: var(--dawn-veil);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dawn-paper {
+  from {
+    background-color: color-mix(in srgb, var(--page-average) calc((1 - var(--dawn-veil)) * 100%), #000);
+  }
+}
+
+/* ==========================================================================
    Search dialog
    ========================================================================== */
 
@@ -3056,7 +3230,8 @@ html[data-search-active] body {
   .code-tools,
   .code-fold,
   .anchor,
-  .toast {
+  .toast,
+  .dawn {
     display: none !important;
   }
 
